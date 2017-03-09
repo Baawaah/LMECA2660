@@ -82,16 +82,23 @@ int main(int argc,char* argv[]){
 
 //for(int j = 0; j<N ;j++) printf("U: %f dudx: %f\n",U[j],dudx[j]);
 
+
 // Solving The Matrix
   for(int k = 0; k<N; k++){
     dudx[k] = (U[(k+1)%N] - U[(k+N-1)%N]) / (2.0*h);
   }
+
 // Time integrating
-  for(int n = 0; n < Ntime ; n++){
-    double* Us = calloc( N , sizeof(double));
-    for(int k = 0; k < 4 ; k++){
-      Uk = Us + beta[k]*dudx; TOODOOOOOO HEEEEREEEE
-      tp = t  + gamma[k]*dt;
+  for(int tn = 0; tn < Ntime ; tn++){ // Time Loop
+    for(int n = 0; tn < N , n++){ // Space Loop
+      double* Us = calloc( N , sizeof(double));
+      for(int k = 0; k < 4 ; k++){ // RK4 Loop
+        Uk = Us + beta[k]*dudt; TOODOOOOOO HEEEEREEEE
+        tp = t  + gamma[k]*dt;
+        dudt[n] = dt*FX TOO DOOOO;
+        U = U + gamma[k]*dudt;
+        t = t + gamma[k]*dt;
+      }
     }
   }
 
