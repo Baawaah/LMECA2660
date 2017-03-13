@@ -1,72 +1,30 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <time.h>
-#include <sys/sysinfo.h>
-#include <stddef.h>
-#include <unistd.h>
+
 #include "thomas.h"
-
-void initU(double* U_value,double sigma,double h,int N){
-  double Q     = 1.0;
-  for(int i = 0; i < N; i++){
-    U_value[i] = Q/sqrt(M_PI*sigma*sigma) * exp(-((i-N/2)*(i-N/2)*h*h)/(sigma*sigma));
-  }
-  //U_value[N/2] = 10.0;
-  return;
-}
-
-void cpyVector(double* A,double* B,int size){
-    for(int i = 0; i< size; i++) B[i] = A[i];
-    return;
-}
-void sumVector(double* A,double* B,int size,double inc){
-    for(int i = 0; i< size; i++) B[i] = A[i]+inc;
-    return;
-}
-void sum_Csum_Vector(double* A,double* B,double* C,int size,double inc){
-    for(int i = 0; i< size; i++) A[i] = B[i]+C[i]*inc;
-    return;
-}
-
-double FDEE2(double* U,double h,int N,int m){
-//  Finite Difference O(h^2)
-return (U[(m+1)%N] - U[(m+N-1)%N]) / (2.0*h);
-}
-double FDEE4(double* U,double h,int N,int m){
-//  Finite Difference O(h^2)
-return (U[(m+2)%N]+8*U[(m+1)%N]-8*U[(m-1+N)%N]+U[(m-1+N)%N])/(12*h);
-}
-void solverFDEE2(double* U, double* du,double c,double h,double dt, int N){
-  for(int m = 0; m < N; m++) du[m] =  dt*(-c)*(U[(m+1)%N] - U[(m+N-1)%N]) / (2.0*h);
-  return;
-}
-void solverFDEE4(double* U, double* du,double c,double h,double dt, int N){
-  for(int m = 0; m < N; m++) du[m] =  dt*(-c)*(U[(m+2)%N]+8.0*U[(m+1)%N]-8.0*U[(m-1+N)%N]+U[(m-2+N)%N])/(12.0*h);
-  return;
-}
-void solverFDES3(double* U, double* du,double c,double h,double dt, int N){
-  for(int m = 0; m < N; m++) du[m] = dt*(-c)*(2.0*U[(m+1)%N]+3.0*U[(m)%N]-6.0*U[(m-1+N)%N]+U[(m-2+N)%N])/(6.0*h);
-  return;
-}
+#include "HM.h"
 
 int main(int argc,char* argv[]){
 // Init Value
   double c = 1.0;
   int N = 128;
-  int Ntime = 10;
+  int Ntime = 30;
   double L = 1.0;
   double sigma = L/32.0;
   double h = L/N;
   double dt = h;
-  double* U     = calloc(N    ,sizeof(double));
-  //double* t     = calloc(N,sizeof(double));
-  //double* dudx  = calloc(N    ,sizeof(double));
+  double t = 0;
+  //double tloc = 0;
+  double* U   = calloc(N    ,sizeof(double));
   double* du  = calloc(N ,sizeof(double));
 
-  double* Us = calloc(N , sizeof(double));
-  double* Uloc = calloc( N , sizeof(double));
-  //double* tloc = calloc( N , sizeof(double));
+  double* Us   = calloc(N , sizeof(double));
+  double* Uloc = calloc(N , sizeof(double));
+  double* Uex  = calloc(N , sizeof(double));
+  double* Udif = calloc(N , sizeof(double));
+
+  double* Qnh = calloc(Ntime,sizeof(double));
+  double* Enh = calloc(Ntime,sizeof(double));
+  double* Rnh = calloc(Ntime,sizeof(double));
+
 
   double beta[4]  = {0.0,0.5,0.5,1.0};
   double gamma[4] = {1.0/6.0,1.0/3.0,1.0/3.0,1.0/6.0};
@@ -78,16 +36,29 @@ int main(int argc,char* argv[]){
   for(int tn = 0; tn < Ntime ; tn++){ // Time Loop
         cpyVector(U,Us,N);
         // Solving The Matrix
+        initExactU(Uex,sigma,h,c,t,N);
         for(int k = 0; k < 4 ; k++){ // RK4 Loop
             sum_Csum_Vector(Uloc,Us,du,N,beta[k]);
-            //tloc[m] = t[m]  + gamma[k]*dt;
+            //tloc = t  + gamma[k]*dt;
             solverFDES3(Uloc,du,c,h,dt,N);
             sum_Csum_Vector(U,U,du,N,gamma[k]);
-            //t[m] = t[m] + gamma[k]*dt;
+            t = t + gamma[k]*dt;
         }
-  }
+        Qnh[tn] = sumArray(U,N);
+        Enh[tn] = 1.0/2.0 *h* sumArraySquare(U,N);
+        diffVector(U,Uex,N,Udif);
+        Rnh[tn] = sqrt(h*sumArraySquare(Udif,N));
+   }
   //printf("ITERATION \n");
-  for(int j = 0; j<N ;j++) printf("%d %f \n",j,U[j]);
+
+FILE* file1 = fopen("data1.txt","w");
+if(file1 == NULL){ fprintf(stderr,"File error\n"); exit(1);}
+for(int j = 0; j<N; j++) fprintf(file1,"%d %f %f\n",j,U[j],Uex[j]);
+fclose(file1);
+FILE* file2 = fopen("data2.txt","w");
+if(file2 == NULL){ fprintf(stderr,"File error\n"); exit(1);}
+for(int j = 0; j<Ntime; j++) fprintf(file2,"%d %f %f %f\n",j,Qnh[j],Enh[j],Rnh[j]);
+fclose(file2);
 
 free(U);
 //free(t);
@@ -96,6 +67,9 @@ free(du);
 free(Us);
 free(Uloc);
 //free(tloc);
+free(Qnh);
+free(Enh);
+free(Rnh);
 return 1;
 
 
