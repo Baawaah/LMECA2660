@@ -7,11 +7,10 @@
 #include <unistd.h>
 #include "thomas.h"
 
-void initU(double* U_value,double h,int N){
+void initU(double* U_value,double sigma,double h,int N){
   double Q     = 1.0;
-  double sigma = (2.0)*h;
   for(int i = 0; i < N; i++){
-    U_value[i] = Q/sqrt(M_PI*sigma*sigma) * exp(-((i-N/2)*(i-N/2))/(sigma*sigma));
+    U_value[i] = Q/sqrt(M_PI*sigma*sigma) * exp(-((i-N/2)*(i-N/2)*h*h)/(sigma*sigma));
   }
   //U_value[N/2] = 10.0;
   return;
@@ -47,7 +46,7 @@ void solverFDEE4(double* U, double* du,double c,double h,double dt, int N){
   return;
 }
 void solverFDES3(double* U, double* du,double c,double h,double dt, int N){
-  for(int m = 0; m < N; m++) du[m] = dt*(-c)*(2.0*U[(m+1)%N]+3.0*U[(m)%N]-6.0*U[(m-1+N)%N]+U[(m-2+N)%N])/(12.0*h);
+  for(int m = 0; m < N; m++) du[m] = dt*(-c)*(2.0*U[(m+1)%N]+3.0*U[(m)%N]-6.0*U[(m-1+N)%N]+U[(m-2+N)%N])/(6.0*h);
   return;
 }
 
@@ -55,9 +54,11 @@ int main(int argc,char* argv[]){
 // Init Value
   double c = 1.0;
   int N = 128;
-  int Ntime = 1000;
-  double h = 0.2;
-  double dt = 0.2;
+  int Ntime = 10;
+  double L = 1.0;
+  double sigma = L/32.0;
+  double h = L/N;
+  double dt = h;
   double* U     = calloc(N    ,sizeof(double));
   //double* t     = calloc(N,sizeof(double));
   //double* dudx  = calloc(N    ,sizeof(double));
@@ -70,7 +71,7 @@ int main(int argc,char* argv[]){
   double beta[4]  = {0.0,0.5,0.5,1.0};
   double gamma[4] = {1.0/6.0,1.0/3.0,1.0/3.0,1.0/6.0};
 // Init Initial Condition
-  initU(U,h,N);
+  initU(U,sigma,h,N);
 //for(int j = 0; j<N ;j++) printf("%d %f\n",j,U[j]);
 //for(int j = 0; j<N ;j++) printf("U: %f dudx: %f\n",U[j],dudx[j]);
 // Time integrating
