@@ -14,10 +14,17 @@ void initU(double* U_value,double sigma,double h,int N){
   //U_value[N/2] = 10.0;
   return;
 }
-void initExactU(double* U_value,double sigma,double h,double c,double t,int N){
+double negaModulo(double A,double mod){
+  if(A >= 0.0){ return fmod(A,mod);}
+  else{ return -(fmod(-A,mod));}
+
+}
+void initExactU(double* U_value,double sigma,double h,double c,double L,double t,int N){
   double Q = 1.0;
   for(int i = 0; i < N; i++){
-    U_value[i] = Q/sqrt(M_PI*sigma*sigma) * exp(-( pow(((i-N/2)*h - c*t),2) )/(sigma*sigma));
+    double xtilde = ( i-N/2.0)*h - c*t + 1.0/2.0 * L;
+    double xhat   = xtilde - floor( xtilde/L )*L;
+    U_value[i] = Q/sqrt(M_PI*sigma*sigma) * exp( -( pow( xhat - L/2 ,2))/(sigma*sigma));
   }
   return;
 }
