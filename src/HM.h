@@ -5,6 +5,7 @@
 #include <sys/sysinfo.h>
 #include <stddef.h>
 #include <unistd.h>
+#include "thomas.h"
 
 void initU(double* U_value,double sigma,double h,int N){
   double Q     = 1.0;
@@ -65,10 +66,15 @@ void solverFDEE2(double* U, double* du,double c,double h,double dt, int N){
   return;
 }
 void solverFDEE4(double* U, double* du,double c,double h,double dt, int N){
-  for(int m = 0; m < N; m++) du[m] =  dt*(-c)*(U[(m+2)%N]+8.0*U[(m+1)%N]-8.0*U[(m-1+N)%N]+U[(m-2+N)%N])/(12.0*h);
+  for(int m = 0; m < N; m++) du[m] =  dt*(-c)*(-1.0*U[(m+2)%N]+8.0*U[(m+1)%N]-8.0*U[(m-1+N)%N]+U[(m-2+N)%N])/(12.0*h);
   return;
 }
 void solverFDES3(double* U, double* du,double c,double h,double dt, int N){
   for(int m = 0; m < N; m++) du[m] = dt*(-c)*(2.0*U[(m+1)%N]+3.0*U[(m)%N]-6.0*U[(m-1+N)%N]+U[(m-2+N)%N])/(6.0*h);
   return;
 }
+/*
+void solverFDEI4(double* U, double* du,double c,double h,double dt, int N){
+
+}
+*/

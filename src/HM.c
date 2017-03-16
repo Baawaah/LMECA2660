@@ -6,12 +6,13 @@ int main(int argc,char* argv[]){
 // Init Value
   double c = 1.0;
   int N = 128;
+  double CFL = 1.0;
   // As for ct/L = .25 .5.75 1;
-  double ct_L = 0.70;
+  double ct_L = 1.0;
   double L = 1.0;
   double sigma = L/32.0;
   double h = L/N;
-  double dt = h;
+  double dt = CFL*h /c;
   double t = 0;
   int Ntime = L*ct_L/(c*dt);
   //double tloc = 0;
@@ -39,20 +40,21 @@ int main(int argc,char* argv[]){
   for(int tn = 0; tn < Ntime ; tn++){ // Time Loop
         cpyVector(U,Us,N);
         // Solving The Matrix
-        initExactU(Uex,sigma,h,c,L,t,N);
         for(int k = 0; k < 4 ; k++){ // RK4 Loop
             sum_Csum_Vector(Uloc,Us,du,N,beta[k]);
             //tloc = t  + gamma[k]*dt;
-            solverFDES3(Uloc,du,c,h,dt,N);
+            solverFDEE4(Uloc,du,c,h,dt,N);
             sum_Csum_Vector(U,U,du,N,gamma[k]);
             t = t + gamma[k]*dt;
         }
+        initExactU(Uex,sigma,h,c,L,t,N);
         Qnh[tn] = h*sumArray(U,N);
         Enh[tn] = 1.0/2.0 *h* sumArraySquare(U,N);
         diffVector(U,Uex,N,Udif);
         Rnh[tn] = sqrt(h*sumArraySquare(Udif,N));
    }
   //printf("ITERATION \n");
+  printf("TIME: %f N: %d NTime: %d h: %f dt: %f \n",t,N,Ntime,h,dt);
 
 FILE* file1 = fopen("data1.txt","w");
 if(file1 == NULL){ fprintf(stderr,"File error\n"); exit(1);}
