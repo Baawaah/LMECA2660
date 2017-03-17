@@ -7,7 +7,7 @@ int main(int argc,char* argv[]){
 
   // As for ct/L = .25 .5.75 1;
   double CFL    = 1.0;
-  double ct_L   = 1.0;
+  double ct_L   = 0.25;
   double Re_sig =  40;
 
 
@@ -22,23 +22,24 @@ int main(int argc,char* argv[]){
   double t = 0;
   int Ntime = L*ct_L/(c*dt);
   //double tloc = 0;
-  double* U   = calloc(N    ,sizeof(double));
-  double* du  = calloc(N ,sizeof(double));
+  double* U    = calloc(N,sizeof(double));
+  double* du   = calloc(N,sizeof(double));
+  double* d2u  = calloc(N,sizeof(double));
 
   double* Us   = calloc(N , sizeof(double));
   double* Uloc = calloc(N , sizeof(double));
   double* Uex  = calloc(N , sizeof(double));
   double* Udif = calloc(N , sizeof(double));
 
-  double* Qnh = calloc(Ntime,sizeof(double));
-  double* Enh = calloc(Ntime,sizeof(double));
-  double* Rnh = calloc(Ntime,sizeof(double));
+  double* Qnh  = calloc(Ntime,sizeof(double));
+  double* Enh  = calloc(Ntime,sizeof(double));
+  double* Rnh  = calloc(Ntime,sizeof(double));
 
 
   double beta[4]  = {0.0,0.5,0.5,1.0};
   double gamma[4] = {1.0/6.0,1.0/3.0,1.0/3.0,1.0/6.0};
 // Init Initial Condition
-  nu = 0; // Convection or Diffusion
+  //nu = 0; // Convection or Diffusion
   initU(U,sigma,h,N);
   initExactU(Uex,sigma,h,c,t,L,nu,N);
 // Time integrating
@@ -48,7 +49,11 @@ int main(int argc,char* argv[]){
         for(int k = 0; k < 4 ; k++){ // RK4 Loop
             sum_Csum_Vector(Uloc,Us,du,N,beta[k]);
             //tloc = t  + gamma[k]*dt;
-            solverFDCEI6(Uloc,du,c,h,dt,N);
+            solverFDCEE2(Uloc,du,c,h,dt,N);
+            if(nu != 0){
+              solverFDDEE2(Uloc,d2u,nu,h,dt,N);
+              sumVector(du,du,d2u,N);
+            }
             sum_Csum_Vector(U,U,du,N,gamma[k]);
             t = t + gamma[k]*dt;
         }

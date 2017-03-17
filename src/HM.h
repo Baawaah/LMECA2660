@@ -48,8 +48,8 @@ double sumArraySquare(double *A,int size){
   }
   return inc;
 }
-void sumVector(double* A,double* B,int size,double inc){
-    for(int i = 0; i< size; i++) B[i] = A[i]+inc;
+void sumVector(double* A,double* B,double* C,int size){
+    for(int i = 0; i< size; i++) C[i] = A[i]+ B[i];
     return;
 }
 void diffVector(double* A,double* B,int size,double* C){
@@ -61,7 +61,7 @@ void sum_Csum_Vector(double* A,double* B,double* C,int size,double inc){
     return;
 }
 /*
-* Solver of Finite Difference Convection or Diffusion Equation
+* Solver of Finite Difference Convection (and) Diffusion Equation
 *
 *
 * Note: Bon, il y a beaucoup de redodance, mais c'est pour le bien de la
@@ -100,6 +100,10 @@ void solverFDCEI6(double* U, double* du,double c,double h,double dt, int N){
   return;
 }
 
+void solverFDDEE2(double* U, double* d2u,double nu,double h,double dt, int N){
+  for(int m = 0; m < N; m++) d2u[m] = (nu)*dt*dt*(U[(m+1)%N] - 2.0*U[(m)%N] + U[(m+N-1)%N]) / (h*h);
+  return;
+}
 /*
 void solverFDEI4(double* U, double* du,double c,double h,double dt, int N){
 
