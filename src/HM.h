@@ -20,12 +20,12 @@ double negaModulo(double A,double mod){
   else{ return -(fmod(-A,mod));}
 
 }
-void initExactU(double* U_value,double sigma,double h,double c,double L,double t,int N){
+void initExactU(double* U_value,double sigma,double h,double c,double L,double t,double nu,int N){
   double Q = 1.0;
   for(int i = 0; i < N; i++){
     double xtilde = ( i-N/2.0)*h - c*t + 1.0/2.0 * L;
     double xhat   = xtilde - floor( xtilde/L )*L;
-    U_value[i] = Q/sqrt(M_PI*sigma*sigma) * exp( -( pow( xhat - L/2 ,2))/(sigma*sigma));
+    U_value[i] = Q/sqrt(M_PI*sigma*sigma + 4.0*nu*t) * exp( -( pow( xhat - L/2 ,2))/(sigma*sigma+4.0*nu*t));
   }
   return;
 }
@@ -60,19 +60,46 @@ void sum_Csum_Vector(double* A,double* B,double* C,int size,double inc){
     for(int i = 0; i< size; i++) A[i] = B[i]+C[i]*inc;
     return;
 }
+/*
+* Solver of Finite Difference Convection or Diffusion Equation
+*
+*
+* Note: Bon, il y a beaucoup de redodance, mais c'est pour le bien de la
+*       compréhension de la matière, biensur il y a toujours moyen de
+*       tout généraliser et faire cela bien proprement.
+*/
 
-void solverFDEE2(double* U, double* du,double c,double h,double dt, int N){
+void solverFDCEE2(double* U, double* du,double c,double h,double dt, int N){
   for(int m = 0; m < N; m++) du[m] =  dt*(-c)*(U[(m+1)%N] - U[(m+N-1)%N]) / (2.0*h);
   return;
 }
-void solverFDEE4(double* U, double* du,double c,double h,double dt, int N){
+void solverFDCEE4(double* U, double* du,double c,double h,double dt, int N){
   for(int m = 0; m < N; m++) du[m] =  dt*(-c)*(-1.0*U[(m+2)%N]+8.0*U[(m+1)%N]-8.0*U[(m-1+N)%N]+U[(m-2+N)%N])/(12.0*h);
   return;
 }
-void solverFDES3(double* U, double* du,double c,double h,double dt, int N){
+void solverFDCES3(double* U, double* du,double c,double h,double dt, int N){
   for(int m = 0; m < N; m++) du[m] = dt*(-c)*(2.0*U[(m+1)%N]+3.0*U[(m)%N]-6.0*U[(m-1+N)%N]+U[(m-2+N)%N])/(6.0*h);
   return;
 }
+void solverFDCEI4(double* U, double* du,double c,double h,double dt, int N){
+  double* q = calloc(N,sizeof(double));
+  for(int m = 0; m < N ; m++){
+    q[m] = 3.0/2.0*dt*(-c)*(U[(m+1)%N]-U[(m-1+N)%N])/(2.0*h) ;
+  }
+  solve_Ac_thomas(N,1,1.0/4.0,1.0/4.0,du,q);
+  free(q);
+  return;
+}
+void solverFDCEI6(double* U, double* du,double c,double h,double dt, int N){
+  double* q = calloc(N,sizeof(double));
+  for(int m = 0; m < N ; m++){
+    q[m] = dt*(-c)*( 14.0/9.0*(U[(m+1)%N]-U[(m-1+N)%N])/(2.0*h) + 1.0/9.0*(U[(m+2)%N]-U[(m-2+N)%N])/(4.0*h) )  ;
+  }
+  solve_Ac_thomas(N,1,2.0/6.0,2.0/6.0,du,q);
+  free(q);
+  return;
+}
+
 /*
 void solverFDEI4(double* U, double* du,double c,double h,double dt, int N){
 

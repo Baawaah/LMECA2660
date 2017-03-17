@@ -4,15 +4,21 @@
 
 int main(int argc,char* argv[]){
 // Init Value
+
+  // As for ct/L = .25 .5.75 1;
+  double CFL    = 1.0;
+  double ct_L   = 1.0;
+  double Re_sig =  40;
+
+
   double c = 1.0;
   int N = 128;
-  double CFL = 1.0;
-  // As for ct/L = .25 .5.75 1;
-  double ct_L = 1.0;
   double L = 1.0;
   double sigma = L/32.0;
   double h = L/N;
   double dt = CFL*h /c;
+  double nu = c*sigma/Re_sig;
+
   double t = 0;
   int Ntime = L*ct_L/(c*dt);
   //double tloc = 0;
@@ -32,10 +38,9 @@ int main(int argc,char* argv[]){
   double beta[4]  = {0.0,0.5,0.5,1.0};
   double gamma[4] = {1.0/6.0,1.0/3.0,1.0/3.0,1.0/6.0};
 // Init Initial Condition
+  nu = 0; // Convection or Diffusion
   initU(U,sigma,h,N);
-  initExactU(Uex,sigma,h,c,t,L,N);
-//for(int j = 0; j<N ;j++) printf("%d %f\n",j,U[j]);
-//for(int j = 0; j<N ;j++) printf("U: %f dudx: %f\n",U[j],dudx[j]);
+  initExactU(Uex,sigma,h,c,t,L,nu,N);
 // Time integrating
   for(int tn = 0; tn < Ntime ; tn++){ // Time Loop
         cpyVector(U,Us,N);
@@ -43,11 +48,11 @@ int main(int argc,char* argv[]){
         for(int k = 0; k < 4 ; k++){ // RK4 Loop
             sum_Csum_Vector(Uloc,Us,du,N,beta[k]);
             //tloc = t  + gamma[k]*dt;
-            solverFDEE4(Uloc,du,c,h,dt,N);
+            solverFDCEI6(Uloc,du,c,h,dt,N);
             sum_Csum_Vector(U,U,du,N,gamma[k]);
             t = t + gamma[k]*dt;
         }
-        initExactU(Uex,sigma,h,c,L,t,N);
+        initExactU(Uex,sigma,h,c,L,t,nu,N);
         Qnh[tn] = h*sumArray(U,N);
         Enh[tn] = 1.0/2.0 *h* sumArraySquare(U,N);
         diffVector(U,Uex,N,Udif);
