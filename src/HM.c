@@ -36,6 +36,12 @@ int main(int argc,char* argv[]){
   double* Rnh  = calloc(Ntime,sizeof(double));
 
 
+// ---Code Benchmarking-------
+  struct timespec start, finish;
+  double elapsed;
+  clock_gettime(CLOCK_MONOTONIC, &start);
+// ---------------------------
+
   double beta[4]  = {0.0,0.5,0.5,1.0};
   double gamma[4] = {1.0/6.0,1.0/3.0,1.0/3.0,1.0/6.0};
 // Init Initial Condition
@@ -64,7 +70,19 @@ int main(int argc,char* argv[]){
         Rnh[tn] = sqrt(h*sumArraySquare(Udif,N));
    }
   //printf("ITERATION \n");
-  printf("TIME: %f N: %d NTime: %d h: %f dt: %f \n",t,N,Ntime,h,dt);
+
+//
+// ---Code Benchmarking-------
+  clock_gettime(CLOCK_MONOTONIC, &finish);
+  elapsed = (finish.tv_sec - start.tv_sec);
+  elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+// ---------------------------
+
+
+printf("Convection-Diffusion Simulation Code\n");
+printf("by S. TRAN\n");
+printf("CFL: %f ct/L: %f Re: %f\n",CFL,ct_L,Re_sig);
+printf("Time Elapsed: %f s\n",elapsed);
 
 FILE* file1 = fopen("data1.txt","w");
 if(file1 == NULL){ fprintf(stderr,"File error\n"); exit(1);}
