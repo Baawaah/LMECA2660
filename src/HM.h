@@ -7,6 +7,12 @@
 #include <unistd.h>
 #include "thomas.h"
 
+/*
+* LMECA2660 Convection-Diffusion Equation
+* by Thanh-Son TRAN 8116-12-00
+*
+*/
+
 void initU(double* U_value,double sigma,double h,int N){
   double Q     = 1.0;
   for(int i = 0; i < N; i++){
@@ -21,6 +27,8 @@ double negaModulo(double A,double mod){
 
 }
 void initExactU(double* U_value,double sigma,double h,double c,double L,double t,double nu,int N){
+  // Note: Mathieu m'avait aider pour la logique de cette partie, qui m'a coûté par mal de temps
+  //       pour rien. Du coups, ca logique doit sûrement transparaitre dans ce bout de code.
   double Q = 1.0;
   for(int i = 0; i < N; i++){
     double xtilde = ( i-N/2.0)*h - c*t + 1.0/2.0 * L;
