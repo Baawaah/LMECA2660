@@ -18,14 +18,9 @@ void initU(double* U_value,double sigma,double h,int N){
   for(int i = 0; i < N; i++){
     U_value[i] = Q/sqrt(M_PI*sigma*sigma) * exp(-((i-N/2)*(i-N/2)*h*h)/(sigma*sigma));
   }
-  //U_value[N/2] = 10.0;
   return;
 }
-double negaModulo(double A,double mod){
-  if(A >= 0.0){ return fmod(A,mod);}
-  else{ return -(fmod(-A,mod));}
 
-}
 void initExactU(double* U_value,double sigma,double h,double c,double L,double t,double nu,int N){
   // Note: Mathieu m'avait aider pour la logique de cette partie, qui m'a coûté par mal de temps
   //       pour rien. Du coups, ca logique doit sûrement transparaitre dans ce bout de code.
@@ -112,8 +107,3 @@ void solverFDDEE2(double* U, double* d2u,double nu,double h,double dt, int N){
   for(int m = 0; m < N; m++) d2u[m] = dt*(nu)*(U[(m+1)%N]-2.0*U[(m)%N]+U[(m+N-1)%N])/(h*h);
   return;
 }
-/*
-void solverFDEI4(double* U, double* du,double c,double h,double dt, int N){
-
-}
-*/

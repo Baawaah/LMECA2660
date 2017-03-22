@@ -8,27 +8,25 @@
 */
 
 int main(int argc,char* argv[]){
-// Init Value
-
-/* Parameter
- *
- */
-  // As for ct/L = .25 .5.75 1;
+/*  ########################################
+    Parameter
+   ########################################*/
   double CFL     =   1.0 ;
   double ct_L    =   1.00; int tauFile = 100; // tauFile for file writing index
   double Re_sig  =  40.0 ;
   int N = 256;
-  int diffFlag = 0; // 0 - Convection 1 - Convection & Diffusion
+  int diffFlag = 0; // [0] - Convection  | [1] - Convection & Diffusion
   int solverType = 5;
   /* Solver Type ------
    1 - E2
-   2 - S3
+   2 - S3 (Décentré O3)
    3 - E4
    4 - I4
    5 - I6
   -------------------*/
+  /*  ########################################
 
-
+     ########################################*/
 
   double c = 1.0;
   double L = 1.0;
@@ -100,7 +98,6 @@ int main(int argc,char* argv[]){
         diffVector(U,Uex,N,Udif);
         Rnh[tn] = sqrt(h*sumArraySquare(Udif,N));
    }
-  //printf("ITERATION \n");
 
 //
 // ---Code Benchmarking-------
@@ -114,6 +111,7 @@ printf("Convection-Diffusion Simulation Code\n");
 printf("by S. TRAN\n");
 printf("N: %d CFL: %f ct/L: %f Re: %f nu: %f sigma:%f \n",N,CFL,ct_L,Re_sig,nu,sigma);
 printf("Time Elapsed: %f s\n",elapsed);
+// Juste pour donner une idée qualitative sur la rapidité du code.
 printf("Solver Type: ");
 char solverName[3];
 if(solverType == 1) sprintf(solverName,"E2");
@@ -143,7 +141,6 @@ free(U);
 free(Uex);
 free(Udif);
 //free(t);
-//free(dudx);
 free(du);
 free(d2u);
 free(Us);
