@@ -15,11 +15,11 @@ int main(int argc,char* argv[]){
  */
   // As for ct/L = .25 .5.75 1;
   double CFL     =   1.0 ;
-  double ct_L    =   1.0;
+  double ct_L    =   1.00; int tauFile = 100; // tauFile for file writing index
   double Re_sig  =  40.0 ;
-  int N = 128;
+  int N = 256;
   int diffFlag = 0; // 0 - Convection 1 - Convection & Diffusion
-  int solverType = 1;
+  int solverType = 5;
   /* Solver Type ------
    1 - E2
    2 - S3
@@ -85,9 +85,11 @@ int main(int argc,char* argv[]){
             if(solverType == 5) solverFDCEI6(Uloc,du,c,h,dt,N);
             if(nu != 0){
               solverFDDEE2(Uloc,d2u,nu,h,dt,N);
-              sumVector(du,du,d2u,N);
+              sumVector(d2u,du,du,N);
               // Comment: Oui, je sais, ce n'est pas la meilleur implémentation
               //          mais, c'était pour mieux comprendre ce que je faisais.
+              //          De même que c'est aussi pour me facilité la vie pour le
+              //          code vu qu'on compare plusieurs méthodes entre eux.
             }
             sum_Csum_Vector(U,U,du,N,gamma[k]);
             t = t + gamma[k]*dt;
@@ -110,27 +112,40 @@ int main(int argc,char* argv[]){
 
 printf("Convection-Diffusion Simulation Code\n");
 printf("by S. TRAN\n");
-printf("N: %d CFL: %f ct/L: %f Re: %f\n",N,CFL,ct_L,Re_sig);
+printf("N: %d CFL: %f ct/L: %f Re: %f nu: %f sigma:%f \n",N,CFL,ct_L,Re_sig,nu,sigma);
 printf("Time Elapsed: %f s\n",elapsed);
 printf("Solver Type: ");
-if(solverType == 1) printf("Solver E2\n");
-if(solverType == 2) printf("Solver S3\n");
-if(solverType == 3) printf("Solver E4\n");
-if(solverType == 4) printf("Solver I4\n");
-if(solverType == 5) printf("Solver I6\n");
-
-FILE* file1 = fopen("data/data1.txt","w");
+char solverName[3];
+if(solverType == 1) sprintf(solverName,"E2");
+if(solverType == 2) sprintf(solverName,"S3");
+if(solverType == 3) sprintf(solverName,"E4");
+if(solverType == 4) sprintf(solverName,"I4");
+if(solverType == 5) sprintf(solverName,"I6");
+printf("Solver %s\n",solverName);
+char buffA[50];
+char buffB[50];
+if(diffFlag == 1){
+  sprintf(buffA,"data/%s_%d_%d_diff_dataA.txt",solverName,N,tauFile);
+  sprintf(buffB,"data/%s_%d_%d_diff_dataB.txt",solverName,N,tauFile);
+}else{
+  sprintf(buffA,"data/%s_%d_%d_dataA.txt",solverName,N,tauFile);
+  sprintf(buffB,"data/%s_%d_%d_dataB.txt",solverName,N,tauFile);
+}
+FILE* file1 = fopen(buffA,"w");
 if(file1 == NULL){ fprintf(stderr,"File error\n"); exit(1);}
 for(int j = 0; j<N; j++) fprintf(file1,"%d %f %f\n",j,U[j],Uex[j]);
 fclose(file1);
-FILE* file2 = fopen("data/data2.txt","w");
+FILE* file2 = fopen(buffB,"w");
 if(file2 == NULL){ fprintf(stderr,"File error\n"); exit(1);}
 for(int j = 0; j<Ntime; j++) fprintf(file2,"%d %f %f %f\n",j,Qnh[j],Enh[j],Rnh[j]);
 fclose(file2);
 free(U);
+free(Uex);
+free(Udif);
 //free(t);
 //free(dudx);
 free(du);
+free(d2u);
 free(Us);
 free(Uloc);
 //free(tloc);

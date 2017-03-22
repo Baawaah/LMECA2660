@@ -33,7 +33,7 @@ void initExactU(double* U_value,double sigma,double h,double c,double L,double t
   for(int i = 0; i < N; i++){
     double xtilde = ( i-N/2.0)*h - c*t + 1.0/2.0 * L;
     double xhat   = xtilde - floor( xtilde/L )*L;
-    U_value[i] = Q/sqrt(M_PI*sigma*sigma + 4.0*nu*t) * exp( -( pow( xhat - L/2 ,2))/(sigma*sigma+4.0*nu*t));
+    U_value[i] = Q/sqrt(M_PI*(sigma*sigma + 4.0*nu*t)) * exp( -( pow( xhat - L/2 ,2))/(sigma*sigma+4.0*nu*t));
   }
   return;
 }
@@ -57,7 +57,7 @@ double sumArraySquare(double *A,int size){
   return inc;
 }
 void sumVector(double* A,double* B,double* C,int size){
-    for(int i = 0; i< size; i++) C[i] = A[i]+ B[i];
+    for(int i = 0; i< size; i++) C[i] = A[i] + B[i];
     return;
 }
 void diffVector(double* A,double* B,int size,double* C){
@@ -94,7 +94,7 @@ void solverFDCEI4(double* U, double* du,double c,double h,double dt, int N){
   for(int m = 0; m < N ; m++){
     q[m] = 3.0/2.0*dt*(-c)*(U[(m+1)%N]-U[(m-1+N)%N])/(2.0*h) ;
   }
-  solve_Ac_thomas(N,1,1.0/4.0,1.0/4.0,du,q);
+  solve_period_3diag(N,1,1.0/4.0,1.0/4.0,du,q);
   free(q);
   return;
 }
@@ -103,13 +103,13 @@ void solverFDCEI6(double* U, double* du,double c,double h,double dt, int N){
   for(int m = 0; m < N ; m++){
     q[m] = dt*(-c)*( 14.0/9.0*(U[(m+1)%N]-U[(m-1+N)%N])/(2.0*h) + 1.0/9.0*(U[(m+2)%N]-U[(m-2+N)%N])/(4.0*h) )  ;
   }
-  solve_Ac_thomas(N,1,2.0/6.0,2.0/6.0,du,q);
+  solve_period_3diag(N,1,2.0/6.0,2.0/6.0,du,q);
   free(q);
   return;
 }
 
 void solverFDDEE2(double* U, double* d2u,double nu,double h,double dt, int N){
-  for(int m = 0; m < N; m++) d2u[m] = (nu)*dt*dt*(U[(m+1)%N] - 2.0*U[(m)%N] + U[(m+N-1)%N]) / (h*h);
+  for(int m = 0; m < N; m++) d2u[m] = dt*(nu)*(U[(m+1)%N]-2.0*U[(m)%N]+U[(m+N-1)%N])/(h*h);
   return;
 }
 /*
