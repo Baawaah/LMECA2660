@@ -1,11 +1,12 @@
 #include "cfd.h"
 
 
+
 struct _problem* init_problem(){
   return malloc(sizeof(struct _problem));
 }
 
-struct _problem* init_problem_physical(struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt){
+struct _problem* init_problem_physical(struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax){
   (*Problem).CFL = CFL;
   (*Problem).L   = L;
   (*Problem).H   = H;
@@ -13,15 +14,25 @@ struct _problem* init_problem_physical(struct _problem* Problem, double CFL, dou
   (*Problem).Hs  = Hs;
   (*Problem).h   = h;
   (*Problem).dt  = dt;
+  (*Problem).t  = 0;
+  (*Problem).tmax  = tmax;
   return Problem;
 }
 
 struct _problem* init_problem_numerical(struct _problem* Problem){
-  (*Problem).Nx = (*Problem).H/(*Problem).h;
-  (*Problem).Ny = (*Problem).L/(*Problem).h;
+  (*Problem).Nx = (*Problem).L/(*Problem).h;
+  (*Problem).Ny = (*Problem).H/(*Problem).h;
   return Problem;
 }
 
+struct _problem* init_problem_map(struct _problem* Problem){
+  (*Problem).imax_map = calloc((*Problem).Nx,sizeof(int));
+  for(int i = 0 ; i < (*Problem).Nx ; i++){
+      if( (*Problem).L*i < (*Problem).Ls ) (*Problem).imax_map[i] = ((*Problem).H - (*Problem).Hs)/(*Problem).h ;
+      else (*Problem).imax_map[i] = (*Problem).Ny;
+  }
+  return Problem;
+}
 
 struct _problem* init_problem_vector_domain(struct _problem* Problem){
   (*Problem).omega = (double**) malloc((*Problem).Nx*sizeof(double*));
@@ -48,6 +59,8 @@ void free_problem_vector_domain(struct _problem* Problem){
   free((*Problem).psi);
   free((*Problem).u);
   free((*Problem).v);
+
+  free((*Problem).imax_map);
 
   free(Problem);
 }
