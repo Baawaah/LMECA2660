@@ -20,8 +20,9 @@ struct _problem* init_problem_physical(struct _problem* Problem, double CFL, dou
 }
 
 struct _problem* init_problem_numerical(struct _problem* Problem){
-  (*Problem).Nx = (*Problem).L/(*Problem).h;
-  (*Problem).Ny = (*Problem).H/(*Problem).h;
+  (*Problem).Nx    = (*Problem).L   /(*Problem).h;
+  (*Problem).Ny    = (*Problem).H   /(*Problem).h;
+  (*Problem).Ntime = (*Problem).tmax/(*Problem).dt;
   return Problem;
 }
 
