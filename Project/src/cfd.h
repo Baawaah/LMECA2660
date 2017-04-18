@@ -18,6 +18,8 @@
    //Domain Numerical Size
    int  Nx;
    int  Ny;
+   int  NLs;
+   int  NHs;
    int  Ntime;
    int *imax_map;
    //Domain Data of size N_x * N_y
@@ -42,4 +44,13 @@ void             free_problem_vector_domain   (struct _problem* Problem);
  *  CFD Numerical
  * ###################################
  */
-void             boundary_omega_update(struct _problem* Problem);
+void             boundary_psi_update          (struct _problem* Problem, double (*Q)(double) );
+void             boundary_omega_update        (struct _problem* Problem);
+/* ###################################
+ *  CFD Test
+ * ###################################
+ */
+double           test_Qfunc_const             (double t);
+void             test_omega_domainFill        (struct _problem* Problem);
+void             test_psi_boundaryFill        (struct _problem* Problem, double (*Q)(double));
+void             test_omega_boundaryFill      (struct _problem* Problem);

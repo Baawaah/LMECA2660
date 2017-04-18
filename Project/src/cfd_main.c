@@ -29,9 +29,11 @@ struct _problem* init_problem_numerical(struct _problem* Problem){
 struct _problem* init_problem_map(struct _problem* Problem){
   (*Problem).imax_map = calloc((*Problem).Nx,sizeof(int));
   for(int i = 0 ; i < (*Problem).Nx ; i++){
-      if( (*Problem).L*i < (*Problem).Ls ) (*Problem).imax_map[i] = ((*Problem).H - (*Problem).Hs)/(*Problem).h ;
+      if( (*Problem).h*i < (*Problem).Ls ) (*Problem).imax_map[i] = ((*Problem).H - (*Problem).Hs)/(*Problem).h ;
       else (*Problem).imax_map[i] = (*Problem).Ny;
   }
+  (*Problem).NLs = (*Problem).Ls/(*Problem).h;
+  (*Problem).NHs = (*Problem).Hs/(*Problem).h;
   return Problem;
 }
 
