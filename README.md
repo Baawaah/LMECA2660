@@ -9,4 +9,6 @@
 ## Program Dependency
 * main_linux.c - *main executatble*
 * cfd.h - *Methods titles and structure*
-  * cfd.c
+  * cfd_main.c - *Mainly basic operation - initialisation*
+  * cfd_numerical.c - *More numericaly complex stuff*
+  * cfd_test.c - *Test method to debug the code*
