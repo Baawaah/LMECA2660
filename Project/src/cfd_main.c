@@ -19,6 +19,8 @@ struct _problem* init_problem_physical(struct _problem* Problem, double CFL, dou
   return Problem;
 }
 
+//comment
+
 struct _problem* init_problem_numerical(struct _problem* Problem){
   (*Problem).Nx    = (*Problem).L   /(*Problem).h;
   (*Problem).Ny    = (*Problem).H   /(*Problem).h;
