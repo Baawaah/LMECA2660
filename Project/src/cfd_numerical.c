@@ -1,5 +1,17 @@
 #include "cfd.h"
 
+
+double scalar_psi_star_compute(struct _problem* Problem,int i,int j){
+  return 0.5*((*Problem).h^4)/(2*(*Problem).h^2)*( (*Problem).omega[i][j] + ((*Problem).psi[i+1][j]+(*Problem).psi[i-1][j])/h^2 + ((*Problem).psi[i][j+1]+(*Problem).psi[][j-1])/h^2 );
+}
+
+
+
+
+
+
+
+
 void boundary_psi_update(struct _problem* Problem, double (*Q)(double) ){
 // Must be change in function of the actual domain
 // Need a Q(t) function
@@ -47,4 +59,12 @@ void boundary_omega_update(struct _problem* Problem){
 // Outflow Boundary - Natural Condition
   for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = (*Problem).omega[(*Problem).Nx-2][i];
 
+}
+
+void inner_psi_star_update(struct _problem* Problem){
+  for(int i; i < (*Problem).Nx ; i++){
+    for(int j; j < (*Problem).Ny ; i++){
+
+    }
+  }
 }

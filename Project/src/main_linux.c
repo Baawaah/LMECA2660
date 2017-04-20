@@ -59,16 +59,21 @@ void print_problem_data(struct _problem* Problem){
 }
 
 int main(int argv,char* argc[]){
-  double CFL  =   1.0;
-  double L    =   1.0;
-  double H    =   0.5;
+  double CFL  =   1.0 ;
+  double L    =   1.0 ;
+  double H    =   0.5 ;
   double h    =   0.05;
-  double dt   =   0.1;
-  double Ls   = L/2.0;
-  double Hs   = H/2.0;
-  double tmax =   1.0;
+  double dt   =   0.1 ;
+  double Ls   = L/2.0 ;
+  double Hs   = H/2.0 ;
+  double tmax =   1.0 ;
+  double phi  =   1.98;
 
-  struct _problem* Problem = init_problem_vector_domain(init_problem_map(init_problem_numerical(init_problem_physical(init_problem(),CFL,L,H,Ls,Hs,h,dt,tmax))));
+  struct _problem* Problem = init_problem();
+  init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax);
+  init_problem_vector_domain(init_problem_map(init_problem_numerical(Problem,phi)));
+
+
   test_omega_domainFill (Problem);
   test_omega_boundaryFill(Problem);
   test_psi_boundaryFill(Problem,test_Qfunc_const);
