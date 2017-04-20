@@ -5,12 +5,13 @@ double scalar_psi_star_compute(struct _problem* Problem,int i,int j){
   return 0.5*((*Problem).h^4)/(2*(*Problem).h^2)*( (*Problem).omega[i][j] + ((*Problem).psi[i+1][j]+(*Problem).psi[i-1][j])/h^2 + ((*Problem).psi[i][j+1]+(*Problem).psi[][j-1])/h^2 );
 }
 
-
-
-
-
-
-
+for(int i; i < (*Problem).Nx ; i++){
+    for(int j; j < (*Problem).Ny ; j++){
+      // by centred finite differences
+      (*Problem).u    [i][j] = (scalar_psi_compute(*Problem,i+1,j)-scalar_psi_compute(*Problem,i-1,j))/2*(*Problem).h; 
+      (*Problem).v    [i][j] = (scalar_psi_compute(*Problem,i,j+1)-scalar_psi_compute(*Problem,i,j-1))/2*(*Problem).h;
+    }
+}
 
 void boundary_psi_update(struct _problem* Problem, double (*Q)(double) ){
 // Must be change in function of the actual domain
@@ -63,7 +64,7 @@ void boundary_omega_update(struct _problem* Problem){
 
 void inner_psi_star_update(struct _problem* Problem){
   for(int i; i < (*Problem).Nx ; i++){
-    for(int j; j < (*Problem).Ny ; i++){
+    for(int j; j < (*Problem).Ny ; j++){
 
     }
   }
