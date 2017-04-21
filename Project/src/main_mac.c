@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <time.h>
-#include <sys/sysinfo.h>
 #include <unistd.h>
 #include "cfd.h"
 
