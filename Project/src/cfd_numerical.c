@@ -2,7 +2,10 @@
 
 
 double scalar_psi_star_compute(struct _problem* Problem,int i,int j){
-  return 0.5*((*Problem).h^4)/(2*(*Problem).h^2)*( (*Problem).omega[i][j] + ((*Problem).psi[i+1][j]+(*Problem).psi[i-1][j])/h^2 + ((*Problem).psi[i][j+1]+(*Problem).psi[][j-1])/h^2 );
+  return 0.5*( pow((*Problem).h,4.0) )/(2*pow((*Problem).h,2))*(
+                 (*Problem).omega[i][j]
+              + ((*Problem).psi[i+1][j] + (*Problem).psi[i-1][j]) /pow((*Problem).h,2) 
+              + ((*Problem).psi[i][j+1] + (*Problem).psi[i][j-1]) /pow((*Problem).h,2) );
 }
 
 

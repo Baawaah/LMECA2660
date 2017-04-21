@@ -71,7 +71,9 @@ int main(int argv,char* argc[]){
 
   struct _problem* Problem = init_problem();
   init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax);
-  init_problem_vector_domain(init_problem_map(init_problem_numerical(Problem,phi)));
+  init_problem_numerical(Problem,phi);
+  init_problem_map(Problem);
+  init_problem_vector_domain(Problem);
 
 
   test_omega_domainFill (Problem);
