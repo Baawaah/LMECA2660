@@ -74,7 +74,7 @@ void boundary_omega_update(struct _problem* Problem){
 void inner_psi_star_update(struct _problem* Problem){
   for(int i; i < (*Problem).Nx ; i++){
     for(int j; j < (*Problem).Ny ; j++){
-
+      (*Problem).psi[i][j] = scalar_psi_compute(struct _problem* Problem,i,j);
     }
   }
 }
