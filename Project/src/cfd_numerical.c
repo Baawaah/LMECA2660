@@ -7,12 +7,14 @@ double scalar_psi_star_compute(struct _problem* Problem,int i,int j){
               + ((*Problem).psi[i+1][j] + (*Problem).psi[i-1][j]) /pow((*Problem).h,2)
               + ((*Problem).psi[i][j+1] + (*Problem).psi[i][j-1]) /pow((*Problem).h,2) );
 }
-
 double scalar_psi_compute(struct _problem* Problem,int i,int j){
-  return (1-(*Problem).phi)*(*Problem).psi[i][j]+(*Problem).phi*scalar_psi_star_compute(*Problem,i,j);
+  return (1-(*Problem).phi)*(*Problem).psi[i][j]+(*Problem).phi*scalar_psi_star_compute(Problem,i,j);
+}
+double scalar__psi_r_compute(struct _problem* Problem,int i, int j){
+  return ((*Problem).psi[i+1][j] - 4*(*Problem).psi[i][j] + (*Problem).psi[i-1][j] +(*Problem).psi[i][j+1] + (*Problem).psi[i][j-1])/(pow((*Problem).h,2)) + (*Problem).omega[i][j];
 }
 
-void u_v_compute(struct _problem* Problem){
+void inner_u_v_compute(struct _problem* Problem){
   for(int i; i < (*Problem).Nx ; i++){
      for(int j; j < (*Problem).Ny ; j++){
        // by centred finite differences
@@ -76,7 +78,24 @@ void boundary_omega_update(struct _problem* Problem){
 void inner_psi_star_update(struct _problem* Problem){
   for(int i; i < (*Problem).Nx ; i++){
     for(int j; j < (*Problem).Ny ; j++){
-      (*Problem).psi[i][j] = scalar_psi_compute(struct _problem* Problem,i,j);
+      (*Problem).psi[i][j] = scalar_psi_compute(Problem,i,j);
     }
+  }
+}
+
+double inner_psi_error_compute(struct _problem* Problem){
+  double e_error = 0;
+  for(int i; i < (*Problem).Nx ; i++){
+    for(int j; j < (*Problem).Ny ; j++){
+      double R = scalar__psi_r_compute(Problem,i,j);
+      e_error = (*Problem).H/(*Problem).Q0 * sqrt(R*R*(*Problem).h*(*Problem).h) + e_error;
+    }
+  }
+  return e_error;
+}
+
+void inner_psi_interator(struct _problem* Problem){
+  while( (*Problem).e_max < inner_psi_error_compute(Problem) ){
+    inner_psi_star_update(Problem);
   }
 }

@@ -59,18 +59,20 @@ void print_problem_data(struct _problem* Problem){
 }
 
 int main(int argv,char* argc[]){
-  double CFL  =   1.0 ;
-  double L    =   1.0 ;
-  double H    =   0.5 ;
-  double h    =   0.05;
-  double dt   =   0.1 ;
-  double Ls   = L/2.0 ;
-  double Hs   = H/2.0 ;
-  double tmax =   1.0 ;
-  double phi  =   1.98;
+  double CFL   =   1.0 ;
+  double L     =   1.0 ;
+  double H     =   0.5 ;
+  double h     =   0.05;
+  double dt    =   0.1 ;
+  double Ls    = L/2.0 ;
+  double Hs    = H/2.0 ;
+  double tmax  =   1.0 ;
+  double phi   =   1.98;
+  double Q0    =   1   ;
+  double e_max =   0.01;
 
   struct _problem* Problem = init_problem();
-  init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax);
+  init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax,Q0,e_max);
   init_problem_numerical(Problem,phi);
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
