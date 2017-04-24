@@ -76,8 +76,8 @@ void boundary_omega_update(struct _problem* Problem){
 }
 
 void inner_psi_star_update(struct _problem* Problem){
-  for(int i; i < (*Problem).Nx ; i++){
-    for(int j; j < (*Problem).Ny ; j++){
+  for(int i = 1; i < (*Problem).Nx -1; i++){
+    for(int j = 1; j < (*Problem).Ny -1; j++){
       (*Problem).psi[i][j] = scalar_psi_compute(Problem,i,j);
     }
   }
@@ -85,8 +85,8 @@ void inner_psi_star_update(struct _problem* Problem){
 
 double inner_psi_error_compute(struct _problem* Problem){
   double e_error = 0;
-  for(int i; i < (*Problem).Nx ; i++){
-    for(int j; j < (*Problem).Ny ; j++){
+  for(int i=1; i < (*Problem).Nx -1; i++){
+    for(int j=1; j < (*Problem).Ny -1; j++){
       double R = scalar__psi_r_compute(Problem,i,j);
       e_error = (*Problem).H/(*Problem).Q0 * sqrt(R*R*(*Problem).h*(*Problem).h) + e_error;
     }

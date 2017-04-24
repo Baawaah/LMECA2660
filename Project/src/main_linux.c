@@ -77,10 +77,11 @@ int main(int argv,char* argc[]){
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
 
+  inner_psi_interator(Problem);
 
-  test_omega_domainFill (Problem);
-  test_omega_boundaryFill(Problem);
-  test_psi_boundaryFill(Problem,test_Qfunc_const);
+  //test_omega_domainFill (Problem);
+  //test_omega_boundaryFill(Problem);
+  //test_psi_boundaryFill(Problem,test_Qfunc_const);
   print_problem_data(Problem);
 
 
