@@ -12,12 +12,14 @@ double scalar_psi_compute(struct _problem* Problem,int i,int j){
   return (1-(*Problem).phi)*(*Problem).psi[i][j]+(*Problem).phi*scalar_psi_star_compute(*Problem,i,j);
 }
 
-for(int i; i < (*Problem).Nx ; i++){
-    for(int j; j < (*Problem).Ny ; j++){
-      // by centred finite differences
-      (*Problem).u    [i][j] = ((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/2*(*Problem).h;
-      (*Problem).v    [i][j] = ((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/2*(*Problem).h;
-    }
+void u_v_compute(struct _problem* Problem){
+  for(int i; i < (*Problem).Nx ; i++){
+     for(int j; j < (*Problem).Ny ; j++){
+       // by centred finite differences
+       (*Problem).u    [i][j] = ((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/2*(*Problem).h;
+       (*Problem).v    [i][j] = ((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/2*(*Problem).h;
+     }
+  }
 }
 
 void boundary_psi_update(struct _problem* Problem, double (*Q)(double) ){
