@@ -25,6 +25,7 @@
    int    Ntime;
    double phi;
    double e_max;
+   double tol;
    int *imax_map;
    //Domain Data of size N_x * N_y
    double **omega;
@@ -40,7 +41,7 @@ void             print_problem_data           (struct _problem* Problem);
  * ###################################
  */
 struct _problem* init_problem();
-void             init_problem_physical        (struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax, double Q0, double e_max);
+void             init_problem_physical        (struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax, double Q0, double e_max, double tol);
 void             init_problem_numerical       (struct _problem* Problem, double phi);
 void             init_problem_map             (struct _problem* Problem);
 void             init_problem_vector_domain   (struct _problem* Problem);
