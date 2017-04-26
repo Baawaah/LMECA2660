@@ -1,5 +1,25 @@
 #include "cfd.h"
 
+
+void poisson(struct _problem* Problem){
+  double tol = 1e-3;
+  double error = tol+1;
+  double n_iter = 0;
+
+  while (error>tol){
+    n_iter++;
+    for(int i=0; i<(*Problem).Nx; i++){
+        for(int j = 0; j < (*Problem).Ny ; j++){
+          (*Problem).psi[i][j]= scalar_psi_compute(struct _problem* Problem,i,j);
+        }
+    }
+    error = inner_psi_error_compute((*Problem));
+    printf("error",: %.8f",error);
+  }
+  printf("convergence after %d iterations, n_iter);
+}
+
+
 void scalar_rhs(struct _problem* Problem, int i, int j, double du){
     double omega_loc = (*Problem).omega;
     double h_loc = (*Problem).h;
@@ -119,13 +139,16 @@ void inner_psi_star_update(struct _problem* Problem){
 }
 
 double inner_psi_error_compute(struct _problem* Problem){
-  double e_error = 0;
+  double e_error = 0.0;
+  double R = 0.0;
+  double square = 0.0;
   for(int i=1; i < (*Problem).Nx -1; i++){
     for(int j=1; j < (*Problem).Ny -1; j++){
-      double R = scalar__psi_r_compute(Problem,i,j);
-      e_error = (*Problem).H/(*Problem).Q0 * sqrt(R*R*(*Problem).h*(*Problem).h) + e_error;
+      R = scalar__psi_r_compute(Problem,i,j);
+      square +=R*R; 
     }
   }
+  e_error = (*Problem).H/(*Problem).Q0 * sqrt(square*(*Problem).h*(*Problem).h);
   return e_error;
 }
 
