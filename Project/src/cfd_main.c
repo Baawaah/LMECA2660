@@ -6,7 +6,7 @@ struct _problem* init_problem(){
   return malloc(sizeof(struct _problem));
 }
 
-void init_problem_physical(struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax, double Q0, double e_max){
+void init_problem_physical(struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax, double Q0, double e_max, double tol){
   (*Problem).CFL   = CFL;
   (*Problem).L     = L;
   (*Problem).H     = H;
@@ -17,7 +17,8 @@ void init_problem_physical(struct _problem* Problem, double CFL, double L, doubl
   (*Problem).t     = 0;
   (*Problem).tmax  = tmax;
   (*Problem).Q0    = Q0;
-  (*Problem).e_max = e_max;
+  (*Problem).e_max = e_max; // maybe to remove some day
+  (*Problem).tol   = tol;
 }
 
 //comment
