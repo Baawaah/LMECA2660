@@ -44,7 +44,7 @@ void first_iteration_omega(struct _problem* Problem, double du_old){
     }
 }
 
-voir integration_omega(struct _problem* Problem){
+void integration_omega(struct _problem* Problem){
     double du,du_old;
     first_iteration_omega(*Problem,du_old);
     
@@ -65,7 +65,7 @@ double scalar_psi_star_compute(struct _problem* Problem,int i,int j){
 double scalar_psi_compute(struct _problem* Problem,int i,int j){
   return (1-(*Problem).phi)*(*Problem).psi[i][j]+(*Problem).phi*scalar_psi_star_compute(Problem,i,j);
 }
-double scalar__psi_r_compute(struct _problem* Problem,int i, int j){
+double scalar_psi_r_compute(struct _problem* Problem,int i, int j){
   return ((*Problem).psi[i+1][j] - 4*(*Problem).psi[i][j] + (*Problem).psi[i-1][j] +(*Problem).psi[i][j+1] + (*Problem).psi[i][j-1])/(pow((*Problem).h,2)) + (*Problem).omega[i][j];
 }
 
@@ -131,8 +131,8 @@ void boundary_omega_update(struct _problem* Problem){
 }
 
 void inner_psi_star_update(struct _problem* Problem){
-  for(int i = 1; i < (*Problem).Nx -1; i++){
-    for(int j = 1; j < (*Problem).Ny -1; j++){
+  for(int i = 1; i < (*Problem).Nx-1; i++){
+    for(int j = 1; j < (*Problem).Ny-1; j++){
       (*Problem).psi[i][j] = scalar_psi_compute(Problem,i,j);
     }
   }

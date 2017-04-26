@@ -49,10 +49,18 @@ void             free_problem_vector_domain   (struct _problem* Problem);
  *  CFD Numerical
  * ###################################
  */
+void             scalar_rhs                   (struct _problem* Problem, int i, int j, double du);
+void             first_iteration_omega        (struct _problem* Problem, double du_old);
+void             integration_omega            (struct _problem* Problem);
+double           scalar_psi_star_compute      (struct _problem* Problem,int i,int j);
+double           scalar_psi_compute           (struct _problem* Problem,int i,int j);
+double           scalar_psi_r_compute         (struct _problem* Problem,int i, int j);
+void             inner_u_v_compute            (struct _problem* Problem);
 void             boundary_psi_update          (struct _problem* Problem, double (*Q)(double) );
 void             boundary_omega_update        (struct _problem* Problem);
+void             inner_psi_star_update        (struct _problem* Problem);
+double           inner_psi_error_compute      (struct _problem* Problem)
 void             inner_psi_interator          (struct _problem* Problem);
-void             inner_u_v_compute            (struct _problem* Problem);
 /* ###################################
  *  CFD Test
  * ###################################
