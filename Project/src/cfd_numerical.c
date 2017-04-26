@@ -19,7 +19,6 @@ void poisson(struct _problem* Problem){
   printf("convergence after %d iterations, n_iter);
 }
 
-
 void scalar_rhs(struct _problem* Problem, int i, int j, double du){
     double omega_loc = (*Problem).omega;
     double h_loc = (*Problem).h;
@@ -56,15 +55,18 @@ void integration_omega(struct _problem* Problem){
     }
     
 }
+
 double scalar_psi_star_compute(struct _problem* Problem,int i,int j){
   return 0.5*( pow((*Problem).h,4.0) )/(2*pow((*Problem).h,2))*(
                  (*Problem).omega[i][j]
               + ((*Problem).psi[i+1][j] + (*Problem).psi[i-1][j]) /pow((*Problem).h,2)
               + ((*Problem).psi[i][j+1] + (*Problem).psi[i][j-1]) /pow((*Problem).h,2) );
 }
+
 double scalar_psi_compute(struct _problem* Problem,int i,int j){
   return (1-(*Problem).phi)*(*Problem).psi[i][j]+(*Problem).phi*scalar_psi_star_compute(Problem,i,j);
 }
+
 double scalar_psi_r_compute(struct _problem* Problem,int i, int j){
   return ((*Problem).psi[i+1][j] - 4*(*Problem).psi[i][j] + (*Problem).psi[i-1][j] +(*Problem).psi[i][j+1] + (*Problem).psi[i][j-1])/(pow((*Problem).h,2)) + (*Problem).omega[i][j];
 }
@@ -144,7 +146,7 @@ double inner_psi_error_compute(struct _problem* Problem){
   double square = 0.0;
   for(int i=1; i < (*Problem).Nx -1; i++){
     for(int j=1; j < (*Problem).Ny -1; j++){
-      R = scalar__psi_r_compute(Problem,i,j);
+      R = scalar_psi_r_compute(Problem,i,j);
       square +=R*R; 
     }
   }
