@@ -4,15 +4,15 @@ void scalar_rhs(struct _problem* Problem, int i, int j, double du){
     double omega_loc = (*Problem).omega;
     double h_loc = (*Problem).h;
     double domdy,dom2dy2,domdx,dom2dx2 ;
-    
+
     domdy = (omega_loc[i][j+1]-omega_loc[i][j-1])/(2*h_loc);
     dom2dy2 = (omega_loc[i][j+1]-2*omega_loc[i][j]+omega_loc[i][j-1])/h_loc^2;
-    
+
     domdx = (omega_loc[i+1][j]-omega_loc[i-1][j])/(2*h_loc);
     dom2dx2 = (omega_loc[i+1][j]-2*omega_loc[i][j]+omega_loc[i-1][j])/h_loc^2;
-    
+
     du = domdy + dom2dy2 + domdx + dom2dx2;
-    
+
 }
 
 void first_iteration_omega(struct _problem* Problem, double du_old){
@@ -22,19 +22,6 @@ void first_iteration_omega(struct _problem* Problem, double du_old){
             (*Problem).omega[i][j]=(*Problem).omega[i][j]+du_old*(*Problem).dt;
         }
     }
-}
-
-void integration_omega(struct _problem* Problem){
-    double du,du_old;
-    first_iteration_omega(*Problem,du_old);
-    
-    for(int i=0; i<(*Problem).Nx; i++){
-        for(int j = 0; j < (*Problem).Ny ; j++){
-            du=scalar_rhs((*Problem),i,j,du);
-            (*Problem).omega[i][j]=(*Problem).omega[i][j]+dt/2*(3*du-du_old);
-        }
-    }
-    
 }
 
 double scalar_psi_star_compute(struct _problem* Problem,int i,int j){
@@ -128,7 +115,7 @@ double inner_psi_error_compute(struct _problem* Problem){
   for(int i=1; i < (*Problem).Nx -1; i++){
     for(int j=1; j < (*Problem).Ny -1; j++){
       R = scalar_psi_r_compute(Problem,i,j);
-      square +=R*R; 
+      square +=R*R;
     }
   }
   e_error = (*Problem).H/(*Problem).Q0 * sqrt(square*(*Problem).h*(*Problem).h);
@@ -151,12 +138,6 @@ void inner_psi_interator(struct _problem* Problem){
     inner_psi_star_update(Problem);
     error = inner_psi_error_compute((*Problem));
     printf("error",: %.8f",error);
-  }  
+  }
   printf("convergence after %d iterations, n_iter);
 }
-
-
-
-
-
-
