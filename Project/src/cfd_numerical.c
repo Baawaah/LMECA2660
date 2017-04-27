@@ -19,8 +19,8 @@ void inner_u_v_compute(struct _problem* Problem){
   for(int i; i < (*Problem).Nx ; i++){
      for(int j; j < (*Problem).Ny ; j++){
        // by centred finite differences
-       (*Problem).u    [i][j] = ((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/2*(*Problem).h;
-       (*Problem).v    [i][j] = ((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/2*(*Problem).h;
+       (*Problem).u    [i][j] =  ((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/2*(*Problem).h;
+       (*Problem).v    [i][j] = -((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/2*(*Problem).h;
      }
   }
 }
@@ -105,7 +105,7 @@ double inner_psi_error_compute(struct _problem* Problem){
 // }
 
 
-void inner_psi_interator(struct _problem* Problem){
+void poisson_inner_psi_iterator(struct _problem* Problem){
   double n_iter = 0;
   double error = (*Problem).tol+1;
 
