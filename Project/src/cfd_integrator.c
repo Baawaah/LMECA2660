@@ -8,38 +8,20 @@ void time_integration(struct _problem* Problem){
 
 void first_time_integration(struct _problem* Problem){
 	(*Problem).t = (*Problem).t + (*Problem).dt;
+	
+	printf("u and v\n");
+	inner_u_v_compute((*Problem));
 
 	printf("poisson\n");
-	poisson_inner_psi_iterator(*Problem);
+	poisson_inner_psi_iterator((*Problem));
 
-	first_iteration_omega(*Problem);
-
-
-
+	first_iteration_omega((*Problem));
+	inner_u_v_old_compute((*Problem));
 
 
-	integration_omega((*Problem));
-	inner_u_v_compute((*Problem));
+
+	//integration_omega((*Problem));
 }
-
-void firstIteration(problem *myProb)
-{
-
-
-    //firstIterationUstar(myProb);
-    //firstIterationVstar(myProb);
-
-
-    poisson(myProb);
-
-
-    updateU(myProb);
-    updateV(myProb);
-    updateP(myProb);
-    computew(myProb);
-}
-
-
 
 double scalar_rhs_conv(struct _problem* Problem, int i, int j){
     double omega_loc = (*Problem).omega;
@@ -62,6 +44,30 @@ double scalar_rhs_diff(struct _problem* Problem, int i, int j){
     dom2dy2 = (*Problem).nu*(omega_loc[i][j+1]-2*omega_loc[i][j]+omega_loc[i][j-1])/h_loc^2;
 
     return (dom2dy2 + dom2dx2);
+
+}
+
+double scalar_rhs_conv_old(struct _problem* Problem, int i, int j){
+    double omega_old = (*Problem).w_old;
+    double h_loc = (*Problem).h;
+    double domdx_old,domdy_old;
+
+    domdx_old = (*Problem).u[i][j]*(omega_old[i+1][j]-omega_old[i-1][j])/(2*h_loc);
+    domdy_old = (*Problem).v[i][j]*(omega_old[i][j+1]-omega_old[i][j-1])/(2*h_loc);
+
+    return -(domdy_old + domdx_old);
+
+}
+
+double scalar_rhs_diff_old(struct _problem* Problem, int i, int j){
+    double omega_old = (*Problem).w_old;
+    double h_loc = (*Problem).h;
+    double dom2dx2_old,dom2dy2_old ;
+
+    dom2dx2_old = (*Problem).nu*(omega_old[i+1][j]-2*omega_old[i][j]+omega_old[i-1][j])/h_loc^2;
+    dom2dy2_old = (*Problem).nu*(omega_old[i][j+1]-2*omega_old[i][j]+omega_old[i][j-1])/h_loc^2;
+
+    return (dom2dy2_old + dom2dx2_old);
 
 }
 

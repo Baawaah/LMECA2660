@@ -28,7 +28,9 @@
    double e_max;
    double tol;
    int *imax_map;
-   double dom_old;
+   double u_old;
+   double v_old;
+   double w_old;
    //Domain Data of size N_x * N_y
    double **omega;
    double **psi;
