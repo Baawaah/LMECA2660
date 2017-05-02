@@ -14,8 +14,10 @@ void first_time_integration(struct _problem* Problem){
 
 	printf("poisson\n");
 	poisson_inner_psi_iterator((*Problem));
+    boundary_psi_update((*Problem),(*Problem).Q0);
 
 	first_iteration_omega((*Problem));
+    boundary_omega_update((*Problem));
 	inner_u_v_old_compute((*Problem));
 
 	//integration_omega((*Problem));
