@@ -88,7 +88,7 @@ int main(int argv,char* argc[]){
   //test_omega_domainFill (Problem);
   //test_omega_boundaryFill(Problem);
   //test_psi_boundaryFill(Problem,test_Qfunc_const);
-  print_problem_data(Problem);
+  //print_problem_data(Problem);
 
 
 

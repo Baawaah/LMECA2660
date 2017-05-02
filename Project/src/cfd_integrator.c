@@ -79,7 +79,7 @@ double scalar_rhs_conv_old(struct _problem* Problem, int i, int j){
 void first_iteration_omega(struct _problem* Problem){
 	double dom_old_conv,dom_old_diff;
     for(int i=1; i<(*Problem).Nx-1; i++){
-        for(int j = 1; j < (*Problem).Ny-1; j++){
+        for(int j = 1; j < (*Problem).imax_map[i]-1; j++){
             dom_old_conv=scalar_rhs_conv(Problem,i,j);
             dom_old_diff=scalar_rhs_diff(Problem,i,j);
             //(*Problem).omega[i][j]=(*Problem).omega[i][j]+(*Problem).dt*(dom_old_conv+dom_old_diff); // EE for both at the first time step
@@ -99,7 +99,7 @@ void integration_omega(struct _problem* Problem){
       // ## Calcule Omega+1
       fprintf(stderr,"1\n");
       for(int i=1; i<(*Problem).Nx-1; i++){
-          for(int j = 1; j < (*Problem).Ny-1; j++){
+          for(int j = 1; j < (*Problem).imax_map[i]-1; j++){
               dom_conv=scalar_rhs_conv_old(Problem,i,j);
               dom_diff=scalar_rhs_diff(Problem,i,j);
               (*Problem).omega[i][j]=(*Problem).omega[i][j]+(*Problem).dt*(1/2*(3*dom_conv-w_old[i][j])+dom_diff);
@@ -115,6 +115,7 @@ void integration_omega(struct _problem* Problem){
       fprintf(stderr,"5\n");
       inner_u_v_compute(Problem);
       fprintf(stderr,"OUT Time: %f\n",(*Problem).t);
+      print_problem_data(Problem);
     }
 
 
