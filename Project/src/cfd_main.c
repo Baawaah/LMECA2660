@@ -6,7 +6,7 @@ struct _problem* init_problem(){
   return malloc(sizeof(struct _problem));
 }
 
-void init_problem_physical(struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax, double Q0, double e_max, double tol, double u_old, double v_old, double w_old, double nu){
+void init_problem_physical(struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax, double Q0, double tol, double nu){
   (*Problem).CFL   = CFL;
   (*Problem).L     = L;
   (*Problem).H     = H;
@@ -17,11 +17,7 @@ void init_problem_physical(struct _problem* Problem, double CFL, double L, doubl
   (*Problem).t     = 0;
   (*Problem).tmax  = tmax;
   (*Problem).Q0    = Q0;
-  (*Problem).e_max = e_max; // maybe to remove some day
   (*Problem).tol   = tol;
-  (*Problem).u_old = u_old;
-  (*Problem).v_old = v_old;
-  (*Problem).w_old = w_old;
   (*Problem).nu    = nu;
 }
 
@@ -50,12 +46,18 @@ void init_problem_vector_domain(struct _problem* Problem){
   (*Problem).psi_s = (double**) malloc((*Problem).Nx*sizeof(double*));
   (*Problem).u     = (double**) malloc((*Problem).Nx*sizeof(double*));
   (*Problem).v     = (double**) malloc((*Problem).Nx*sizeof(double*));
+  (*Problem).u_old = (double**) malloc((*Problem).Nx*sizeof(double*));
+  (*Problem).v_old = (double**) malloc((*Problem).Nx*sizeof(double*));
+  (*Problem).w_old = (double**) malloc((*Problem).Nx*sizeof(double*));
   for(int i=0 ; i < (*Problem).Nx ; i++){
     (*Problem).omega[i] = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).psi[i]   = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).psi_s[i] = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).u[i]     = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).v[i]     = (double*) calloc((*Problem).Ny,sizeof(double));
+    (*Problem).u_old[i] = (double*) calloc((*Problem).Ny,sizeof(double));
+    (*Problem).v_old[i] = (double*) calloc((*Problem).Ny,sizeof(double));
+    (*Problem).w_old[i] = (double*) calloc((*Problem).Ny,sizeof(double));
   }
 }
 
@@ -72,7 +74,9 @@ void free_problem_vector_domain(struct _problem* Problem){
   free((*Problem).psi_s);
   free((*Problem).u);
   free((*Problem).v);
-
+  free((*Problem).u_old);
+  free((*Problem).v_old);
+  free((*Problem).w_old);
   free((*Problem).imax_map);
 
   free(Problem);

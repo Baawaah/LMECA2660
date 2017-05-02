@@ -1,4 +1,5 @@
 #include "cfd.h"
+#include "stdio.h"
 
 double scalar_psi_star_compute(struct _problem* Problem,int i,int j){
   return 0.5*( pow((*Problem).h,4.0) )/(2*pow((*Problem).h,2))*(
@@ -25,12 +26,12 @@ void inner_u_v_compute(struct _problem* Problem){
   }
 }
 
-void boundary_psi_update(struct _problem* Problem, double (*Q)(double) ){
+void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*,double) ){
 // Must be change in function of the actual domain
 // Need a Q(t) function
 
 // Upper boundary
-  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).psi[i][0] = Q((*Problem).t);
+  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).psi[i][0] = Q(Problem,(*Problem).t);
 
 // Down boundary - Left - Right
   for(int i = 0; i < (*Problem).Nx ; i++ ){
@@ -106,14 +107,14 @@ double inner_psi_error_compute(struct _problem* Problem){
 
 
 void poisson_inner_psi_iterator(struct _problem* Problem){
-  double n_iter = 0;
+  int n_iter = 0;
   double error = (*Problem).tol+1;
 
   while( error>(*Problem).tol ){
     n_iter++;
-    inner_psi_star_update(Problem);
-    error = inner_psi_error_compute((*Problem));
-    printf("error",: %.8f",error);
+    inner_psi_update(Problem);
+    error = inner_psi_error_compute(Problem);
+    printf("error,: %.8f",error);
   }
-  printf("convergence after %d iterations, n_iter);
+  printf("convergence after %d iterations", n_iter);
 }

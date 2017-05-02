@@ -1,6 +1,6 @@
 #include "cfd.h"
 
-double test_Qfunc_const(double t){
+double test_Qfunc_const(struct _problem* Problem,double t){
   return 1.0;
 }
 void test_omega_domainFill(struct _problem* Problem){

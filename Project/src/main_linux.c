@@ -69,15 +69,17 @@ int main(int argv,char* argc[]){
   double tmax  =   1.0 ;
   double phi   =   1.98;
   double Q0    =   1   ;
-  double e_max =   0.01;
+  double tol   =   0.01;
+  double nu    =   1;
 
   struct _problem* Problem = init_problem();
-  init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax,Q0,e_max);
+  init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax,Q0,tol,nu);
   init_problem_numerical(Problem,phi);
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
 
-  inner_psi_interator(Problem);
+  poisson_inner_psi_iterator(Problem);
+  first_time_integration(Problem);
 
   //test_omega_domainFill (Problem);
   //test_omega_boundaryFill(Problem);
