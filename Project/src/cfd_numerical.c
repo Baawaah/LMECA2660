@@ -17,8 +17,8 @@ double scalar_psi_r_compute(struct _problem* Problem,int i, int j){
 }
 
 void inner_u_v_compute(struct _problem* Problem){
-  for(int i; i < (*Problem).Nx ; i++){
-     for(int j; j < (*Problem).Ny ; j++){
+  for(int i=1; i < (*Problem).Nx -1; i++){
+     for(int j=1; j < (*Problem).Ny-1 ; j++){
        // by centred finite differences
        (*Problem).u    [i][j] =  ((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/2*(*Problem).h;
        (*Problem).v    [i][j] = -((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/2*(*Problem).h;
@@ -114,7 +114,7 @@ void poisson_inner_psi_iterator(struct _problem* Problem){
     n_iter++;
     inner_psi_update(Problem);
     error = inner_psi_error_compute(Problem);
-    printf("error,: %.8f",error);
+    //printf("error,: %.8f",error);
   }
-  printf("convergence after %d iterations", n_iter);
+  //printf("convergence after %d iterations", n_iter);
 }

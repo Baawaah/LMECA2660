@@ -1,4 +1,7 @@
 #include "cfd.h"
+#include <unistd.h>
+#include <stdio.h>
+#include <stddef.h>
 /*
 void time_integration(struct _problem* Problem){
 	(*Problem).t = (*Problem).t + dt;
@@ -88,14 +91,31 @@ void first_iteration_omega(struct _problem* Problem){
 void integration_omega(struct _problem* Problem){
     double dom_conv,dom_diff;
     double** w_old = (*Problem).w_old;
+    fprintf(stderr,"First Time: %f\n",(*Problem).t);
     first_iteration_omega(Problem);
-
-    for(int i=1; i<(*Problem).Nx-1; i++){
-        for(int j = 1; j < (*Problem).Ny-1; j++){
-            dom_conv=scalar_rhs_conv_old(Problem,i,j);
-            dom_diff=scalar_rhs_diff(Problem,i,j);
-            (*Problem).omega[i][j]=(*Problem).omega[i][j]+(*Problem).dt*(1/2*(3*dom_conv-w_old[i][j])+dom_diff);
-        }
+    for(int k=1; k < (*Problem).Ntime; k++ ){
+      (*Problem).t = (*Problem).t + (*Problem).dt;
+      fprintf(stderr,"IN Time: %f\n",(*Problem).t);
+      // ## Calcule Omega+1
+      fprintf(stderr,"1\n");
+      for(int i=1; i<(*Problem).Nx-1; i++){
+          for(int j = 1; j < (*Problem).Ny-1; j++){
+              dom_conv=scalar_rhs_conv_old(Problem,i,j);
+              dom_diff=scalar_rhs_diff(Problem,i,j);
+              (*Problem).omega[i][j]=(*Problem).omega[i][j]+(*Problem).dt*(1/2*(3*dom_conv-w_old[i][j])+dom_diff);
+          }
+      }
+      fprintf(stderr,"2\n");
+      // ##################
+      poisson_inner_psi_iterator(Problem);
+      fprintf(stderr,"3\n");
+      boundary_omega_update(Problem);
+      fprintf(stderr,"4\n");
+      boundary_psi_update(Problem,functionQ);
+      fprintf(stderr,"5\n");
+      inner_u_v_compute(Problem);
+      fprintf(stderr,"OUT Time: %f\n",(*Problem).t);
     }
+
 
 }
