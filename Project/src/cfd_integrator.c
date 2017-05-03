@@ -105,17 +105,17 @@ void integration_omega(struct _problem* Problem){
               (*Problem).omega[i][j]=(*Problem).omega[i][j]+(*Problem).dt*(1/2*(3*dom_conv-w_old[i][j])+dom_diff);
           }
       }
-      fprintf(stderr,"2\n");
+      //fprintf(stderr,"2\n");
       // ##################
       poisson_inner_psi_iterator(Problem);
-      fprintf(stderr,"3\n");
+      //fprintf(stderr,"3\n");
       boundary_omega_update(Problem);
-      fprintf(stderr,"4\n");
+      //fprintf(stderr,"4\n");
       boundary_psi_update(Problem,functionQ);
-      fprintf(stderr,"5\n");
+      //fprintf(stderr,"5\n");
       inner_u_v_compute(Problem);
-      fprintf(stderr,"OUT Time: %f\n",(*Problem).t);
-      print_problem_data(Problem);
+      //fprintf(stderr,"OUT Time: %f\n",(*Problem).t);
+      //print_problem_data(Problem);
     }
 
 
