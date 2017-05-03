@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <time.h>
+//#include <sys/sysinfo.h>
 #include <unistd.h>
 #include "cfd.h"
 
@@ -58,20 +59,36 @@ void print_problem_data(struct _problem* Problem){
 }
 
 int main(int argv,char* argc[]){
-  double CFL  =   1.0;
-  double L    =   1.0;
-  double H    =   0.5;
-  double h    =   0.05;
-  double dt   =   0.1;
-  double Ls   = L/2.0;
-  double Hs   = H/2.0;
-  double tmax =   1.0;
+  fprintf(stderr, "Yahouu 0");
+  double CFL   =   1.0 ;
+  double L     =   1.0 ;
+  double H     =   0.5 ;
+  double h     =   0.05;
+  double dt    =   0.1 ;
+  double Ls    = L/2.0 ;
+  double Hs    = H/2.0 ;
+  double tmax  =   0.5 ;
+  double phi   =   1.98;
+  double Q0    =   1   ;
+  double tol   =   0.1;
+  double nu    =   1;
 
-  struct _problem* Problem = init_problem_vector_domain(init_problem_map(init_problem_numerical(init_problem_physical(init_problem(),CFL,L,H,Ls,Hs,h,dt,tmax))));
-  test_omega_domainFill (Problem);
-  test_omega_boundaryFill(Problem);
-  test_psi_boundaryFill(Problem,test_Qfunc_const);
-  print_problem_data(Problem);
+  struct _problem* Problem = init_problem();
+  fprintf(stderr, "Yahouu 1\n");
+  init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax,Q0,tol,nu);
+  init_problem_numerical(Problem,phi);
+  init_problem_map(Problem);
+  init_problem_vector_domain(Problem);
+
+  //poisson_inner_psi_iterator(Problem);
+  //first_time_integration(Problem);
+  fprintf(stderr, "Yahouu 2\n");
+  integration_omega(Problem);
+
+  //test_omega_domainFill (Problem);
+  //test_omega_boundaryFill(Problem);
+  //test_psi_boundaryFill(Problem,test_Qfunc_const);
+  //print_problem_data(Problem);
 
 
 
