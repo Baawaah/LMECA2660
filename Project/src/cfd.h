@@ -38,6 +38,7 @@
    double **u_old;
    double **v_old;
    double **w_old;
+   double **f_old;
  };
 
 void             print_problem_data           (struct _problem* Problem);
@@ -65,6 +66,7 @@ void             boundary_omega_update        (struct _problem* Problem);
 void             inner_psi_star_update        (struct _problem* Problem);
 double           inner_psi_error_compute      (struct _problem* Problem);
 void             poisson_inner_psi_iterator   (struct _problem* Problem);
+int              reynolds_check               (struct _problem* Problem,int i,int j);
 /* ###################################
  *  CFD Integrator
  * ###################################

@@ -59,39 +59,45 @@ void print_problem_data(struct _problem* Problem){
 }
 
 int main(int argv,char* argc[]){
-  fprintf(stderr, "Yahouu 0");
+  fprintf(stderr, "Starting Computing\n");
   double CFL   =   1.0 ;
   double L     =   2.0 ;
   double H     =   1.0 ;
-  double h     =   0.05;
-  double dt    =   0.05 ;
-  double Ls    = L/2.0 ;
+  double h     =   0.001;
+  double dt    =   0.1 ;
+  double Ls    = L/4.0 ;
   double Hs    = H/2.0 ;
-  double tmax  =   0.5 ;
+  double tmax  =   5.0 ;
   double phi   =   1.98;
-  double Q0    =   1   ;
-  double tol   =   0.1;
-  double nu    =   1e-6;
+  double Q0    =   1;
+  double tol   =   0.01;
+  double nu    =   1e-3;
 
   struct _problem* Problem = init_problem();
-  fprintf(stderr, "Yahouu 1\n");
   init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax,Q0,tol,nu);
   init_problem_numerical(Problem,phi);
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
-
+  // ---Code Benchmarking-------
+  struct timespec start, finish;
+  double elapsed;
+  clock_gettime(CLOCK_MONOTONIC, &start);
+  // ---------------------------
   //poisson_inner_psi_iterator(Problem);
   //first_time_integration(Problem);
-  fprintf(stderr, "Yahouu 2\n");
   integration_omega(Problem);
-
+  // ---Code Benchmarking-------
+  clock_gettime(CLOCK_MONOTONIC, &finish);
+  elapsed = (finish.tv_sec - start.tv_sec);
+  elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+  // ---------------------------
   //test_omega_domainFill (Problem);
 
   //test_psi_boundaryFill(Problem,test_Qfunc_const);
-
-
-
-
-  free_problem_vector_domain(Problem);
+  print_problem_data(Problem);
   printf("Done \n");
+
+
+  printf("Time Elapsed: %f s\n",elapsed);
+  free_problem_vector_domain(Problem);
 }
