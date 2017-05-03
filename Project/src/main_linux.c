@@ -61,17 +61,17 @@ void print_problem_data(struct _problem* Problem){
 int main(int argv,char* argc[]){
   fprintf(stderr, "Yahouu 0");
   double CFL   =   1.0 ;
-  double L     =   1.0 ;
-  double H     =   0.5 ;
+  double L     =   2.0 ;
+  double H     =   1.0 ;
   double h     =   0.05;
-  double dt    =   0.1 ;
+  double dt    =   0.05 ;
   double Ls    = L/2.0 ;
   double Hs    = H/2.0 ;
   double tmax  =   0.5 ;
   double phi   =   1.98;
   double Q0    =   1   ;
   double tol   =   0.1;
-  double nu    =   1;
+  double nu    =   1e-6;
 
   struct _problem* Problem = init_problem();
   fprintf(stderr, "Yahouu 1\n");
@@ -86,9 +86,9 @@ int main(int argv,char* argc[]){
   integration_omega(Problem);
 
   //test_omega_domainFill (Problem);
-  //test_omega_boundaryFill(Problem);
+
   //test_psi_boundaryFill(Problem,test_Qfunc_const);
-  //print_problem_data(Problem);
+
 
 
 
