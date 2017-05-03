@@ -11,6 +11,15 @@
 #include "cfd.h"
 
 
+void deadstop_exit(struct _problem* Problem){
+  fprintf(stderr, "Emergency Exit Procedure Initiate\n");
+  fprintf(stderr, "Problem occured at t= %d\n",(int) ( (*Problem).t * 100 ));
+  fprintf(stderr, "Saving current data under  _%d_\n",(int) ( (*Problem).t * 100 ));
+  print_problem_data(Problem);
+  free_problem_vector_domain(Problem);
+  exit(-1);
+}
+
 void print_problem_data(struct _problem* Problem){
   char buff_omega_name[50];
   char buff_psi_name[50];
@@ -38,20 +47,6 @@ void print_problem_data(struct _problem* Problem){
     fprintf(file_u     ,"\n");
     fprintf(file_v     ,"\n");
   }
-  /* Pour printer à la verticale - Quel utilité ? Bonne question
-  for(int i = 0; i < (*Problem).Nx ; i++){
-    for(int j = 0 ; j < (*Problem).Ny ; j++){
-        fprintf(file_omega,"%f "   ,(*Problem).omega[i][j]);
-        fprintf(file_psi  ,"%f "   ,(*Problem).psi  [i][j]);
-        fprintf(file_u    ,"%f "   ,(*Problem).u    [i][j]);
-        fprintf(file_v    ,"%f "   ,(*Problem).v    [i][j]);
-    }
-    fprintf(file_omega ,"\n");
-    fprintf(file_psi   ,"\n");
-    fprintf(file_u     ,"\n");
-    fprintf(file_v     ,"\n");
-  }
-  */
   fclose(file_omega);
   fclose(file_psi);
   fclose(file_u);
@@ -67,11 +62,11 @@ int main(int argv,char* argc[]){
   double dt    =   0.1 ;
   double Ls    = L/4.0 ;
   double Hs    = H/2.0 ;
-  double tmax  =   5.0 ;
+  double tmax  =   1.0 ;
   double phi   =   1.98;
   double Q0    =   1;
   double tol   =   0.01;
-  double nu    =   1e-3;
+  double nu    =   1e-6;
 
   struct _problem* Problem = init_problem();
   init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax,Q0,tol,nu);

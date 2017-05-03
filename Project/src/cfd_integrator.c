@@ -117,7 +117,7 @@ void integration_omega(struct _problem* Problem){
               (*Problem).f_old[i][j] = dom_conv;
 
               check = reynolds_check(Problem,i,j);
-              if(check != 0 ){ fprintf(stderr, "[DEADSTOP] Reynold Check: %d\n",check); print_problem_data(Problem); free_problem_vector_domain(Problem); exit(0);}
+              if(check != 0 ){ fprintf(stderr, "[DEADSTOP] Reynold Check: %d\n",check); deadstop_exit(Problem);}
           }
       }
 

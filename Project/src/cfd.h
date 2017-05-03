@@ -42,6 +42,7 @@
  };
 
 void             print_problem_data           (struct _problem* Problem);
+void             deadstop_exit                (struct _problem* Problem);
 /* ###################################
  *  CFD Main
  * ###################################

@@ -106,7 +106,7 @@ double inner_psi_error_compute(struct _problem* Problem){
 void poisson_inner_psi_iterator(struct _problem* Problem){
   int n_iter = 0;
   int iter = 0 ;
-  int iter_max = 1000;
+  int iter_max = 1500;
   double error = (*Problem).tol+1;
 
   while( error>(*Problem).tol && iter < iter_max){
@@ -116,7 +116,7 @@ void poisson_inner_psi_iterator(struct _problem* Problem){
     //printf("error,: %.8f",error);
     iter++;
   }
-  if(iter >= iter_max) fprintf(stderr, "Maximum Iteration Reached Current Error: %f\n",error);
+  if(iter >= iter_max){fprintf(stderr, "[DEADSTOP] Maximum Iteration Reached Current Error: %f\n",error); deadstop_exit(Problem);}
   //fprintf(stderr,"convergence after %d iterations", n_iter);
 }
 
