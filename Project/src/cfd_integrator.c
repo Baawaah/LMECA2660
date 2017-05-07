@@ -10,7 +10,7 @@ void time_integration(struct _problem* Problem){
 }*/
 
 
-double functionQ(struct _problem* Problem,double t){
+double functionQ(struct _problem* Problem){
   return  (*Problem).Q0; //(*Problem).Q0*cos(2*M_PI*t);
 }
 
@@ -18,13 +18,14 @@ void first_time_integration(struct _problem* Problem){
 	(*Problem).t = (*Problem).t + (*Problem).dt;
 
 	//printf("poisson\n");
-	poisson_inner_psi_iterator(Problem);
-  boundary_psi_update(Problem,functionQ);
 
 	first_iteration_omega(Problem);
+  poisson_inner_psi_iterator(Problem);
   boundary_omega_update(Problem);
+  boundary_psi_update(Problem,functionQ);
+  boundary_u_v_in_out_set(Problem);
+  boundary_omega_in_out_set(Problem);
 	inner_u_v_compute(Problem);
-
 	//integration_omega((*Problem));
 }
 /*
@@ -116,14 +117,16 @@ void integration_omega(struct _problem* Problem){
                                                               + (*Problem).dt*dom_diff ;
               (*Problem).f_old[i][j] = dom_conv;
 
-              check = reynolds_check(Problem,i,j);
-              if(check != 0 ){ fprintf(stderr, "[DEADSTOP] Reynold Check: %d\n",check); deadstop_exit(Problem);}
+              check = diagnose_check(Problem,i,j);
+              if(check != 0 ){ fprintf(stderr, "[DEADSTOP] Diagnose Check: %d\n",check); deadstop_exit(Problem);}
           }
       }
 
       poisson_inner_psi_iterator(Problem);
 
       boundary_omega_update(Problem);
+      boundary_u_v_in_out_set(Problem);
+      boundary_omega_in_out_set(Problem);
 
       boundary_psi_update(Problem,functionQ);
 

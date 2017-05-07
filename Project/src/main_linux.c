@@ -12,6 +12,12 @@
 
 
 void deadstop_exit(struct _problem* Problem){
+  fprintf(stderr, "[DEADSTOP EXIT] \n");
+  fprintf(stderr, "case diagnostic DEADSTOP  \n");
+  fprintf(stderr, "    Binary Value for each problem\n");
+  fprintf(stderr, "       Mesh Reynold u,v   - 1 \n");
+  fprintf(stderr, "       Mesh Reynold omega - 2 \n");
+  fprintf(stderr, "       Beta - CFL         - 4 \n");
   fprintf(stderr, "Emergency Exit Procedure Initiate\n");
   fprintf(stderr, "Problem occured at t= %d\n",(int) ( (*Problem).t * 100 ));
   fprintf(stderr, "Saving current data under  _%d_\n",(int) ( (*Problem).t * 100 ));
@@ -54,25 +60,49 @@ void print_problem_data(struct _problem* Problem){
 }
 
 int main(int argv,char* argc[]){
-  fprintf(stderr, "Starting Computing\n");
-  double CFL   =   1.0 ;
-  double L     =   2.0 ;
-  double H     =   1.0 ;
-  double h     =   0.001;
-  double dt    =   0.1 ;
-  double Ls    = L/4.0 ;
-  double Hs    = H/2.0 ;
-  double tmax  =   1.0 ;
-  double phi   =   1.98;
-  double Q0    =   1;
-  double tol   =   0.01;
+  // Flow specification
   double nu    =   1e-6;
 
+  // Numerical parameter
+  double CFL   =   1.0 ;
+  double tau   =   0.1 ;
+  double Rey   =   10  ;
+  double h     =   0.0001;
+
+  // Domain parameter
+  double L     =   2.0 ;
+  double H     =   1.0 ;
+  double Q0    =   Rey*nu;
+  double Um    =   Q0/H;
+  double Ls    = L/4.0 ;
+  double Hs    = H/2.0 ;
+  // Computation parameter
+  //double Rey_h =
+  //double r     =   nu*dt/(h*h);
+
+  double dt    =   CFL*h/Um;
+  double tmax  =   tau*L/Um;
+
+  double phi   =   1.98;
+  double tol   =   0.01;
+
+
+
+
+  fprintf(stderr, "CFD - Oscillating flow in a channel with abrupt step\n");
+  fprintf(stderr, "by S. Tran - J. Demey \n");
+  fprintf(stderr, "CFL: %f Tau: %f Reynold: %f\n",CFL,tau,Rey);
+  fprintf(stderr, "Average Velocity: %f Grid size h: %f Timestep: %f\n",Um,h,dt);
   struct _problem* Problem = init_problem();
   init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax,Q0,tol,nu);
   init_problem_numerical(Problem,phi);
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
+  boundary_u_v_in_out_set(Problem);
+  boundary_omega_in_out_set(Problem);
+  print_problem_data(Problem);
+  //boundary_u_v_in_out_set(Problem);
+  //print_problem_data(Problem);
   // ---Code Benchmarking-------
   struct timespec start, finish;
   double elapsed;

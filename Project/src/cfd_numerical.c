@@ -22,6 +22,10 @@ double scalar_psi_r_compute(struct _problem* Problem,int i, int j){
           )/pow((*Problem).h,2);
 }
 
+double scalar_u_v_poiseuille(struct _problem* Problem,double eta){
+  return 0.75*functionQ(Problem)*(1.0 - pow(eta,2));
+}
+
 void inner_u_v_compute(struct _problem* Problem){
   for(int i=1; i < (*Problem).Nx -1; i++){
      for(int j=1; j < (*Problem).Ny-1 ; j++){
@@ -32,12 +36,14 @@ void inner_u_v_compute(struct _problem* Problem){
   }
 }
 
-void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*,double) ){
+
+
+void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*)){
 // Must be change in function of the actual domain
 // Need a Q(t) function
 
 // Upper boundary
-  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).psi[i][0] = Q(Problem,(*Problem).t);
+  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).psi[i][0] = Q(Problem);
 
 // Down boundary - Left - Right
   for(int i = 0; i < (*Problem).Nx ; i++ ){
@@ -72,6 +78,27 @@ void boundary_omega_update(struct _problem* Problem){
   for(int i = 1; i < (*Problem).NHs-1 ; i++) (*Problem).omega[0][i]               = (*Problem).omega[1][i];
 // Outflow Boundary - Natural Condition
   for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = (*Problem).omega[(*Problem).Nx-2][i];
+}
+
+void boundary_u_v_in_out_set(struct _problem* Problem){
+  // in
+  for(int j = 1; j < (*Problem).imax_map[0]; j++ ){
+    double eta =  ( ((*Problem).Hs/2.0) - (j - 1)*(*Problem).h )/((*Problem).Hs/2.0);
+    (*Problem).u[0][j] = scalar_u_v_poiseuille(Problem,eta);
+  }
+
+  // out
+  for(int j = 1; j < (*Problem).imax_map[(*Problem).Nx-1]; j++ ){
+    double eta =  ( ((*Problem).H/2.0) - (j - 1)*(*Problem).h )/((*Problem).H/2.0);
+    (*Problem).u[(*Problem).Nx-1][j] = scalar_u_v_poiseuille(Problem,eta);
+  }
+
+}
+void boundary_omega_in_out_set(struct _problem* Problem){
+  // Inflow Boundary - Natural Condition
+    for(int i = 1; i < (*Problem).NHs-1 ; i++) (*Problem).omega[0][i]               = ( (*Problem).u[0][i] - (*Problem).u[0][i-1]) /(*Problem).h ;
+  // Outflow Boundary - Natural Condition
+    for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = ( (*Problem).u[(*Problem).Nx-1][i] - (*Problem).u[(*Problem).Nx-1][i-1]) /(*Problem).h ;
 }
 
 void inner_psi_update(struct _problem* Problem){
@@ -120,9 +147,13 @@ void poisson_inner_psi_iterator(struct _problem* Problem){
   //fprintf(stderr,"convergence after %d iterations", n_iter);
 }
 
-int reynolds_check(struct _problem* Problem,int i,int j){
+int diagnose_check(struct _problem* Problem,int i,int j){
   int check = 0;
-  if( (*Problem).h*(fabs((*Problem).u[i][j]) + fabs((*Problem).v[i][j]))/(*Problem).nu  >=  5 )  check += 1;
-  if( (*Problem).h*(*Problem).h*fabs((*Problem).omega[i][j])/(*Problem).nu              >= 20 )  check += 2;
+  double Re_h       = (*Problem).h*(fabs((*Problem).u[i][j]) + fabs((*Problem).v[i][j]))/(*Problem).nu;
+  double Re_h_omega = (*Problem).h*(*Problem).h*fabs((*Problem).omega[i][j])/(*Problem).nu;
+  double Beta       = (*Problem).h*(fabs((*Problem).u[i][j]) + fabs((*Problem).v[i][j]))*(*Problem).dt /(*Problem).h;
+  if( Re_h       >=  5 )                  check += 1;
+  if( Re_h_omega >= 20 )                  check += 2;
+  if( Beta       >=  (*Problem).CFL    )  check += 4;
   return check;
 }

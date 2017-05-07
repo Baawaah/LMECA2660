@@ -18,7 +18,7 @@
    double tmax;
    double Q0;
    double nu;
-   //Domain Numerical Size
+   //Domain Numerical property
    int    Nx;
    int    Ny;
    int    NLs;
@@ -28,6 +28,7 @@
    double e_max;
    double tol;
    int *imax_map;
+   double r;
 
    //Domain Data of size N_x * N_y
    double **omega;
@@ -62,16 +63,19 @@ double           scalar_psi_star_compute      (struct _problem* Problem,int i,in
 double           scalar_psi_compute           (struct _problem* Problem,int i,int j);
 double           scalar_psi_r_compute         (struct _problem* Problem,int i, int j);
 void             inner_u_v_compute            (struct _problem* Problem);
-void             boundary_psi_update          (struct _problem* Problem, double (*Q)(struct _problem*,double) );
+void             boundary_psi_update          (struct _problem* Problem, double (*Q)(struct _problem*) );
 void             boundary_omega_update        (struct _problem* Problem);
+void             boundary_u_v_in_out_set      (struct _problem* Problem);
+void             boundary_omega_in_out_set    (struct _problem* Problem);
 void             inner_psi_star_update        (struct _problem* Problem);
 double           inner_psi_error_compute      (struct _problem* Problem);
 void             poisson_inner_psi_iterator   (struct _problem* Problem);
-int              reynolds_check               (struct _problem* Problem,int i,int j);
+int              diagnose_check               (struct _problem* Problem,int i,int j);
 /* ###################################
  *  CFD Integrator
  * ###################################
  */
+double           functionQ                    (struct _problem* Problem);
 void             first_iteration_omega        (struct _problem* Problem);
 void             first_time_integration       (struct _problem* Problem);
 void             integration_omega            (struct _problem* Problem);
@@ -79,7 +83,5 @@ void             integration_omega            (struct _problem* Problem);
  *  CFD Test
  * ###################################
  */
-double           test_Qfunc_const             (struct _problem* Problem,double t);
 void             test_omega_domainFill        (struct _problem* Problem);
-void             test_psi_boundaryFill        (struct _problem* Problem, double (*Q)(double));
 void             test_omega_boundaryFill      (struct _problem* Problem);
