@@ -24,7 +24,7 @@ void first_time_integration(struct _problem* Problem){
   first_iteration_omega(Problem);
 
   poisson_inner_psi_iterator(Problem);
-	//inner_u_v_compute(Problem);
+  inner_u_v_compute(Problem);
 	//integration_omega((*Problem));
 }
 /*
@@ -57,7 +57,7 @@ double scalar_rhs_diff(struct _problem* Problem, int i, int j){
     double dom2dx2,dom2dy2 ;
 
     dom2dx2 = (*Problem).nu*( omega_loc[i+1][j]  - 2*omega_loc[i][j] + omega_loc[i-1][j] )/pow(h_loc,2.0);
-    dom2dy2 = (*Problem).nu*( omega_loc[i]  [j+1]- 2*omega_loc[i][j] + omega_loc[i][j-1] )/pow(h_loc,2.0);
+    dom2dy2 = (*Problem).nu*( omega_loc[i][j+1]  - 2*omega_loc[i][j] + omega_loc[i][j-1] )/pow(h_loc,2.0);
 
     return (dom2dy2 + dom2dx2);
 
