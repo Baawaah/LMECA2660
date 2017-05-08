@@ -43,10 +43,10 @@ void print_problem_data(struct _problem* Problem){
   if(file_omega == NULL || file_psi == NULL || file_u == NULL || file_v == NULL){ fprintf(stderr,"File error\n"); exit(1);}
     for(int j = 0 ; j < (*Problem).Ny ; j++){
       for(int i = 0; i < (*Problem).Nx ; i++){
-        fprintf(file_omega,"%f "   ,(*Problem).omega[i][j]);
-        fprintf(file_psi  ,"%f "   ,(*Problem).psi  [i][j]);
-        fprintf(file_u    ,"%f "   ,(*Problem).u    [i][j]);
-        fprintf(file_v    ,"%f "   ,(*Problem).v    [i][j]);
+        fprintf(file_omega,"%5.16f "   ,(*Problem).omega[i][j]);
+        fprintf(file_psi  ,"%5.16f "   ,(*Problem).psi  [i][j]);
+        fprintf(file_u    ,"%5.16f "   ,(*Problem).u    [i][j]);
+        fprintf(file_v    ,"%5.16f "   ,(*Problem).v    [i][j]);
     }
     fprintf(file_omega ,"\n");
     fprintf(file_psi   ,"\n");
@@ -70,7 +70,7 @@ int main(int argv,char* argc[]){
   double h     =   0.01;
 
   // Domain parameter
-  double L     =   2.0 ;
+  double L     =   4.0 ;
   double H     =   1.0 ;
   double Q0    =   Rey*nu;
   double Um    =   Q0/H;
@@ -84,7 +84,7 @@ int main(int argv,char* argc[]){
   double tmax  =  2.0;// tau*L/Um;
 
   double phi   =   1.98;
-  double tol   =   0.01;
+  double tol   =   0.00001;
 
 
 
@@ -99,6 +99,9 @@ int main(int argv,char* argc[]){
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
   init_problem_poiseuille(Problem);
+  boundary_omega_update(Problem);
+  boundary_psi_update(Problem,functionQ);
+  //poisson_inner_psi_iterator(Problem);
 
   print_problem_data(Problem);
   //boundary_u_v_in_out_set(Problem);
