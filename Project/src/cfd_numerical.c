@@ -23,7 +23,7 @@ double scalar_psi_r_compute(struct _problem* Problem,int i, int j){
 }
 
 double scalar_u_v_poiseuille(struct _problem* Problem,double eta){
-  return 0.75*functionQ(Problem)*(1.0 - pow(eta,2));
+  return 1.5*functionQ(Problem)*(1.0 - pow(eta,2));
 }
 
 void inner_u_v_compute(struct _problem* Problem){
@@ -75,9 +75,9 @@ void boundary_omega_update(struct _problem* Problem){
 // Corner boundary
   (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-1] = - 3.0 / (2*(*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs-2][(*Problem).NHs-2] - 0.5* (*Problem).omega[(*Problem).NLs-2][(*Problem).NHs-2];
 // Inflow Boundary - Natural Condition
-  for(int i = 1; i < (*Problem).NHs-1 ; i++) (*Problem).omega[0][i]               = (*Problem).omega[1][i];
+//  for(int i = 1; i < (*Problem).NHs-1 ; i++) (*Problem).omega[0][i]               = (*Problem).omega[1][i];
 // Outflow Boundary - Natural Condition
-  for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = (*Problem).omega[(*Problem).Nx-2][i];
+//  for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = (*Problem).omega[(*Problem).Nx-2][i];
 }
 
 void boundary_u_v_in_out_set(struct _problem* Problem){

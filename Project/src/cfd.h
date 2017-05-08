@@ -53,6 +53,7 @@ void             init_problem_physical        (struct _problem* Problem, double 
 void             init_problem_numerical       (struct _problem* Problem, double phi);
 void             init_problem_map             (struct _problem* Problem);
 void             init_problem_vector_domain   (struct _problem* Problem);
+void             init_problem_poiseuille      (struct _problem* Problem);
 void             free_problem_vector_domain   (struct _problem* Problem);
 /* ###################################
  *  CFD Numerical
@@ -62,6 +63,7 @@ void             scalar_rhs                   (struct _problem* Problem, int i, 
 double           scalar_psi_star_compute      (struct _problem* Problem,int i,int j);
 double           scalar_psi_compute           (struct _problem* Problem,int i,int j);
 double           scalar_psi_r_compute         (struct _problem* Problem,int i, int j);
+double           scalar_u_v_poiseuille        (struct _problem* Problem,double eta);
 void             inner_u_v_compute            (struct _problem* Problem);
 void             boundary_psi_update          (struct _problem* Problem, double (*Q)(struct _problem*) );
 void             boundary_omega_update        (struct _problem* Problem);

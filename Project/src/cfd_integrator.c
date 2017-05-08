@@ -18,14 +18,13 @@ void first_time_integration(struct _problem* Problem){
 	(*Problem).t = (*Problem).t + (*Problem).dt;
 
 	//printf("poisson\n");
-
-	first_iteration_omega(Problem);
-  poisson_inner_psi_iterator(Problem);
-  boundary_omega_update(Problem);
   boundary_psi_update(Problem,functionQ);
-  boundary_u_v_in_out_set(Problem);
-  boundary_omega_in_out_set(Problem);
-	inner_u_v_compute(Problem);
+  boundary_omega_update(Problem);
+
+  first_iteration_omega(Problem);
+
+  poisson_inner_psi_iterator(Problem);
+	//inner_u_v_compute(Problem);
 	//integration_omega((*Problem));
 }
 /*
@@ -125,8 +124,6 @@ void integration_omega(struct _problem* Problem){
       poisson_inner_psi_iterator(Problem);
 
       boundary_omega_update(Problem);
-      boundary_u_v_in_out_set(Problem);
-      boundary_omega_in_out_set(Problem);
 
       boundary_psi_update(Problem,functionQ);
 

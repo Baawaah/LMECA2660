@@ -67,7 +67,7 @@ int main(int argv,char* argc[]){
   double CFL   =   1.0 ;
   double tau   =   0.1 ;
   double Rey   =   10  ;
-  double h     =   0.0001;
+  double h     =   0.01;
 
   // Domain parameter
   double L     =   2.0 ;
@@ -80,8 +80,8 @@ int main(int argv,char* argc[]){
   //double Rey_h =
   //double r     =   nu*dt/(h*h);
 
-  double dt    =   CFL*h/Um;
-  double tmax  =   tau*L/Um;
+  double dt    =  0.1;// CFL*h/Um;
+  double tmax  =  2.0;// tau*L/Um;
 
   double phi   =   1.98;
   double tol   =   0.01;
@@ -98,8 +98,8 @@ int main(int argv,char* argc[]){
   init_problem_numerical(Problem,phi);
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
-  boundary_u_v_in_out_set(Problem);
-  boundary_omega_in_out_set(Problem);
+  init_problem_poiseuille(Problem);
+
   print_problem_data(Problem);
   //boundary_u_v_in_out_set(Problem);
   //print_problem_data(Problem);
