@@ -72,7 +72,7 @@ int main(int argv,char* argc[]){
   // Numerical parameter
   double CFL   =   1.0 ;
   double tau   =   0.1 ;
-  double Rey   =   10  ;
+  double Rey   =   100 ;
   double h     =   0.01;
 
   // Domain parameter
@@ -80,7 +80,7 @@ int main(int argv,char* argc[]){
   double H     =   1.0 ;
   double Q0    =   Rey*nu;
   double Um    =   Q0/H;
-  double Ls    = L/2.0 ;
+  double Ls    = L/1.0 ;
   double Hs    = H/2.0 ;
   // Computation parameter
   //double Rey_h =
@@ -124,7 +124,7 @@ int main(int argv,char* argc[]){
   // ---------------------------
   //poisson_inner_psi_iterator(Problem);
   //first_time_integration(Problem);
-  integration_omega(Problem);
+  //integration_omega(Problem);
   // ---Code Benchmarking-------
   clock_gettime(CLOCK_MONOTONIC, &finish);
   elapsed = (finish.tv_sec - start.tv_sec);

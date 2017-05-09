@@ -31,7 +31,7 @@ void inner_u_v_compute(struct _problem* Problem){
      for(int j=1; j < (*Problem).imax_map[i]-1; j++){
        // by centred finite differences
        (*Problem).u    [i][j] =   ((*Problem).psi[i][j+1]-(*Problem).psi[i][j])/((*Problem).h);
-       (*Problem).v    [i][j] =  -((*Problem).psi[i+1][j]-(*Problem).psi[i][j])/((*Problem).h);
+       (*Problem).v    [i][j] =   -((*Problem).psi[i+1][j]-(*Problem).psi[i][j])/((*Problem).h);
      }
   }
 }
@@ -65,7 +65,7 @@ void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*)
 void boundary_omega_update(struct _problem* Problem){
 // Must be change in function of the actual domain
 // Upper boundary
-  for(int i = 0; i < (*Problem).Nx  ; i++ ) (*Problem).omega[i][0] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][1] - 0.5*(*Problem).omega[i][1];
+  for(int i = 0; i < (*Problem).Nx  ; i++ ) (*Problem).omega[i][0] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][2] - 0.5*(*Problem).omega[i][2];
 // Down boundary - Left - Right
   for(int i = 0; i < (*Problem).Nx ; i++ ){
     if   (i < (*Problem).NLs ){ (*Problem).omega[i][(*Problem).NHs-1] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).NHs-2] - 0.5*(*Problem).omega[i][(*Problem).NHs-2]; }
