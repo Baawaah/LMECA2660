@@ -94,14 +94,14 @@ void first_iteration_omega(struct _problem* Problem){
             dom_old_conv=scalar_rhs_conv(Problem,i,j);
             dom_old_diff=scalar_rhs_diff(Problem,i,j);
             //printf(stderr,"GNA: %f /n",dom_old_conv);
-            (*Problem).omega[i][j]=(*Problem).omega[i][j] -(*Problem).dt*dom_old_conv
-                                                          +(*Problem).dt*dom_old_diff;
+            (*Problem).omega[i][j]=(*Problem).omega[i][j] ;//-(*Problem).dt*dom_old_conv;
+                                                          //+(*Problem).dt*dom_old_diff;
             (*Problem).f_old[i][j]= dom_old_conv;
         }
     }
-    boundary_omega_update(Problem);
-    boundary_psi_update(Problem,functionQ);
     poisson_inner_psi_iterator(Problem);
+    boundary_omega_update(Problem);
+    //boundary_psi_update(Problem,functionQ);
     inner_u_v_compute(Problem);
 }
 
@@ -110,7 +110,8 @@ void integration_omega(struct _problem* Problem){
     double dom_conv,dom_diff;
     //double** w_old = (*Problem).w_old;
     first_iteration_omega(Problem);
-    //print_problem_data(Problem);
+    print_problem_data(Problem);
+
     for(int k=1; k < (*Problem).Ntime; k++ ){
       (*Problem).t = (*Problem).t + (*Problem).dt;
       // ## Calcule Omega+1
@@ -118,7 +119,8 @@ void integration_omega(struct _problem* Problem){
           for(int j = 1; j < (*Problem).imax_map[i]-1; j++){
               dom_conv=scalar_rhs_conv(Problem,i,j);
               dom_diff=scalar_rhs_diff(Problem,i,j);
-              (*Problem).omega[i][j] = (*Problem).omega[i][j] - (*Problem).dt*0.5*(3.0*dom_conv - (*Problem).f_old[i][j] )
+              //(*Problem).omega[i][j] = (*Problem).omega[i][j] - (*Problem).dt*dom_conv;
+              (*Problem).omega[i][j] = (*Problem).omega[i][j] - (*Problem).dt*0.5*(3.0*dom_conv - (*Problem).f_old[i][j] );
                                                               + (*Problem).dt*dom_diff ;
               (*Problem).f_old[i][j] = dom_conv;
 
@@ -131,7 +133,7 @@ void integration_omega(struct _problem* Problem){
 
       boundary_omega_update(Problem);
 
-      boundary_psi_update(Problem,functionQ);
+      //boundary_psi_update(Problem,functionQ);
 
       inner_u_v_compute(Problem);
     }

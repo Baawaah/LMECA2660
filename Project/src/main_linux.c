@@ -31,14 +31,17 @@ void print_problem_data(struct _problem* Problem){
   char buff_psi_name[50];
   char buff_u_name[50];
   char buff_v_name[50];
+  char buff_R_name[50];
   sprintf(buff_omega_name ,"data/CFD_omega_%d.txt",(int) ( (*Problem).t * 100 ));
   sprintf(buff_psi_name   ,"data/CFD_psi_%d.txt"  ,(int) ( (*Problem).t * 100 ));
   sprintf(buff_u_name     ,"data/CFD_u_%d.txt"    ,(int) ( (*Problem).t * 100 ));
   sprintf(buff_v_name     ,"data/CFD_v_%d.txt"    ,(int) ( (*Problem).t * 100 ));
+  sprintf(buff_R_name     ,"data/CFD_R_%d.txt"    ,(int) ( (*Problem).t * 100 ));
   FILE* file_omega = fopen(buff_omega_name,"w");
   FILE* file_psi   = fopen(buff_psi_name  ,"w");
   FILE* file_u     = fopen(buff_u_name    ,"w");
   FILE* file_v     = fopen(buff_v_name    ,"w");
+  FILE* file_R     = fopen(buff_R_name    ,"w");
 
   if(file_omega == NULL || file_psi == NULL || file_u == NULL || file_v == NULL){ fprintf(stderr,"File error\n"); exit(1);}
     for(int j = 0 ; j < (*Problem).Ny ; j++){
@@ -47,16 +50,19 @@ void print_problem_data(struct _problem* Problem){
         fprintf(file_psi  ,"%5.16f "   ,(*Problem).psi  [i][j]);
         fprintf(file_u    ,"%5.16f "   ,(*Problem).u    [i][j]);
         fprintf(file_v    ,"%5.16f "   ,(*Problem).v    [i][j]);
+        fprintf(file_R    ,"%5.16f "   ,(*Problem).R_res[i][j]);
     }
     fprintf(file_omega ,"\n");
     fprintf(file_psi   ,"\n");
     fprintf(file_u     ,"\n");
     fprintf(file_v     ,"\n");
+    fprintf(file_R     ,"\n");
   }
   fclose(file_omega);
   fclose(file_psi);
   fclose(file_u);
   fclose(file_v);
+  fclose(file_R);
 }
 
 int main(int argv,char* argc[]){
@@ -74,7 +80,7 @@ int main(int argv,char* argc[]){
   double H     =   1.0 ;
   double Q0    =   Rey*nu;
   double Um    =   Q0/H;
-  double Ls    = L/4.0 ;
+  double Ls    = L/2.0 ;
   double Hs    = H/2.0 ;
   // Computation parameter
   //double Rey_h =
@@ -99,9 +105,14 @@ int main(int argv,char* argc[]){
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
   init_problem_poiseuille(Problem);
-  boundary_omega_update(Problem);
   boundary_psi_update(Problem,functionQ);
+  poisson_inner_psi_iterator(Problem);
+  boundary_omega_update(Problem);
+  //boundary_u_v_in_out_set(Problem);
+  //boundary_omega_in_out_set(Problem);
   //poisson_inner_psi_iterator(Problem);
+  //boundary_psi_update(Problem,functionQ);
+  //boundary_omega_update(Problem);
 
   print_problem_data(Problem);
   //boundary_u_v_in_out_set(Problem);

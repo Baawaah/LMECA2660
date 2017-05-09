@@ -28,10 +28,10 @@ double scalar_u_v_poiseuille(struct _problem* Problem,double eta){
 
 void inner_u_v_compute(struct _problem* Problem){
   for(int i=1; i < (*Problem).Nx -1; i++){
-     for(int j=1; j < (*Problem).imax_map[i]-1 ; j++){
+     for(int j=1; j < (*Problem).imax_map[i]-1; j++){
        // by centred finite differences
-       (*Problem).u    [i][j] =   ((*Problem).psi[i][j+1]-(*Problem).psi[i][j])/(2.0*(*Problem).h);
-       (*Problem).v    [i][j] =  -((*Problem).psi[i+1][j]-(*Problem).psi[i][j])/(2.0*(*Problem).h);
+       (*Problem).u    [i][j] =   ((*Problem).psi[i][j+1]-(*Problem).psi[i][j])/((*Problem).h);
+       (*Problem).v    [i][j] =  -((*Problem).psi[i+1][j]-(*Problem).psi[i][j])/((*Problem).h);
      }
   }
 }
@@ -51,6 +51,7 @@ void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*)
     else                        (*Problem).psi[i][(*Problem).Ny -1] = 0;
   }
 // Down boundary Side
+  if((*Problem).Ls != (*Problem).L)
   for(int i = (*Problem).NHs; i < (*Problem).Ny; i++ ) (*Problem).psi[(*Problem).NLs-1][i] = 0;
 
 // Inflow Boundary - Natural Condition
@@ -71,7 +72,8 @@ void boundary_omega_update(struct _problem* Problem){
     else                        (*Problem).omega[i][(*Problem).Ny -1] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).Ny -2] - 0.5*(*Problem).omega[i][(*Problem).Ny -2];
   }
 // Down boundary Side
-  if((*Problem).Ls != (*Problem).L) for(int i = (*Problem).NHs; i < (*Problem).Ny; i++ ) (*Problem).omega[(*Problem).NLs-1][i] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs][i] - 0.5*(*Problem).omega[(*Problem).NLs][i];
+  if((*Problem).Ls != (*Problem).L)
+  for(int i = (*Problem).NHs; i < (*Problem).Ny; i++ ) (*Problem).omega[(*Problem).NLs-1][i] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs][i] - 0.5*(*Problem).omega[(*Problem).NLs][i];
 // Corner boundary
   (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-1] = - 3.0 / (2*(*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs-2][(*Problem).NHs-2] - 0.5* (*Problem).omega[(*Problem).NLs-2][(*Problem).NHs-2];
 // Inflow Boundary - Natural Condition
@@ -79,7 +81,7 @@ void boundary_omega_update(struct _problem* Problem){
 // Outflow Boundary - Natural Condition
   for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = (*Problem).omega[(*Problem).Nx-2][i];
 }
-/*
+
 void boundary_u_v_in_out_set(struct _problem* Problem){
   // in
   for(int j = 1; j < (*Problem).imax_map[0]; j++ ){
@@ -99,7 +101,7 @@ void boundary_omega_in_out_set(struct _problem* Problem){
     for(int i = 1; i < (*Problem).NHs-1 ; i++) (*Problem).omega[0][i]               = ( (*Problem).u[0][i] - (*Problem).u[0][i-1]) /(*Problem).h ;
   // Outflow Boundary - Natural Condition
     for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = ( (*Problem).u[(*Problem).Nx-1][i] - (*Problem).u[(*Problem).Nx-1][i-1]) /(*Problem).h ;
-}*/
+}
 
 void inner_psi_update(struct _problem* Problem){
   for(int i = 1; i < (*Problem).Nx-1; i++){
@@ -115,8 +117,8 @@ double inner_psi_error_compute(struct _problem* Problem){
   double square = 0.0;
   for(int i=1; i < (*Problem).Nx -1; i++){
     for(int j=1; j < (*Problem).imax_map[i]-1; j++){
-      R = scalar_psi_r_compute(Problem,i,j);
-      square = R*R + square;
+      (*Problem).R_res[i][j] = scalar_psi_r_compute(Problem,i,j);
+      square = (*Problem).R_res[i][j]*(*Problem).R_res[i][j] + square;
     }
   }
   e_error = (*Problem).H/(*Problem).Q0 * (*Problem).h * sqrt(square);
@@ -140,6 +142,11 @@ void poisson_inner_psi_iterator(struct _problem* Problem){
     n_iter++;
     inner_psi_update(Problem);
     error = inner_psi_error_compute(Problem);
+    // Inflow Boundary - Natural Condition
+    for(int i = 1; i < (*Problem).NHs-1 ; i++) (*Problem).psi[0][i]               = (*Problem).psi[1][i];
+
+    // Outflow Boundary - Natural Condition
+    for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).psi[(*Problem).Nx-1][i] = (*Problem).psi[(*Problem).Nx-2][i];
     //printf("error,: %.8f",error);
     iter++;
   }

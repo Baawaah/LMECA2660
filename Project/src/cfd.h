@@ -40,6 +40,7 @@
    double **v_old;
    double **w_old;
    double **f_old;
+   double **R_res;
  };
 
 void             print_problem_data           (struct _problem* Problem);
