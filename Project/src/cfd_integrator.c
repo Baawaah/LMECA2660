@@ -34,7 +34,7 @@ double scalar_rhs_conv(struct _problem* Problem, int i, int j){
 }*/
 double scalar_rhs_conv(struct _problem* Problem, int i, int j){
     double**omega_loc = (*Problem).omega;
-    double h_loc = (*Problem).h;
+    //double h_loc = (*Problem).h;
     double domdx,domdy;
 
     domdx = (*Problem).u[i][j]*( omega_loc[i+1][j]   -  omega_loc[i-1][j]   )/(2.0*(*Problem).h);
@@ -46,7 +46,7 @@ double scalar_rhs_conv(struct _problem* Problem, int i, int j){
 
 double scalar_rhs_diff(struct _problem* Problem, int i, int j){
     double**omega_loc = (*Problem).omega;
-    double h_loc = (*Problem).h;
+    //double h_loc = (*Problem).h;
     double dom2dx2,dom2dy2 ;
 
     dom2dx2 = (*Problem).nu*( omega_loc[i+1][j]  - 2.0*omega_loc[i][j] + omega_loc[i-1][j]   )/pow((*Problem).h,2.0);
@@ -110,8 +110,12 @@ void integration_omega(struct _problem* Problem){
               dom_conv=scalar_rhs_conv(Problem,i,j);
               dom_diff=scalar_rhs_diff(Problem,i,j);
               //(*Problem).omega[i][j] = (*Problem).omega[i][j] - (*Problem).dt*dom_conv;
+
               (*Problem).omega[i][j] = (*Problem).omega[i][j] - (*Problem).dt*0.5*(3.0*dom_conv - (*Problem).f_old[i][j] )
                                                               + (*Problem).dt*dom_diff ;
+
+              //(*Problem).omega[i][j] = (*Problem).omega[i][j] - (*Problem).dt*0.5*(3.0*dom_conv - (*Problem).f_old[i][j] ) + (*Problem).dt*dom_diff ;
+
               (*Problem).f_old[i][j] = dom_conv;
 
               check = diagnose_check(Problem,i,j);
