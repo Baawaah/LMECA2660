@@ -88,13 +88,11 @@ void boundary_u_v_in_out_set(struct _problem* Problem){
     double eta =  ( ((*Problem).Hs/2.0) - (j - 1)*(*Problem).h )/((*Problem).Hs/2.0);
     (*Problem).u[0][j] = scalar_u_v_poiseuille(Problem,eta);
   }
-
   // out
   for(int j = 1; j < (*Problem).imax_map[(*Problem).Nx-1]; j++ ){
     double eta =  ( ((*Problem).H/2.0) - (j - 1)*(*Problem).h )/((*Problem).H/2.0);
     (*Problem).u[(*Problem).Nx-1][j] = scalar_u_v_poiseuille(Problem,eta);
   }
-
 }
 void boundary_omega_in_out_set(struct _problem* Problem){
   // Inflow Boundary - Natural Condition
