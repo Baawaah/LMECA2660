@@ -83,6 +83,11 @@ void free_problem_vector_domain(struct _problem* Problem){
     free((*Problem).psi_s[i]);
     free((*Problem).u[i]);
     free((*Problem).v[i]);
+    free((*Problem).u_old[i]);
+    free((*Problem).v_old[i]);
+    free((*Problem).w_old[i]);
+    free((*Problem).f_old[i]);
+    free((*Problem).R_res[i]);
   }
   free((*Problem).omega);
   free((*Problem).psi);
@@ -93,8 +98,8 @@ void free_problem_vector_domain(struct _problem* Problem){
   free((*Problem).v_old);
   free((*Problem).w_old);
   free((*Problem).f_old);
-  free((*Problem).imax_map);
   free((*Problem).R_res);
+  free((*Problem).imax_map);
 
   free(Problem);
 }

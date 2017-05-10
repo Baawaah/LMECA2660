@@ -81,17 +81,17 @@ void first_iteration_omega(struct _problem* Problem){
 	double dom_old_conv,dom_old_diff;
     for(int i=1; i<(*Problem).Nx-1; i++){
         for(int j = 1; j < (*Problem).imax_map[i]-1; j++){
-            dom_old_conv=scalar_rhs_conv(Problem,i,j);
-            dom_old_diff=scalar_rhs_diff(Problem,i,j);
+            dom_old_conv = scalar_rhs_conv(Problem,i,j);
+            dom_old_diff = scalar_rhs_diff(Problem,i,j);
             //printf(stderr,"GNA: %f /n",dom_old_conv);
-            (*Problem).omega[i][j]=(*Problem).omega[i][j] -(*Problem).dt*dom_old_conv + (*Problem).dt*dom_old_diff;
+            (*Problem).omega[i][j]= (*Problem).omega[i][j] - (*Problem).dt*dom_old_conv + (*Problem).dt*dom_old_diff;
             (*Problem).f_old[i][j]= dom_old_conv;
         }
     }
-   
-    boundary_omega_update(Problem);
+
     poisson_inner_psi_iterator(Problem);
-    //boundary_psi_update(Problem,functionQ);
+    boundary_omega_update(Problem);
+    boundary_psi_update(Problem,functionQ);
     inner_u_v_compute(Problem);
 }
 

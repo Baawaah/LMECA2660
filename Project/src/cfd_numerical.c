@@ -55,17 +55,17 @@ void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*)
   for(int i = (*Problem).NHs; i < (*Problem).Ny; i++ ) (*Problem).psi[(*Problem).NLs-1][i] = 0;
 
 // Inflow Boundary - Natural Condition
-  for(int i = 1; i < (*Problem).NHs-1 ; i++) (*Problem).psi[0][i]               = (*Problem).psi[1][i];
+//  for(int i = 1; i < (*Problem).NHs-1 ; i++) (*Problem).psi[0][i]               = (*Problem).psi[1][i];
 
 // Outflow Boundary - Natural Condition
-  for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).psi[(*Problem).Nx-1][i] = (*Problem).psi[(*Problem).Nx-2][i];
+//  for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).psi[(*Problem).Nx-1][i] = (*Problem).psi[(*Problem).Nx-2][i];
 
 }
 
 void boundary_omega_update(struct _problem* Problem){
 // Must be change in function of the actual domain
 // Upper boundary
-  for(int i = 0; i < (*Problem).Nx  ; i++ ) (*Problem).omega[i][0] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][1] - 0.5*(*Problem).omega[i][1]; 
+  for(int i = 0; i < (*Problem).Nx  ; i++ ) (*Problem).omega[i][0] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][1] - 0.5*(*Problem).omega[i][1];
                                                                              //pourquoi tu mettrais     (*Problem).psi[i][2] et (*Problem).omega[i][2]?
 // Down boundary - Left - Right
   for(int i = 0; i < (*Problem).Nx ; i++ ){
@@ -74,15 +74,16 @@ void boundary_omega_update(struct _problem* Problem){
   }
 // Down boundary Side
   if((*Problem).Ls != (*Problem).L)
-  for(int i = (*Problem).NHs; i < (*Problem).Ny; i++ ) (*Problem).omega[(*Problem).NLs-1][i] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs][i] - 0.5*(*Problem).omega[(*Problem).NLs][i];
+  for(int i = (*Problem).NHs-1; i < (*Problem).Ny; i++ ) (*Problem).omega[(*Problem).NLs-1][i] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs][i] - 0.5*(*Problem).omega[(*Problem).NLs][i];
 // Corner boundary
-  (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-1] = - 3.0 / (2*(*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs-2][(*Problem).NHs-2] - 0.5* (*Problem).omega[(*Problem).NLs-2][(*Problem).NHs-2];
+  if((*Problem).Ls != (*Problem).L)
+  (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-1] = - 3.0 / (2*(*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs+2][(*Problem).NHs-2] - 0.5* (*Problem).omega[(*Problem).NLs+2][(*Problem).NHs-2];
 // Inflow Boundary - Natural Condition
   for(int i = 1; i < (*Problem).NHs-1 ; i++) (*Problem).omega[0][i]               = (*Problem).omega[1][i];
 // Outflow Boundary - Natural Condition
   for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = (*Problem).omega[(*Problem).Nx-2][i];
 }
-
+/*
 void boundary_u_v_in_out_set(struct _problem* Problem){
   // in
   for(int j = 1; j < (*Problem).imax_map[0]; j++ ){
@@ -100,7 +101,7 @@ void boundary_omega_in_out_set(struct _problem* Problem){
     for(int i = 1; i < (*Problem).NHs-1 ; i++) (*Problem).omega[0][i]               = ( (*Problem).u[0][i] - (*Problem).u[0][i-1]) /(*Problem).h ;
   // Outflow Boundary - Natural Condition
     for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = ( (*Problem).u[(*Problem).Nx-1][i] - (*Problem).u[(*Problem).Nx-1][i-1]) /(*Problem).h ;
-}
+}*/
 
 void inner_psi_update(struct _problem* Problem){
   for(int i = 1; i < (*Problem).Nx-1; i++){
