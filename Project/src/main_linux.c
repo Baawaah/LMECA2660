@@ -108,31 +108,25 @@ int main(int argv,char* argc[]){
   boundary_psi_update(Problem,functionQ);
   poisson_inner_psi_iterator(Problem);
   boundary_omega_update(Problem);
-  //boundary_u_v_in_out_set(Problem);
-  //boundary_omega_in_out_set(Problem);
-  //poisson_inner_psi_iterator(Problem);
-  //boundary_psi_update(Problem,functionQ);
-  //boundary_omega_update(Problem);
+  inner_u_v_compute(Problem);
+
   fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs);
   print_problem_data(Problem);
-  //boundary_u_v_in_out_set(Problem);
-  //print_problem_data(Problem);
+
   // ---Code Benchmarking-------
   struct timespec start, finish;
   double elapsed;
   clock_gettime(CLOCK_MONOTONIC, &start);
   // ---------------------------
-  //poisson_inner_psi_iterator(Problem);
-  //first_time_integration(Problem);
-  integration_omega(Problem);
+
+  //integration_omega(Problem);
+
   // ---Code Benchmarking-------
   clock_gettime(CLOCK_MONOTONIC, &finish);
   elapsed = (finish.tv_sec - start.tv_sec);
   elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
   // ---------------------------
-  //test_omega_domainFill (Problem);
 
-  //test_psi_boundaryFill(Problem,test_Qfunc_const);
   print_problem_data(Problem);
   printf("Done \n");
 

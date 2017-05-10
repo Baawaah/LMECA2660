@@ -46,9 +46,6 @@ void init_problem_vector_domain(struct _problem* Problem){
   (*Problem).psi_s = (double**) malloc((*Problem).Nx*sizeof(double*));
   (*Problem).u     = (double**) malloc((*Problem).Nx*sizeof(double*));
   (*Problem).v     = (double**) malloc((*Problem).Nx*sizeof(double*));
-  (*Problem).u_old = (double**) malloc((*Problem).Nx*sizeof(double*));
-  (*Problem).v_old = (double**) malloc((*Problem).Nx*sizeof(double*));
-  (*Problem).w_old = (double**) malloc((*Problem).Nx*sizeof(double*));
   (*Problem).f_old = (double**) malloc((*Problem).Nx*sizeof(double*));
   (*Problem).R_res = (double**) malloc((*Problem).Nx*sizeof(double*));
   for(int i=0 ; i < (*Problem).Nx ; i++){
@@ -57,9 +54,6 @@ void init_problem_vector_domain(struct _problem* Problem){
     (*Problem).psi_s[i] = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).u[i]     = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).v[i]     = (double*) calloc((*Problem).Ny,sizeof(double));
-    (*Problem).u_old[i] = (double*) calloc((*Problem).Ny,sizeof(double));
-    (*Problem).v_old[i] = (double*) calloc((*Problem).Ny,sizeof(double));
-    (*Problem).w_old[i] = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).f_old[i] = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).R_res[i] = (double*) calloc((*Problem).Ny,sizeof(double));
   }
@@ -83,9 +77,6 @@ void free_problem_vector_domain(struct _problem* Problem){
     free((*Problem).psi_s[i]);
     free((*Problem).u[i]);
     free((*Problem).v[i]);
-    free((*Problem).u_old[i]);
-    free((*Problem).v_old[i]);
-    free((*Problem).w_old[i]);
     free((*Problem).f_old[i]);
     free((*Problem).R_res[i]);
   }
@@ -94,9 +85,6 @@ void free_problem_vector_domain(struct _problem* Problem){
   free((*Problem).psi_s);
   free((*Problem).u);
   free((*Problem).v);
-  free((*Problem).u_old);
-  free((*Problem).v_old);
-  free((*Problem).w_old);
   free((*Problem).f_old);
   free((*Problem).R_res);
   free((*Problem).imax_map);

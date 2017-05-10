@@ -36,9 +36,6 @@
    double **psi_s;
    double **u;
    double **v;
-   double **u_old;
-   double **v_old;
-   double **w_old;
    double **f_old;
    double **R_res;
  };
@@ -68,8 +65,6 @@ double           scalar_u_v_poiseuille        (struct _problem* Problem,double e
 void             inner_u_v_compute            (struct _problem* Problem);
 void             boundary_psi_update          (struct _problem* Problem, double (*Q)(struct _problem*) );
 void             boundary_omega_update        (struct _problem* Problem);
-void             boundary_u_v_in_out_set      (struct _problem* Problem);
-void             boundary_omega_in_out_set    (struct _problem* Problem);
 void             inner_psi_star_update        (struct _problem* Problem);
 double           inner_psi_error_compute      (struct _problem* Problem);
 void             poisson_inner_psi_iterator   (struct _problem* Problem);
@@ -82,9 +77,3 @@ double           functionQ                    (struct _problem* Problem);
 void             first_iteration_omega        (struct _problem* Problem);
 void             first_time_integration       (struct _problem* Problem);
 void             integration_omega            (struct _problem* Problem);
-/* ###################################
- *  CFD Test
- * ###################################
- */
-void             test_omega_domainFill        (struct _problem* Problem);
-void             test_omega_boundaryFill      (struct _problem* Problem);
