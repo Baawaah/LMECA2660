@@ -90,7 +90,7 @@ int main(int argv,char* argc[]){
   double tmax  =  2.0;// tau*L/Um;
 
   double phi   =   1.98;
-  double tol   =   0.00001;
+  double tol   =   0.0000001;
 
 
 
@@ -99,15 +99,16 @@ int main(int argv,char* argc[]){
   fprintf(stderr, "by S. Tran - J. Demey \n");
   fprintf(stderr, "CFL: %f Tau: %f Reynold: %f\n",CFL,tau,Rey);
   fprintf(stderr, "Average Velocity: %f Grid size h: %f Timestep: %f\n",Um,h,dt);
+
   struct _problem* Problem = init_problem();
   init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax,Q0,tol,nu);
   init_problem_numerical(Problem,phi);
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
   init_problem_poiseuille(Problem);
-  boundary_psi_update(Problem,functionQ);
-  poisson_inner_psi_iterator(Problem);
-  boundary_omega_update(Problem);
+  //boundary_psi_update(Problem,functionQ);
+  //poisson_inner_psi_iterator(Problem);
+  //boundary_omega_update(Problem);
   inner_u_v_compute(Problem);
 
   fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs);

@@ -62,6 +62,8 @@ double           scalar_psi_star_compute      (struct _problem* Problem,int i,in
 double           scalar_psi_compute           (struct _problem* Problem,int i,int j);
 double           scalar_psi_r_compute         (struct _problem* Problem,int i, int j);
 double           scalar_u_v_poiseuille        (struct _problem* Problem,double eta);
+double           scalar_u_v_poiseuille_dy     (struct _problem* Problem,double eta);
+double           scalar_u_v_poiseuille_int    (struct _problem* Problem,double eta);
 void             inner_u_v_compute            (struct _problem* Problem);
 void             boundary_psi_update          (struct _problem* Problem, double (*Q)(struct _problem*) );
 void             boundary_omega_update        (struct _problem* Problem);

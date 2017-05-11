@@ -62,9 +62,16 @@ void init_problem_vector_domain(struct _problem* Problem){
 void init_problem_poiseuille(struct _problem* Problem){
   for(int i = 1; i < (*Problem).Nx-1;i++ ){
     for(int j = 1; j < (*Problem).NHs-1; j++ ){
-      double eta =  ( ((*Problem).Hs/2.0) - (j)*(*Problem).h )/((*Problem).Hs/2.0);
+      double eta =   ( (j)*(*Problem).h - ((*Problem).Hs/2.0) )/((*Problem).Hs/2.0);
       (*Problem).u[i][j]     = scalar_u_v_poiseuille(Problem,eta);
-      (*Problem).omega[i][j] = -( (*Problem).u[i][j] - (*Problem).u[i][j-1]) /(*Problem).h ;
+    }
+  }
+  for(int i = 0; i < (*Problem).Nx;i++ ){
+    for(int j = 0; j < (*Problem).NHs; j++ ){
+      double eta =   ( (j)*(*Problem).h - ((*Problem).Hs/2.0) )/((*Problem).Hs/2.0);
+      (*Problem).omega[i][j]     = -scalar_u_v_poiseuille_dy(Problem,eta);
+      //(*Problem).psi[i][j]       =  scalar_u_v_poiseuille_int(Problem,eta);
+      //(*Problem).omega[i][j] = -( (*Problem).u[i][j+1] - (*Problem).u[i][j-1]) /(2.0*(*Problem).h) ;
     }
   }
 }
