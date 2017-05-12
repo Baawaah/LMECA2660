@@ -22,24 +22,35 @@ double scalar_psi_r_compute(struct _problem* Problem,int i, int j){
           )/pow((*Problem).h,2);
 }
 
-double scalar_u_v_poiseuille(struct _problem* Problem,double eta){
+double scalar_u_v_poiseuille     (struct _problem* Problem,double y){
+  return 6.0*functionQ(Problem)/((*Problem).Hs*(*Problem).Hs) *  ( y            - (y*y)/(*Problem).Hs              );
+}
+double scalar_u_v_poiseuille_dy  (struct _problem* Problem,double y){
+  return 6.0*functionQ(Problem)/((*Problem).Hs*(*Problem).Hs)  * ( 1.0          - (2.0*y)/(*Problem).Hs            );
+}
+double scalar_u_v_poiseuille_int (struct _problem* Problem,double y){
+  return 6.0*functionQ(Problem)/((*Problem).Hs*(*Problem).Hs)  * ((1.0/2.0)*y*y - (1.0/3.0)*(y*y*y)/(*Problem).Hs) - functionQ(Problem);
+}
+
+
+double scalar_u_v_poiseuille_eta(struct _problem* Problem,double eta){
   return 1.5*functionQ(Problem)*(1.0 - pow(eta,2));
 }
 
-double scalar_u_v_poiseuille_dy(struct _problem* Problem,double eta){
+double scalar_u_v_poiseuille_eta_dy(struct _problem* Problem,double eta){
   return -3.0*functionQ(Problem)*(eta);
 }
 
-double scalar_u_v_poiseuille_int(struct _problem* Problem,double eta){
-  return 3.0/2.0*functionQ(Problem)*(eta - eta*eta*eta * 1.0/3.0);
+double scalar_u_v_poiseuille_eta_int(struct _problem* Problem,double eta){
+  return 3.0/2.0*functionQ(Problem)*(eta - eta*eta*eta * 1.0/3.0) + functionQ(Problem);
 }
 
 void inner_u_v_compute(struct _problem* Problem){
   for(int i=1; i < (*Problem).Nx -1; i++){
      for(int j=1; j < (*Problem).imax_map[i]-1; j++){
        // by centred finite differences
-       (*Problem).u    [i][j] =    ((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/(2.0*(*Problem).h);
-       (*Problem).v    [i][j] =   -((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/(2.0*(*Problem).h);
+       (*Problem).u    [i][j] =   -((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/(2.0*(*Problem).h);
+       (*Problem).v    [i][j] =    ((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/(2.0*(*Problem).h);
      }
   }
 }

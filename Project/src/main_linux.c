@@ -106,9 +106,9 @@ int main(int argv,char* argc[]){
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
   init_problem_poiseuille(Problem);
-  //boundary_psi_update(Problem,functionQ);
-  //poisson_inner_psi_iterator(Problem);
-  //boundary_omega_update(Problem);
+  boundary_psi_update(Problem,functionQ);
+  poisson_inner_psi_iterator(Problem);
+  boundary_omega_update(Problem);
   inner_u_v_compute(Problem);
 
   fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs);
