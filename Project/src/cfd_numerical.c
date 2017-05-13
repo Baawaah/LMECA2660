@@ -23,13 +23,13 @@ double scalar_psi_r_compute(struct _problem* Problem,int i, int j){
 }
 
 double scalar_u_v_poiseuille     (struct _problem* Problem,double y){
-  return 6.0*functionQ(Problem)/((*Problem).Hs*(*Problem).Hs) *  ( y            - (y*y)/(*Problem).Hs              );
+  return 6.0*functionQ(Problem)/((*Problem).Hc*(*Problem).Hc) *  ( y            - (y*y)/(*Problem).Hc              );
 }
 double scalar_u_v_poiseuille_dy  (struct _problem* Problem,double y){
-  return 6.0*functionQ(Problem)/((*Problem).Hs*(*Problem).Hs)  * ( 1.0          - (2.0*y)/(*Problem).Hs            );
+  return -6.0*functionQ(Problem)/((*Problem).Hc*(*Problem).Hc)  * ( 1.0          - (2.0*y)/(*Problem).Hc            );
 }
 double scalar_u_v_poiseuille_int (struct _problem* Problem,double y){
-  return 6.0*functionQ(Problem)/((*Problem).Hs*(*Problem).Hs)  * ((1.0/2.0)*y*y - (1.0/3.0)*(y*y*y)/(*Problem).Hs) - functionQ(Problem);
+  return 6.0*functionQ(Problem)/((*Problem).Hc*(*Problem).Hc)  * ((1.0/2.0)*y*y - (1.0/3.0)*(y*y*y)/(*Problem).Hc) + functionQ(Problem);
 }
 
 
@@ -46,11 +46,11 @@ double scalar_u_v_poiseuille_eta_int(struct _problem* Problem,double eta){
 }
 
 void inner_u_v_compute(struct _problem* Problem){
-  for(int i=1; i < (*Problem).Nx -1; i++){
-     for(int j=1; j < (*Problem).imax_map[i]-1; j++){
+  for(int i= 1 ; i < (*Problem).Nx-1; i++){
+     for(int j=(*Problem).imap[i]+1; j < (*Problem).Ny-1; j++){
        // by centred finite differences
-       (*Problem).u    [i][j] =   -((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/(2.0*(*Problem).h);
-       (*Problem).v    [i][j] =    ((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/(2.0*(*Problem).h);
+       (*Problem).u    [i][j] =     ((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/(2.0*(*Problem).h);
+       (*Problem).v    [i][j] =    -((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/(2.0*(*Problem).h);
      }
   }
 }
@@ -59,44 +59,44 @@ void inner_u_v_compute(struct _problem* Problem){
 
 void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*)){
 // Upper boundary
-  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).psi[i][0] = Q(Problem);
+  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).psi[i][(*Problem).Ny-1] = Q(Problem);
 
 // Down boundary - Left - Right
   for(int i = 0; i < (*Problem).Nx ; i++ ){
-    if   (i < (*Problem).NLs ){ (*Problem).psi[i][(*Problem).NHs-1] = 0.0; }
-    else                        (*Problem).psi[i][(*Problem).Ny -1] = 0.0;
+    (*Problem).psi[i][(*Problem).imap[i]] = 0.0;
   }
 // Down boundary Side
-  if((*Problem).Ls != (*Problem).L)
-  for(int i = (*Problem).NHs; i < (*Problem).Ny; i++ ) (*Problem).psi[(*Problem).NLs-1][i] = 0;
+  if( (*Problem).Ls != (*Problem).L && (*Problem).Ls == 0.0 )
+    for(int j = 0; j < (*Problem).NHs; j++ ) (*Problem).psi[(*Problem).NLs-1][j] = 0.0;
 
 }
 
 void boundary_omega_update(struct _problem* Problem){
 // Upper boundary
-  for(int i = 0; i < (*Problem).Nx  ; i++ ) (*Problem).omega[i][0] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][1] - 0.5*(*Problem).omega[i][1];
+  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).omega[i][(*Problem).Ny     ] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).Ny-1     ] - 0.5*(*Problem).omega[i][(*Problem).Ny-1     ];
 
 // Down boundary - Left - Right
-  for(int i = 0; i < (*Problem).Nx ; i++ ){
-    if   (i < (*Problem).NLs ){ (*Problem).omega[i][(*Problem).NHs-1] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).NHs-2] - 0.5*(*Problem).omega[i][(*Problem).NHs-2]; }
-    else                        (*Problem).omega[i][(*Problem).Ny -1] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).Ny -2] - 0.5*(*Problem).omega[i][(*Problem).Ny -2];
-  }
+  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).omega[i][(*Problem).imap[i]] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).imap[i]+1] - 0.5*(*Problem).omega[i][(*Problem).imap[i]+1];
+
 // Down boundary Side
-  if((*Problem).Ls != (*Problem).L)
-  for(int i = (*Problem).NHs-1; i < (*Problem).Ny; i++ ) (*Problem).omega[(*Problem).NLs-1][i] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs][i] - 0.5*(*Problem).omega[(*Problem).NLs][i];
+  if( (*Problem).Ls != (*Problem).L && (*Problem).Ls == 0.0 )
+  for(int j = 0; j < (*Problem).NHs; j++ ) (*Problem).omega[(*Problem).NLs-1][j] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs+1][j] - 0.5*(*Problem).omega[(*Problem).NLs+1][j];
 // Corner boundary
-  if((*Problem).Ls != (*Problem).L)
-  (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-1] = - 3.0 / (2*(*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs+2][(*Problem).NHs-2] - 0.5* (*Problem).omega[(*Problem).NLs+2][(*Problem).NHs-2];
-// Inflow Boundary - Natural Condition
-  for(int i = 1; i < (*Problem).NHs-1 ; i++) (*Problem).omega[0][i]               = (*Problem).omega[1][i];
-// Outflow Boundary - Natural Condition
-  for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = (*Problem).omega[(*Problem).Nx-2][i];
+  if( (*Problem).Ls != (*Problem).L && (*Problem).Ls == 0.0 )
+  (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-1] = - 3.0 / (2*(*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs+2][(*Problem).NHs+2] - 0.5* (*Problem).omega[(*Problem).NLs+2][(*Problem).NHs+2];
+
+}
+void boundary_omega_dwdx_update(struct _problem* Problem){
+  // Inflow Boundary - Natural Condition
+  for(int j = (*Problem).imap[0]; j < (*Problem).Ny-1 ; j++) (*Problem).omega[0][j] = (*Problem).omega[1][j];
+  // Outflow Boundary - Natural Condition
+  for(int i = (*Problem).imap[0]; i < (*Problem).Ny-1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = (*Problem).omega[(*Problem).Nx-2][i];
 }
 
 void inner_psi_update(struct _problem* Problem){
 
   for(int i = 1; i < (*Problem).Nx-1; i++){
-    for(int j = 1; j < (*Problem).imax_map[i]-1; j++){
+    for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny-1; j++){
       (*Problem).psi[i][j] = scalar_psi_compute(Problem,i,j);
     }
   }/*
@@ -111,7 +111,7 @@ double inner_psi_error_compute(struct _problem* Problem){
   double e_error = 0.0;
   double square = 0.0;
   for(int i=1; i < (*Problem).Nx -1; i++){
-    for(int j=1; j < (*Problem).imax_map[i]-1; j++){
+    for(int j= (*Problem).imap[i]+1; j < (*Problem).Ny-1; j++){
       (*Problem).R_res[i][j] = scalar_psi_r_compute(Problem,i,j);
       square = (*Problem).R_res[i][j]*(*Problem).R_res[i][j] + square;
     }
@@ -130,10 +130,9 @@ void poisson_inner_psi_iterator(struct _problem* Problem){
     n_iter++;
     inner_psi_update(Problem);
     // Inflow Boundary - Natural Condition
-    for(int i = 1; i < (*Problem).NHs-1 ; i++) (*Problem).psi[0][i]               = (*Problem).psi[1][i];
-
+    for(int j = (*Problem).imap[0]; j < (*Problem).Ny-1 ; j++) (*Problem).psi[0][j]               = (*Problem).psi[1][j];
     // Outflow Boundary - Natural Condition
-    for(int i = 1; i < (*Problem).Ny -1 ; i++) (*Problem).psi[(*Problem).Nx-1][i] = (*Problem).psi[(*Problem).Nx-2][i];
+    for(int i = (*Problem).imap[(*Problem).Nx-1]; i < (*Problem).Ny -1 ; i++) (*Problem).psi[(*Problem).Nx-1][i] = (*Problem).psi[(*Problem).Nx-2][i];
 
     error = inner_psi_error_compute(Problem);
     iter++;

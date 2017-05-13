@@ -12,6 +12,7 @@
    double H;
    double Ls;
    double Hs;
+   double Hc;
    double h;
    double dt;
    double t;
@@ -28,6 +29,7 @@
    double e_max;
    double tol;
    int *imax_map;
+   int *imap;
    double r;
 
    //Domain Data of size N_x * N_y
@@ -71,6 +73,7 @@ double           scalar_u_v_poiseuille_eta_int(struct _problem* Problem,double e
 void             inner_u_v_compute            (struct _problem* Problem);
 void             boundary_psi_update          (struct _problem* Problem, double (*Q)(struct _problem*) );
 void             boundary_omega_update        (struct _problem* Problem);
+void             boundary_omega_dwdx_update   (struct _problem* Problem);
 void             inner_psi_star_update        (struct _problem* Problem);
 double           inner_psi_error_compute      (struct _problem* Problem);
 void             poisson_inner_psi_iterator   (struct _problem* Problem);

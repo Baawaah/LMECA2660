@@ -76,12 +76,12 @@ int main(int argv,char* argc[]){
   double h     =   0.01;
 
   // Domain parameter
-  double L     =   4.0 ;
+  double L     =   2.0 ;
   double H     =   1.0 ;
   double Q0    =   Rey*nu;
   double Um    =   Q0/H;
-  double Ls    = L/1.0 ;
-  double Hs    = H/2.0 ;
+  double Ls    =   L/1.0 ;
+  double Hs    =   H/2.0 ;
   // Computation parameter
   //double Rey_h =
   //double r     =   nu*dt/(h*h);
@@ -109,6 +109,7 @@ int main(int argv,char* argc[]){
   boundary_psi_update(Problem,functionQ);
   poisson_inner_psi_iterator(Problem);
   boundary_omega_update(Problem);
+  boundary_omega_dwdx_update(Problem);
   inner_u_v_compute(Problem);
 
   fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs);
@@ -120,7 +121,7 @@ int main(int argv,char* argc[]){
   clock_gettime(CLOCK_MONOTONIC, &start);
   // ---------------------------
 
-  //integration_omega(Problem);
+  integration_omega(Problem);
 
   // ---Code Benchmarking-------
   clock_gettime(CLOCK_MONOTONIC, &finish);

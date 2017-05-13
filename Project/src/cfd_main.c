@@ -19,6 +19,7 @@ void init_problem_physical(struct _problem* Problem, double CFL, double L, doubl
   (*Problem).Q0    = Q0;
   (*Problem).tol   = tol;
   (*Problem).nu    = nu;
+  (*Problem).Hc    = H-Hs;
 }
 
 //comment
@@ -31,13 +32,13 @@ void init_problem_numerical(struct _problem* Problem, double phi){
 }
 
 void init_problem_map(struct _problem* Problem){
-  (*Problem).imax_map = calloc((*Problem).Nx,sizeof(int));
-  for(int i = 0 ; i < (*Problem).Nx ; i++){
-      if( (*Problem).h*i < (*Problem).Ls ) (*Problem).imax_map[i] = ((*Problem).H - (*Problem).Hs)/(*Problem).h ;
-      else (*Problem).imax_map[i] = (*Problem).Ny;
-  }
-  (*Problem).NLs = (*Problem).Ls/(*Problem).h;
+  (*Problem).imap = calloc((*Problem).Nx,sizeof(int));
   (*Problem).NHs = (*Problem).Hs/(*Problem).h;
+  (*Problem).NLs = (*Problem).Ls/(*Problem).h;
+  for(int i = 0 ; i < (*Problem).Nx ; i++){
+      if( i < (*Problem).NLs ) (*Problem).imap[i] = (*Problem).NHs-1;
+      else (*Problem).imap[i] = 0;
+  }
 }
 
 void init_problem_vector_domain(struct _problem* Problem){
@@ -61,20 +62,21 @@ void init_problem_vector_domain(struct _problem* Problem){
 
 void init_problem_poiseuille(struct _problem* Problem){
   for(int i = 0; i < (*Problem).Nx;i++ ){
-    for(int j = 0; j < (*Problem).NHs; j++ ){
+    for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny; j++ ){
       //double eta =  ( (j)*(*Problem).h - ((*Problem).Hs/2.0) )/((*Problem).Hs/2.0);
       //(*Problem).u[i][j]     = scalar_u_v_poiseuille(Problem,eta);
-      (*Problem).u[i][j]     = scalar_u_v_poiseuille(Problem,j*(*Problem).h);
+      (*Problem).u[i][j]     = scalar_u_v_poiseuille(Problem,(j - (*Problem).NHs+1 )*(*Problem).h);
     }
   }
   for(int i = 0; i < (*Problem).Nx;i++ ){
-    for(int j = 0; j < (*Problem).NHs; j++ ){
+    for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny; j++ ){
       //double eta =   ( (j)*(*Problem).h - ((*Problem).Hs/2.0) )/((*Problem).Hs/2.0);
       //(*Problem).omega[i][j]     = -scalar_u_v_poiseuille_dy(Problem,eta);
       //(*Problem).psi[i][j]       =  scalar_u_v_poiseuille_int(Problem,eta);
       //(*Problem).omega[i][j] = -( (*Problem).u[i][j+1] - (*Problem).u[i][j-1]) /(2.0*(*Problem).h) ;
-      (*Problem).omega[i][j]     = scalar_u_v_poiseuille_dy (Problem,j*(*Problem).h);
-      //(*Problem).psi[i][j]       = scalar_u_v_poiseuille_int(Problem,j*(*Problem).h);
+      (*Problem).omega[i][j]     = scalar_u_v_poiseuille_dy (Problem,(j - (*Problem).NHs+1)*(*Problem).h);
+      //(*Problem).psi[i][j]       = scalar_u_v_poiseuille_int(Problem,(j - (*Problem).imap[i])*(*Problem).h);
+      //(*Problem).psi[i][j] = 5.0;
     }
   }
 }
