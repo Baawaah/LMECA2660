@@ -17,7 +17,7 @@ R     = load(file_R);
 %v     = flipud(v);
 
 [Ni,Nj] = size(omega);
-NY = linspace(1,Nj,Nj);
+NY = linspace(1,Nj,Nj); 
 NX = linspace(1,Ni,Ni);
 %%
 figure;
@@ -33,9 +33,11 @@ contour(NY,NX,omega,50);
 colorbar
 %%
 figure;
-imagesc(omega(1:50,1:400));
+im1 = imagesc(omega);
 axis equal; axis xy;
-caxis([-0.0005 0.0005]);
+caxis([-0.005 0.005]);
+colormap jet;
+colorbar;
 %%
  hold on;
  %surf(NY,NX,omega,'edgecolor','none');
@@ -51,7 +53,8 @@ caxis([-0.0005 0.0005]);
  hold off;
 
  figure;
- surf(NY,NX,u,'edgecolor','none');
+ surf(u,'edgecolor','none');
  view(2);
- colorbar
+ colormap jet;
+ colorbar;
  %%
