@@ -1,5 +1,5 @@
 %close all;
-t = 0;
+t = 19;
 file_omega = sprintf('../data/CFD_omega_%d.txt',t);
 file_psi   = sprintf('../data/CFD_psi_%d.txt',t);
 file_u     = sprintf('../data/CFD_u_%d.txt',t);

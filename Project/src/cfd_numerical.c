@@ -73,7 +73,7 @@ void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*)
 
 void boundary_omega_update(struct _problem* Problem){
 // Upper boundary
-  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).omega[i][(*Problem).Ny     ] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).Ny-1     ] - 0.5*(*Problem).omega[i][(*Problem).Ny-1     ];
+  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).omega[i][(*Problem).Ny-1   ] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).Ny-2    ] - 0.5*(*Problem).omega[i][(*Problem).Ny-2     ];
 
 // Down boundary - Left - Right
   for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).omega[i][(*Problem).imap[i]] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).imap[i]+1] - 0.5*(*Problem).omega[i][(*Problem).imap[i]+1];
