@@ -72,7 +72,7 @@ int main(int argv,char* argc[]){
   // Numerical parameter
   double CFL   =   1.0 ;
   double tau   =   0.1 ;
-  double Rey   =   100 ;
+  double Rey   =    10 ;
   double h     =   0.01;
 
   // Domain parameter
@@ -80,17 +80,17 @@ int main(int argv,char* argc[]){
   double H     =   1.0 ;
   double Q0    =   Rey*nu;
   double Um    =   Q0/H;
-  double Ls    =   L/1.0 ;
+  double Ls    =   L/2.0 ;
   double Hs    =   H/2.0 ;
   // Computation parameter
   //double Rey_h =
   //double r     =   nu*dt/(h*h);
 
   double dt    =  0.1;// CFL*h/Um;
-  double tmax  =  2.0;// tau*L/Um;
+  double tmax  =  200.0;// tau*L/Um;
 
   double phi   =   1.98;
-  double tol   =   0.0000001;
+  double tol   =   1e-4;
 
 
 

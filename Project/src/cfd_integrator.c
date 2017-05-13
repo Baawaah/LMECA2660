@@ -43,6 +43,7 @@ void first_iteration_omega(struct _problem* Problem){
 
     poisson_inner_psi_iterator(Problem);
     boundary_omega_update(Problem);
+    boundary_omega_dwdx_update(Problem);
     inner_u_v_compute(Problem);
 }
 
@@ -68,6 +69,7 @@ void integration_omega(struct _problem* Problem){
       }
 
       boundary_omega_update(Problem);
+      boundary_omega_dwdx_update(Problem);
       poisson_inner_psi_iterator(Problem);
       inner_u_v_compute(Problem);
     }

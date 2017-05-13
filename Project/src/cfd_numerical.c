@@ -66,7 +66,7 @@ void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*)
     (*Problem).psi[i][(*Problem).imap[i]] = 0.0;
   }
 // Down boundary Side
-  if( (*Problem).Ls != (*Problem).L && (*Problem).Ls == 0.0 )
+  if( (*Problem).Ls != (*Problem).L && (*Problem).Ls != 0.0 )
     for(int j = 0; j < (*Problem).NHs; j++ ) (*Problem).psi[(*Problem).NLs-1][j] = 0.0;
 
 }
@@ -79,10 +79,10 @@ void boundary_omega_update(struct _problem* Problem){
   for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).omega[i][(*Problem).imap[i]] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).imap[i]+1] - 0.5*(*Problem).omega[i][(*Problem).imap[i]+1];
 
 // Down boundary Side
-  if( (*Problem).Ls != (*Problem).L && (*Problem).Ls == 0.0 )
+  if( (*Problem).Ls != (*Problem).L && (*Problem).Ls != 0.0 )
   for(int j = 0; j < (*Problem).NHs; j++ ) (*Problem).omega[(*Problem).NLs-1][j] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs+1][j] - 0.5*(*Problem).omega[(*Problem).NLs+1][j];
 // Corner boundary
-  if( (*Problem).Ls != (*Problem).L && (*Problem).Ls == 0.0 )
+  if( (*Problem).Ls != (*Problem).L && (*Problem).Ls != 0.0 )
   (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-1] = - 3.0 / (2*(*Problem).h*(*Problem).h) * (*Problem).psi[(*Problem).NLs+2][(*Problem).NHs+2] - 0.5* (*Problem).omega[(*Problem).NLs+2][(*Problem).NHs+2];
 
 }
@@ -116,7 +116,7 @@ double inner_psi_error_compute(struct _problem* Problem){
       square = (*Problem).R_res[i][j]*(*Problem).R_res[i][j] + square;
     }
   }
-  e_error = (*Problem).H/(*Problem).Q0 * sqrt(square);
+  e_error = (*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square);
   return e_error;
 }
 
