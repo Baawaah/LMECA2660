@@ -73,7 +73,7 @@ void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*)
 
 void boundary_omega_update(struct _problem* Problem){
 // Upper boundary
-  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).omega[i][(*Problem).Ny-1   ] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).Ny-2    ] - 0.5*(*Problem).omega[i][(*Problem).Ny-2     ];
+  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).omega[i][(*Problem).Ny-1   ] = -3.0/((*Problem).h*(*Problem).h) * ((*Problem).psi[i][(*Problem).Ny-2    ] - functionQ(Problem)) - 0.5*(*Problem).omega[i][(*Problem).Ny-2     ];
 
 // Down boundary - Left - Right
   for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).omega[i][(*Problem).imap[i]] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).imap[i]+1] - 0.5*(*Problem).omega[i][(*Problem).imap[i]+1];
@@ -90,7 +90,7 @@ void boundary_omega_dwdx_update(struct _problem* Problem){
   // Inflow Boundary - Natural Condition
   for(int j = (*Problem).imap[0]; j < (*Problem).Ny-1 ; j++) (*Problem).omega[0][j] = (*Problem).omega[1][j];
   // Outflow Boundary - Natural Condition
-  for(int i = (*Problem).imap[0]; i < (*Problem).Ny-1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = (*Problem).omega[(*Problem).Nx-2][i];
+  for(int i = (*Problem).imap[(*Problem).Nx-1]; i < (*Problem).Ny-1 ; i++) (*Problem).omega[(*Problem).Nx-1][i] = (*Problem).omega[(*Problem).Nx-2][i];
 }
 
 void inner_psi_update(struct _problem* Problem){

@@ -8,12 +8,13 @@ double functionQ(struct _problem* Problem){
 }
 
 double scalar_rhs_conv(struct _problem* Problem, int i, int j){
-    double**omega_loc = (*Problem).omega;
+    //double**omega_loc = (*Problem).omega;
     double domdx,domdy;
 
-    domdx = (*Problem).u[i][j]*( omega_loc[i+1][j]   -  omega_loc[i-1][j]   )/(2.0*(*Problem).h);
-    domdy = (*Problem).v[i][j]*( omega_loc[i]  [j+1] -  omega_loc[i]  [j-1] )/(2.0*(*Problem).h);
+    domdx = (*Problem).u[i][j]*( (*Problem).omega[i+1][j]   -  (*Problem).omega[i-1][j]   )/(2.0*(*Problem).h);
+    domdy = (*Problem).v[i][j]*( (*Problem).omega[i]  [j+1] -  (*Problem).omega[i]  [j-1] )/(2.0*(*Problem).h);
 
+    //if( j == (*Problem).NHs + 5 && i == (*Problem).NLs ) fprintf(stderr, "OMEGA %f %f \n", domdy, domdx );
     return (domdy + domdx);
 
 }
@@ -36,6 +37,7 @@ void first_iteration_omega(struct _problem* Problem){
         for(int j = (*Problem).imap[i]; j < (*Problem).Ny-1; j++){
             dom_old_conv = scalar_rhs_conv(Problem,i,j);
             dom_old_diff = scalar_rhs_diff(Problem,i,j);
+            //if( j == (*Problem).NHs + 3 && i == (*Problem).NLs - 2 ) fprintf(stderr, "%f %f \n", dom_old_conv,(*Problem).omega[(*Problem).NLs - 2][(*Problem).NHs + 3] );
             (*Problem).omega[i][j]= (*Problem).omega[i][j] - (*Problem).dt*dom_old_conv + (*Problem).dt*dom_old_diff;
             (*Problem).f_old[i][j]= dom_old_conv;
         }
@@ -60,7 +62,8 @@ void integration_omega(struct _problem* Problem){
           for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny-1; j++){
               dom_conv=scalar_rhs_conv(Problem,i,j);
               dom_diff=scalar_rhs_diff(Problem,i,j);
-              (*Problem).omega[i][j] = (*Problem).omega[i][j] - (*Problem).dt*0.5*(3.0*dom_conv - (*Problem).f_old[i][j] )+ (*Problem).dt*dom_diff ;
+              //if( j == (*Problem).NHs + 3 && i == (*Problem).NLs - 2 ) fprintf(stderr, "%f %f \n", dom_conv,(*Problem).omega[(*Problem).NLs - 2][(*Problem).NHs + 3] );
+              (*Problem).omega[i][j] = (*Problem).omega[i][j] - (*Problem).dt*0.5*(3.0*dom_conv - (*Problem).f_old[i][j] ) + (*Problem).dt*dom_diff ;
               (*Problem).f_old[i][j] = dom_conv;
 
               check = diagnose_check(Problem,i,j);
@@ -68,9 +71,9 @@ void integration_omega(struct _problem* Problem){
           }
       }
 
+      poisson_inner_psi_iterator(Problem);
       boundary_omega_update(Problem);
       boundary_omega_dwdx_update(Problem);
-      poisson_inner_psi_iterator(Problem);
       inner_u_v_compute(Problem);
     }
 

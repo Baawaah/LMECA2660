@@ -70,24 +70,24 @@ int main(int argv,char* argc[]){
   double nu    =   1e-6;
 
   // Numerical parameter
-  double CFL   =   1.0 ;
-  double tau   =   0.1 ;
-  double Rey   =    10 ;
-  double h     =   0.01;
+  double CFL   =   0.2 ;
+  double tau   =   2.0 ;
+  double Rey   =   100 ;
+  double h     =   0.02;
 
   // Domain parameter
-  double L     =   2.0 ;
+  double L     =   4.0 ;
   double H     =   1.0 ;
   double Q0    =   Rey*nu;
   double Um    =   Q0/H;
-  double Ls    =   L/1.0 ;
+  double Ls    =   L/4.0 ;
   double Hs    =   H/2.0 ;
   // Computation parameter
   //double Rey_h =
   //double r     =   nu*dt/(h*h);
 
-  double dt    =  0.1;// CFL*h/Um;
-  double tmax  =  1.0;// tau*L/Um;
+  double dt    =  CFL*h/Um;
+  double tmax  =  tau*L/Um;
 
   double phi   =   1.98;
   double tol   =   1e-4;
@@ -109,7 +109,7 @@ int main(int argv,char* argc[]){
   boundary_psi_update(Problem,functionQ);
   poisson_inner_psi_iterator(Problem);
   boundary_omega_update(Problem);
-  boundary_omega_dwdx_update(Problem);
+  //boundary_omega_dwdx_update(Problem);
   inner_u_v_compute(Problem);
 
   fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs);
