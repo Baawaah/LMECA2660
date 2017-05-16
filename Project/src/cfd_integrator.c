@@ -61,7 +61,7 @@ void integration_omega(struct _problem* Problem){
       (*Problem).tau = k*(*Problem).dtau;
       // ## Calcule Omega+1
       for(int i=1; i<(*Problem).Nx-1; i++){
-          for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny-1; j++){
+          for(int j = (*Problem).imap[i]; j < (*Problem).Ny-1; j++){
               dom_conv=scalar_rhs_conv(Problem,i,j);
               dom_diff=scalar_rhs_diff(Problem,i,j);
               //if( j == (*Problem).NHs + 3 && i == (*Problem).NLs - 2 ) fprintf(stderr, "%f %f \n", dom_conv,(*Problem).omega[(*Problem).NLs - 2][(*Problem).NHs + 3] );
