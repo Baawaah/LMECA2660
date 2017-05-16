@@ -22,7 +22,7 @@ void init_problem_physical(struct _problem* Problem, double CFL, double L, doubl
   (*Problem).nu    = nu;
   (*Problem).Um    = Um;
   (*Problem).Hc    = H-Hs;
-  (*Problem).dtau  = dt*Um/L;
+  (*Problem).dtau  = fabs(dt*Um/L);
 }
 
 //comment
@@ -46,17 +46,20 @@ void init_problem_map(struct _problem* Problem){
 }
 
 void init_problem_vector_domain(struct _problem* Problem){
-  (*Problem).omega = (double**) malloc((*Problem).Nx*sizeof(double*));
-  (*Problem).psi   = (double**) malloc((*Problem).Nx*sizeof(double*));
-  (*Problem).psi_s = (double**) malloc((*Problem).Nx*sizeof(double*));
-  (*Problem).u     = (double**) malloc((*Problem).Nx*sizeof(double*));
-  (*Problem).v     = (double**) malloc((*Problem).Nx*sizeof(double*));
-  (*Problem).f_old = (double**) malloc((*Problem).Nx*sizeof(double*));
-  (*Problem).R_res = (double**) malloc((*Problem).Nx*sizeof(double*));
+  (*Problem).omega      = (double**) malloc((*Problem).Nx*sizeof(double*));
+  (*Problem).psi        = (double**) malloc((*Problem).Nx*sizeof(double*));
+  (*Problem).u          = (double**) malloc((*Problem).Nx*sizeof(double*));
+  (*Problem).v          = (double**) malloc((*Problem).Nx*sizeof(double*));
+  (*Problem).f_old      = (double**) malloc((*Problem).Nx*sizeof(double*));
+  (*Problem).R_res      = (double**) malloc((*Problem).Nx*sizeof(double*));
+
+  (*Problem).Re_h       = (double*) calloc((*Problem).Ntime,sizeof(double));
+  (*Problem).Re_h_omega = (double*) calloc((*Problem).Ntime,sizeof(double));
+  (*Problem).Beta_CFL   = (double*) calloc((*Problem).Ntime,sizeof(double));
+
   for(int i=0 ; i < (*Problem).Nx ; i++){
     (*Problem).omega[i] = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).psi[i]   = (double*) calloc((*Problem).Ny,sizeof(double));
-    (*Problem).psi_s[i] = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).u[i]     = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).v[i]     = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).f_old[i] = (double*) calloc((*Problem).Ny,sizeof(double));
@@ -81,7 +84,7 @@ void init_problem_poiseuille(struct _problem* Problem){
       //(*Problem).psi[i][j]       =  scalar_u_v_poiseuille_int(Problem,eta);
       //(*Problem).omega[i][j] = -( (*Problem).u[i][j+1] - (*Problem).u[i][j-1]) /(2.0*(*Problem).h) ;
       (*Problem).omega[i][j]     = scalar_u_v_poiseuille_dy (Problem,(j - (*Problem).NHs+1)*(*Problem).h);
-      //(*Problem).psi[i][j]       = scalar_u_v_poiseuille_int(Problem,(j - (*Problem).NHs+1)*(*Problem).h);
+      (*Problem).psi[i][j]       = scalar_u_v_poiseuille_int(Problem,(j - (*Problem).NHs+1)*(*Problem).h);
       //(*Problem).psi[i][j] = 5.0;
     }
   }
@@ -92,7 +95,6 @@ void free_problem_vector_domain(struct _problem* Problem){
   for(int i=0 ; i < (*Problem).Nx ; i++){
     free((*Problem).omega[i]);
     free((*Problem).psi[i]);
-    free((*Problem).psi_s[i]);
     free((*Problem).u[i]);
     free((*Problem).v[i]);
     free((*Problem).f_old[i]);
@@ -100,12 +102,15 @@ void free_problem_vector_domain(struct _problem* Problem){
   }
   free((*Problem).omega);
   free((*Problem).psi);
-  free((*Problem).psi_s);
   free((*Problem).u);
   free((*Problem).v);
   free((*Problem).f_old);
   free((*Problem).R_res);
-  free((*Problem).imax_map);
+
+  free((*Problem).imap);
+  free((*Problem).Re_h);
+  free((*Problem).Re_h_omega);
+  free((*Problem).Beta_CFL);
 
   free(Problem);
 }

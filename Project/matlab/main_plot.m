@@ -1,6 +1,6 @@
 %% Load
 
-plot_all = 0;
+plot_all = 1;
 
 %%
 t = [0 25 50 75 99];
@@ -16,6 +16,7 @@ for k = 1 : length(t);
     v    (:,:,k) = load(file_v);
     R    (:,:,k) = load(file_R);
 end
+%Diag = load('../data/CFD_DIAG.txt');
 %% 
 k = 2;
 [SY SX] = size(omega(:,:,1))

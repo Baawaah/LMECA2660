@@ -35,7 +35,7 @@ void first_iteration_omega(struct _problem* Problem){
    (*Problem).t   = (*Problem).t + (*Problem).dt;
    (*Problem).tau = (*Problem).tau + (*Problem).dtau;
     for(int i=1; i<(*Problem).Nx-1; i++){
-        for(int j = (*Problem).imap[i]; j < (*Problem).Ny-1; j++){
+        for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny-1; j++){
             dom_old_conv = scalar_rhs_conv(Problem,i,j);
             dom_old_diff = scalar_rhs_diff(Problem,i,j);
             //if( j == (*Problem).NHs + 3 && i == (*Problem).NLs - 2 ) fprintf(stderr, "%f %f \n", dom_old_conv,(*Problem).omega[(*Problem).NLs - 2][(*Problem).NHs + 3] );
@@ -56,19 +56,19 @@ void integration_omega(struct _problem* Problem){
     first_iteration_omega(Problem);
     print_problem_data(Problem);
 
-    for(int k=1; k < (*Problem).Ntime+1; k++ ){
-      (*Problem).t = k*(*Problem).dt;
-      (*Problem).tau = k*(*Problem).dtau;
+    for(int k=0; k < (*Problem).Ntime; k++ ){
+      (*Problem).t = (k+1)*(*Problem).dt;
+      (*Problem).tau = (k+1)*(*Problem).dtau;
       // ## Calcule Omega+1
       for(int i=1; i<(*Problem).Nx-1; i++){
-          for(int j = (*Problem).imap[i]; j < (*Problem).Ny-1; j++){
+          for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny-1; j++){
               dom_conv=scalar_rhs_conv(Problem,i,j);
               dom_diff=scalar_rhs_diff(Problem,i,j);
               //if( j == (*Problem).NHs + 3 && i == (*Problem).NLs - 2 ) fprintf(stderr, "%f %f \n", dom_conv,(*Problem).omega[(*Problem).NLs - 2][(*Problem).NHs + 3] );
               (*Problem).omega[i][j] = (*Problem).omega[i][j] - (*Problem).dt*0.5*(3.0*dom_conv - (*Problem).f_old[i][j] ) + (*Problem).dt*dom_diff ;
               (*Problem).f_old[i][j] = dom_conv;
 
-              check = diagnose_check(Problem,i,j);
+              check = diagnose_check(Problem,i,j,k);
               //if(check != 0 ){ fprintf(stderr, "[DEADSTOP] Diagnose Check: %d\n",check); deadstop_exit(Problem);}
           }
       }
@@ -78,6 +78,7 @@ void integration_omega(struct _problem* Problem){
       inner_u_v_compute(Problem);
 
       if( (*Problem).t_snapshot != 0 &&((int)(100*(*Problem).tau/(*Problem).dtau))%( (int) ((*Problem).t_snapshot*100/(*Problem).dtau)) == 0) print_problem_data(Problem);
+
     }
 
 

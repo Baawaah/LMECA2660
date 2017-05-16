@@ -9,6 +9,7 @@
 #include <sys/sysinfo.h>
 #include <unistd.h>
 #include "cfd.h"
+#include <getopt.h>
 
 
 void deadstop_exit(struct _problem* Problem){
@@ -24,6 +25,15 @@ void deadstop_exit(struct _problem* Problem){
   print_problem_data(Problem);
   free_problem_vector_domain(Problem);
   exit(-1);
+}
+
+void print_problem_diag(struct _problem* Problem){
+    FILE* file_diag = fopen("data/CFD_DIAG.txt","w");
+    if(file_diag == NULL){ fprintf(stderr,"File error\n"); exit(1);}
+    for(int i = 0; i < (*Problem).Ntime ; i++ ){
+    fprintf(file_diag,"%f %5.16f %5.16f %5.16f \n",i*(*Problem).dtau,(*Problem).Re_h[i],(*Problem).Re_h_omega[i],(*Problem).Beta_CFL[i]);
+    }
+    fclose(file_diag);
 }
 
 void print_problem_data(struct _problem* Problem){
@@ -65,7 +75,7 @@ void print_problem_data(struct _problem* Problem){
   fclose(file_R);
 }
 
-int main(int argv,char* argc[]){
+int main(int argc,char* argv[]){
   // Flow specification
   double nu    =   1e-6;
 
@@ -80,22 +90,45 @@ int main(int argv,char* argc[]){
   double L     =   4.0 ;
   double H     =   1.0 ;
   double Q0    =   Rey*nu;
-  double Um    =   Q0/H;
   double Ls    =   L/4.0 ;
   double Hs    =   H/2.0 ;
   // Computation parameter
   //double Rey_h =
   //double r     =   nu*dt/(h*h);
+  //
+  char option;
+  while ((option = getopt(argc, argv, "bh:R:C:t:s:")) != EOF) {
+          switch (option) {
+          case 'b':
+              Q0 = -Q0;
+              break;
+          case 'h':
+              sscanf(optarg, "%lf", &h);
+              break;
+          case 'R':
+              sscanf(optarg, "%lf", &Rey);
+              break;
+          case 'C':
+              sscanf(optarg, "%lf", &CFL);
+              break;
+          case 't':
+              sscanf(optarg, "%lf", &tau);
+              break;
+          case 's':
+              sscanf(optarg, "%lf", &t_snapshot);
+              break;
+          }
+  }
+  if( h <= 0 || h >= 1 || t_snapshot > 1 || tau < 0 || Rey <= 0 || CFL <= 0){printf("[DEADSTOP] Input Error\n");exit(-1);}
 
-  double dt    =  CFL*h/Um;
-  double tmax  =  tau*L/Um;
-
+  //
+  double Um    =   Q0/H;
+  double dt    =  fabs(CFL*h/Um);
+  double tmax  =  fabs(tau*L/Um);
   double phi   =   1.98;
   double tol   =   1e-4;
 
-
-
-
+  // ########
   fprintf(stderr, "CFD - Oscillating flow in a channel with abrupt step\n");
   fprintf(stderr, "by S. Tran - J. Demey \n");
   fprintf(stderr, "CFL: %f Tau: %f Reynold: %f\n",CFL,tau,Rey);
@@ -130,11 +163,12 @@ int main(int argv,char* argc[]){
   elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
   // ---------------------------
 
-  //print_problem_data(Problem);
+  print_problem_data(Problem);
   printf("Simulation Done\n");
-
+  print_problem_diag(Problem);
 
   printf("Time Elapsed: %f s\n",elapsed);
   printf("Final File save under _%d_\n",(int) ( (*Problem).tau * 100 ));
   free_problem_vector_domain(Problem);
+  return 0;
 }

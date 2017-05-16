@@ -31,14 +31,16 @@
    double phi;
    double e_max;
    double tol;
-   int *imax_map;
-   int *imap;
+   int   * imap;
+   double* Re_h;
+   double* Re_h_omega;
+   double* Beta_CFL;
+
    double r;
    double t_snapshot;
    //Domain Data of size N_x * N_y
    double **omega;
    double **psi;
-   double **psi_s;
    double **u;
    double **v;
    double **f_old;
@@ -80,7 +82,7 @@ void             boundary_omega_dwdx_update   (struct _problem* Problem);
 void             inner_psi_star_update        (struct _problem* Problem);
 double           inner_psi_error_compute      (struct _problem* Problem);
 void             poisson_inner_psi_iterator   (struct _problem* Problem);
-int              diagnose_check               (struct _problem* Problem,int i,int j);
+int              diagnose_check               (struct _problem* Problem,int i,int j, int ktime);
 /* ###################################
  *  CFD Integrator
  * ###################################
