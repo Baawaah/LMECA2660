@@ -109,7 +109,7 @@ double inner_psi_error_compute(struct _problem* Problem){
       square = (*Problem).R_res[i][j]*(*Problem).R_res[i][j] + square;
     }
   }
-  e_error = fabs((*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square));
+  e_error = (*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square);
   return e_error;
 }
 
