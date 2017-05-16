@@ -29,20 +29,7 @@ double scalar_u_v_poiseuille_dy  (struct _problem* Problem,double y){
   return -6.0*functionQ(Problem)/((*Problem).Hc*(*Problem).Hc)  * ( 1.0          - (2.0*y)/(*Problem).Hc            );
 }
 double scalar_u_v_poiseuille_int (struct _problem* Problem,double y){
-  return 6.0*functionQ(Problem)/((*Problem).Hc*(*Problem).Hc)  * ((1.0/2.0)*y*y - (1.0/3.0)*(y*y*y)/(*Problem).Hc) + functionQ(Problem);
-}
-
-
-double scalar_u_v_poiseuille_eta(struct _problem* Problem,double eta){
-  return 1.5*functionQ(Problem)*(1.0 - pow(eta,2));
-}
-
-double scalar_u_v_poiseuille_eta_dy(struct _problem* Problem,double eta){
-  return -3.0*functionQ(Problem)*(eta);
-}
-
-double scalar_u_v_poiseuille_eta_int(struct _problem* Problem,double eta){
-  return 3.0/2.0*functionQ(Problem)*(eta - eta*eta*eta * 1.0/3.0) + functionQ(Problem);
+  return 6.0*functionQ(Problem)/((*Problem).Hc*(*Problem).Hc)  * ((1.0/2.0)*y*y - (1.0/3.0)*(y*y*y)/(*Problem).Hc);
 }
 
 void inner_u_v_compute(struct _problem* Problem){
@@ -73,7 +60,7 @@ void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*)
 
 void boundary_omega_update(struct _problem* Problem){
 // Upper boundary
-  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).omega[i][(*Problem).Ny-1   ] = -3.0/((*Problem).h*(*Problem).h) * ((*Problem).psi[i][(*Problem).Ny-2    ] - functionQ(Problem)) - 0.5*(*Problem).omega[i][(*Problem).Ny-2     ];
+  for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).omega[i][(*Problem).Ny-1   ] = -3.0/((*Problem).h*(*Problem).h) * ((*Problem).psi[i][(*Problem).Ny-2    ] - functionQ(Problem) ) - 0.5*(*Problem).omega[i][(*Problem).Ny-2     ];
 
 // Down boundary - Left - Right
   for(int i = 0; i < (*Problem).Nx ; i++ ) (*Problem).omega[i][(*Problem).imap[i]] = -3.0/((*Problem).h*(*Problem).h) * (*Problem).psi[i][(*Problem).imap[i]+1] - 0.5*(*Problem).omega[i][(*Problem).imap[i]+1];
@@ -100,6 +87,12 @@ void inner_psi_update(struct _problem* Problem){
       (*Problem).psi[i][j] = scalar_psi_compute(Problem,i,j);
     }
   }/*
+  for(int i = (*Problem).Nx-2; i > 1; i--){
+    for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny-1; j++){
+      (*Problem).psi[i][j] = scalar_psi_compute(Problem,i,j);
+    }
+  }*/
+  /*
   for(int i = (*Problem).Nx-2; i > 0 ; i--){
    for(int j = 1; j < (*Problem).imax_map[i]-1; j++){
       (*Problem).psi[i][j] = scalar_psi_compute(Problem,i,j);
@@ -116,7 +109,7 @@ double inner_psi_error_compute(struct _problem* Problem){
       square = (*Problem).R_res[i][j]*(*Problem).R_res[i][j] + square;
     }
   }
-  e_error = (*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square);
+  e_error = fabs((*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square));
   return e_error;
 }
 

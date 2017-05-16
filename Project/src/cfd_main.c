@@ -17,7 +17,7 @@ void init_problem_physical(struct _problem* Problem, double CFL, double L, doubl
   (*Problem).t     = 0;
   (*Problem).tau   = 0;
   (*Problem).tmax  = tmax;
-  (*Problem).Q0    = -Q0;
+  (*Problem).Q0    = Q0;
   (*Problem).tol   = tol;
   (*Problem).nu    = nu;
   (*Problem).Um    = Um;
@@ -75,13 +75,13 @@ void init_problem_poiseuille(struct _problem* Problem){
   }
   //for(int i = 0; i < 1 ;i++ ){
     for(int i = 0; i < (*Problem).Nx;i++ ){
-    for(int j = (*Problem).NHs; j < (*Problem).Ny; j++ ){
+    for(int j = (*Problem).NHs-1; j < (*Problem).Ny; j++ ){
       //double eta =   ( (j)*(*Problem).h - ((*Problem).Hs/2.0) )/((*Problem).Hs/2.0);
       //(*Problem).omega[i][j]     = -scalar_u_v_poiseuille_dy(Problem,eta);
       //(*Problem).psi[i][j]       =  scalar_u_v_poiseuille_int(Problem,eta);
       //(*Problem).omega[i][j] = -( (*Problem).u[i][j+1] - (*Problem).u[i][j-1]) /(2.0*(*Problem).h) ;
       (*Problem).omega[i][j]     = scalar_u_v_poiseuille_dy (Problem,(j - (*Problem).NHs+1)*(*Problem).h);
-      //(*Problem).psi[i][j]       = scalar_u_v_poiseuille_int(Problem,(j - (*Problem).imap[i])*(*Problem).h);
+      //(*Problem).psi[i][j]       = scalar_u_v_poiseuille_int(Problem,(j - (*Problem).NHs+1)*(*Problem).h);
       //(*Problem).psi[i][j] = 5.0;
     }
   }

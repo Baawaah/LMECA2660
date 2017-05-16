@@ -113,8 +113,8 @@ int main(int argv,char* argc[]){
   //boundary_omega_dwdx_update(Problem);
   inner_u_v_compute(Problem);
 
-  fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs);
   print_problem_data(Problem);
+  fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs);
   printf("Simulation Starting\n");
   // ---Code Benchmarking-------
   struct timespec start, finish;
@@ -122,7 +122,7 @@ int main(int argv,char* argc[]){
   clock_gettime(CLOCK_MONOTONIC, &start);
   // ---------------------------
 
-  //integration_omega(Problem);
+  integration_omega(Problem);
 
   // ---Code Benchmarking-------
   clock_gettime(CLOCK_MONOTONIC, &finish);
