@@ -2,7 +2,7 @@ linux: main_linux.o cfd_main.o cfd_numerical.o cfd_integrator.o
 	gcc -o main bin/main_linux.o bin/cfd_main.o bin/cfd_numerical.o bin/cfd_integrator.o -W -Wall -lm -std=gnu99
 
 mac: main_mac.o cfd_main.o cfd_numerical.o cfd_integrator.o
-	gcc -o main bin/main_mac.o bin/cfd_main.o bin/cfd_integrator.o -W -Wall -lm -std=gnu99
+	gcc -o main bin/main_mac.o bin/cfd_main.o bin/cfd_numerical.o bin/cfd_integrator.o -W -Wall -lm -std=gnu99
 
 main_linux.o:
 	gcc -o bin/main_linux.o -c src/main_linux.c -W -Wall -lm -std=gnu99
