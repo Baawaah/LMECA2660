@@ -6,7 +6,7 @@ struct _problem* init_problem(){
   return malloc(sizeof(struct _problem));
 }
 
-void init_problem_physical(struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax, double Q0, double tol, double nu){
+void init_problem_physical(struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax, double Q0, double tol, double nu, double Um){
   (*Problem).CFL   = CFL;
   (*Problem).L     = L;
   (*Problem).H     = H;
@@ -15,20 +15,24 @@ void init_problem_physical(struct _problem* Problem, double CFL, double L, doubl
   (*Problem).h     = h;
   (*Problem).dt    = dt;
   (*Problem).t     = 0;
+  (*Problem).tau   = 0;
   (*Problem).tmax  = tmax;
-  (*Problem).Q0    = Q0;
+  (*Problem).Q0    = -Q0;
   (*Problem).tol   = tol;
   (*Problem).nu    = nu;
+  (*Problem).Um    = Um;
   (*Problem).Hc    = H-Hs;
+  (*Problem).dtau  = dt*Um/L;
 }
 
 //comment
 
-void init_problem_numerical(struct _problem* Problem, double phi){
-  (*Problem).Nx    = (*Problem).L   /(*Problem).h;
-  (*Problem).Ny    = (*Problem).H   /(*Problem).h;
-  (*Problem).Ntime = (*Problem).tmax/(*Problem).dt;
-  (*Problem).phi   = phi;
+void init_problem_numerical(struct _problem* Problem, double phi,double t_snapshot){
+  (*Problem).Nx         = (*Problem).L   /(*Problem).h;
+  (*Problem).Ny         = (*Problem).H   /(*Problem).h;
+  (*Problem).Ntime      = (*Problem).tmax/(*Problem).dt;
+  (*Problem).phi        = phi;
+  (*Problem).t_snapshot = t_snapshot;
 }
 
 void init_problem_map(struct _problem* Problem){

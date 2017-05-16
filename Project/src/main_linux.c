@@ -19,8 +19,8 @@ void deadstop_exit(struct _problem* Problem){
   fprintf(stderr, "       Mesh Reynold omega - 2 \n");
   fprintf(stderr, "       Beta - CFL         - 4 \n");
   fprintf(stderr, "Emergency Exit Procedure Initiate\n");
-  fprintf(stderr, "Problem occured at t= %d\n",(int) ( (*Problem).t * 100 ));
-  fprintf(stderr, "Saving current data under  _%d_\n",(int) ( (*Problem).t * 100 ));
+  fprintf(stderr, "Problem occured at tau = %d\n",(int) ( (*Problem).tau * 100 ));
+  fprintf(stderr, "Saving current data under  _%d_\n",(int) ( (*Problem).tau * 100 ));
   print_problem_data(Problem);
   free_problem_vector_domain(Problem);
   exit(-1);
@@ -32,11 +32,11 @@ void print_problem_data(struct _problem* Problem){
   char buff_u_name[50];
   char buff_v_name[50];
   char buff_R_name[50];
-  sprintf(buff_omega_name ,"data/CFD_omega_%d.txt",(int) ( (*Problem).t * 100 ));
-  sprintf(buff_psi_name   ,"data/CFD_psi_%d.txt"  ,(int) ( (*Problem).t * 100 ));
-  sprintf(buff_u_name     ,"data/CFD_u_%d.txt"    ,(int) ( (*Problem).t * 100 ));
-  sprintf(buff_v_name     ,"data/CFD_v_%d.txt"    ,(int) ( (*Problem).t * 100 ));
-  sprintf(buff_R_name     ,"data/CFD_R_%d.txt"    ,(int) ( (*Problem).t * 100 ));
+  sprintf(buff_omega_name ,"data/CFD_omega_%d.txt",(int) ( (*Problem).tau * 100 ));
+  sprintf(buff_psi_name   ,"data/CFD_psi_%d.txt"  ,(int) ( (*Problem).tau * 100 ));
+  sprintf(buff_u_name     ,"data/CFD_u_%d.txt"    ,(int) ( (*Problem).tau * 100 ));
+  sprintf(buff_v_name     ,"data/CFD_v_%d.txt"    ,(int) ( (*Problem).tau * 100 ));
+  sprintf(buff_R_name     ,"data/CFD_R_%d.txt"    ,(int) ( (*Problem).tau * 100 ));
   FILE* file_omega = fopen(buff_omega_name,"w");
   FILE* file_psi   = fopen(buff_psi_name  ,"w");
   FILE* file_u     = fopen(buff_u_name    ,"w");
@@ -70,10 +70,11 @@ int main(int argv,char* argc[]){
   double nu    =   1e-6;
 
   // Numerical parameter
-  double CFL   =   0.2 ;
-  double tau   =   2.0 ;
-  double Rey   =   100 ;
-  double h     =   0.02;
+  double CFL        =   0.2 ;
+  double tau        =   1.0 ;
+  double Rey        =   100 ;
+  double h          =   0.02;
+  double t_snapshot =   0.25;
 
   // Domain parameter
   double L     =   4.0 ;
@@ -101,8 +102,8 @@ int main(int argv,char* argc[]){
   fprintf(stderr, "Average Velocity: %f Grid size h: %f Timestep: %f\n",Um,h,dt);
 
   struct _problem* Problem = init_problem();
-  init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax,Q0,tol,nu);
-  init_problem_numerical(Problem,phi);
+  init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax,Q0,tol,nu,Um);
+  init_problem_numerical(Problem,phi,t_snapshot);
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
   init_problem_poiseuille(Problem);
@@ -114,14 +115,14 @@ int main(int argv,char* argc[]){
 
   fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs);
   print_problem_data(Problem);
-
+  printf("Simulation Starting\n");
   // ---Code Benchmarking-------
   struct timespec start, finish;
   double elapsed;
   clock_gettime(CLOCK_MONOTONIC, &start);
   // ---------------------------
 
-  integration_omega(Problem);
+  //integration_omega(Problem);
 
   // ---Code Benchmarking-------
   clock_gettime(CLOCK_MONOTONIC, &finish);
@@ -129,10 +130,11 @@ int main(int argv,char* argc[]){
   elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
   // ---------------------------
 
-  print_problem_data(Problem);
-  printf("Done \n");
+  //print_problem_data(Problem);
+  printf("Simulation Done\n");
 
 
   printf("Time Elapsed: %f s\n",elapsed);
+  printf("Final File save under _%d_\n",(int) ( (*Problem).tau * 100 ));
   free_problem_vector_domain(Problem);
 }

@@ -15,10 +15,13 @@
    double Hc;
    double h;
    double dt;
+   double dtau;
    double t;
+   double tau;
    double tmax;
    double Q0;
    double nu;
+   double Um;
    //Domain Numerical property
    int    Nx;
    int    Ny;
@@ -31,7 +34,7 @@
    int *imax_map;
    int *imap;
    double r;
-
+   double t_snapshot;
    //Domain Data of size N_x * N_y
    double **omega;
    double **psi;
@@ -49,8 +52,8 @@ void             deadstop_exit                (struct _problem* Problem);
  * ###################################
  */
 struct _problem* init_problem();
-void             init_problem_physical        (struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax, double Q0, double tol, double nu);
-void             init_problem_numerical       (struct _problem* Problem, double phi);
+void             init_problem_physical        (struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax, double Q0, double tol, double nu,double Um);
+void             init_problem_numerical       (struct _problem* Problem, double phi, double t_snapshot);
 void             init_problem_map             (struct _problem* Problem);
 void             init_problem_vector_domain   (struct _problem* Problem);
 void             init_problem_poiseuille      (struct _problem* Problem);

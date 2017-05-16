@@ -32,7 +32,8 @@ double scalar_rhs_diff(struct _problem* Problem, int i, int j){
 
 void first_iteration_omega(struct _problem* Problem){
 	double dom_old_conv,dom_old_diff;
-   (*Problem).t = (*Problem).t + (*Problem).dt;
+   (*Problem).t   = (*Problem).t + (*Problem).dt;
+   (*Problem).tau = (*Problem).tau + (*Problem).dtau;
     for(int i=1; i<(*Problem).Nx-1; i++){
         for(int j = (*Problem).imap[i]; j < (*Problem).Ny-1; j++){
             dom_old_conv = scalar_rhs_conv(Problem,i,j);
@@ -55,8 +56,9 @@ void integration_omega(struct _problem* Problem){
     first_iteration_omega(Problem);
     print_problem_data(Problem);
 
-    for(int k=1; k < (*Problem).Ntime; k++ ){
-      (*Problem).t = (*Problem).t + (*Problem).dt;
+    for(int k=1; k < (*Problem).Ntime+1; k++ ){
+      (*Problem).t = k*(*Problem).dt;
+      (*Problem).tau = k*(*Problem).dtau;
       // ## Calcule Omega+1
       for(int i=1; i<(*Problem).Nx-1; i++){
           for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny-1; j++){
@@ -70,11 +72,12 @@ void integration_omega(struct _problem* Problem){
               //if(check != 0 ){ fprintf(stderr, "[DEADSTOP] Diagnose Check: %d\n",check); deadstop_exit(Problem);}
           }
       }
-
       poisson_inner_psi_iterator(Problem);
       boundary_omega_update(Problem);
       boundary_omega_dwdx_update(Problem);
       inner_u_v_compute(Problem);
+
+      if( (*Problem).t_snapshot != 0 &&((int)(100*(*Problem).tau/(*Problem).dtau))%( (int) ((*Problem).t_snapshot*100/(*Problem).dtau)) == 0) print_problem_data(Problem);
     }
 
 
