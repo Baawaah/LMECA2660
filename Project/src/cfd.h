@@ -52,14 +52,15 @@
    double **psi;
    double **u;
    double **v;
-   double **u_stag;
-   double **v_stag;
    double **f_old;
    double **R_res;
    // Staggered Part
+   double **u_stag;
+   double **v_stag;
    double *psi_in;
    double *psi_out;
    double **P;
+   double **R_res_pres;
 
  };
 
