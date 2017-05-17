@@ -51,6 +51,9 @@
    double **v;
    double **f_old;
    double **R_res;
+   // Staggered Part
+   double **P;
+
  };
 
 void             print_problem_data           (struct _problem* Problem);

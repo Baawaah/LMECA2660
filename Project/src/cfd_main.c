@@ -35,8 +35,8 @@ void init_problem_physical(struct _problem* Problem, double CFL, double L, doubl
 void init_problem_numerical(struct _problem* Problem, double phi,double t_snapshot,int flag_os){
   (*Problem).Nx         = (*Problem).L    /(*Problem).h;
   (*Problem).Ny         = (*Problem).H    /(*Problem).h;
-  (*Problem).Nx_p       = ((*Problem).L+2)/(*Problem).h;
-  (*Problem).Ny_p       = ((*Problem).H+2)/(*Problem).h;
+  (*Problem).Nx_p       = ((*Problem).L)/(*Problem).h +2;
+  (*Problem).Ny_p       = ((*Problem).H)/(*Problem).h +2;
   (*Problem).Ntime      = (*Problem).tmax /(*Problem).dt;
   (*Problem).phi        = phi;
   (*Problem).t_snapshot = t_snapshot;
@@ -59,6 +59,7 @@ void init_problem_vector_domain(struct _problem* Problem){
   (*Problem).psi         = (double**) malloc((*Problem).Nx*sizeof(double*));
   (*Problem).u           = (double**) malloc((*Problem).Nx*sizeof(double*));
   (*Problem).v           = (double**) malloc((*Problem).Nx*sizeof(double*));
+  (*Problem).P           = (double**) malloc((*Problem).Nx*sizeof(double*));
   (*Problem).u_stag      = (double**) malloc((*Problem).Nx_p*sizeof(double*));
   (*Problem).v_stag      = (double**) malloc((*Problem).Nx_p*sizeof(double*));
   (*Problem).f_old       = (double**) malloc((*Problem).Nx*sizeof(double*));
@@ -73,6 +74,7 @@ void init_problem_vector_domain(struct _problem* Problem){
     (*Problem).psi[i]    = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).u[i]      = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).v[i]      = (double*) calloc((*Problem).Ny,sizeof(double));
+    (*Problem).P[i]      = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).u_stag[i] = (double*) calloc((*Problem).Ny_p,sizeof(double));
     (*Problem).v_stag[i] = (double*) calloc((*Problem).Ny_p,sizeof(double));
     (*Problem).f_old[i]  = (double*) calloc((*Problem).Ny,sizeof(double));
