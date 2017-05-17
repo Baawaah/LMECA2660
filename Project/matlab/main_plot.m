@@ -1,9 +1,10 @@
 %% Load
 
 plot_all = 1;
-
+plot_R   = 0;
 %%
 t = [0 25 50 75 99];
+%t = 5;
 for k = 1 : length(t); 
     file_omega = sprintf('../data/CFD_omega_%d.txt',t(k));
     file_psi   = sprintf('../data/CFD_psi_%d.txt',t(k));
@@ -52,9 +53,20 @@ subplot(4,1,4);
 im4 = imagesc(v(:,:,k));
 axis equal; axis xy;
 axis([0,SX,0,SY]);
-%caxis([-0.005 0.005]);
+caxis([-0.005 0.005]);
 colormap jet;
 colorbar;
 title('v - Velocity')
+if plot_R == 1
+figure;
+im5 = imagesc(R(:,:,k));
+axis equal; axis xy;
+axis([0,SX,0,SY]);
+caxis([-0.005 0.005]);
+colormap jet;
+colorbar;
+title('R - Residu')
+end    
 end
 end
+

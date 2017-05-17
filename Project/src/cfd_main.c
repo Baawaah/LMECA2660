@@ -6,33 +6,39 @@ struct _problem* init_problem(){
   return malloc(sizeof(struct _problem));
 }
 
-void init_problem_physical(struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax, double Q0, double tol, double nu, double Um){
+void init_problem_physical(struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double Q0, double tol, double nu,double Rey,double Str,double tau_max){
   (*Problem).CFL   = CFL;
   (*Problem).L     = L;
   (*Problem).H     = H;
   (*Problem).Ls    = Ls;
   (*Problem).Hs    = Hs;
   (*Problem).h     = h;
-  (*Problem).dt    = dt;
   (*Problem).t     = 0;
   (*Problem).tau   = 0;
-  (*Problem).tmax  = tmax;
+  (*Problem).tau_max = tau_max;
   (*Problem).Q0    = Q0;
   (*Problem).tol   = tol;
   (*Problem).nu    = nu;
-  (*Problem).Um    = Um;
+  (*Problem).Rey   = Rey;
+  (*Problem).Str   = Str;
+
+  (*Problem).Um    = Q0/H;
+  (*Problem).f     = Q0*Str/(H*H);
   (*Problem).Hc    = H-Hs;
-  (*Problem).dtau  = fabs(dt*Um/L);
+  (*Problem).dt    = fabs(CFL*h/(*Problem).Um);
+  (*Problem).dtau  = fabs((*Problem).dt*(*Problem).Um/L);
+  (*Problem).tmax  = fabs((*Problem).tau_max*L/(*Problem).Um);
 }
 
 //comment
 
-void init_problem_numerical(struct _problem* Problem, double phi,double t_snapshot){
+void init_problem_numerical(struct _problem* Problem, double phi,double t_snapshot,int flag_os){
   (*Problem).Nx         = (*Problem).L   /(*Problem).h;
   (*Problem).Ny         = (*Problem).H   /(*Problem).h;
   (*Problem).Ntime      = (*Problem).tmax/(*Problem).dt;
   (*Problem).phi        = phi;
   (*Problem).t_snapshot = t_snapshot;
+  (*Problem).flag_os    = flag_os;
 }
 
 void init_problem_map(struct _problem* Problem){
@@ -84,7 +90,7 @@ void init_problem_poiseuille(struct _problem* Problem){
       //(*Problem).psi[i][j]       =  scalar_u_v_poiseuille_int(Problem,eta);
       //(*Problem).omega[i][j] = -( (*Problem).u[i][j+1] - (*Problem).u[i][j-1]) /(2.0*(*Problem).h) ;
       (*Problem).omega[i][j]     = scalar_u_v_poiseuille_dy (Problem,(j - (*Problem).NHs+1)*(*Problem).h);
-      (*Problem).psi[i][j]       = scalar_u_v_poiseuille_int(Problem,(j - (*Problem).NHs+1)*(*Problem).h);
+      //(*Problem).psi[i][j]       = scalar_u_v_poiseuille_int(Problem,(j - (*Problem).NHs+1)*(*Problem).h);
       //(*Problem).psi[i][j] = 5.0;
     }
   }

@@ -81,10 +81,12 @@ int main(int argc,char* argv[]){
 
   // Numerical parameter
   double CFL        =   0.2 ;
-  double tau        =   1.0 ;
+  double tau_max    =   1.0 ;
   double Rey        =   100 ;
+  double Str        =   0.5 ;
   double h          =   0.02;
   double t_snapshot =   0.25;
+  int    flag_os    =   0   ;
 
   // Domain parameter
   double L     =   4.0 ;
@@ -97,10 +99,13 @@ int main(int argc,char* argv[]){
   //double r     =   nu*dt/(h*h);
   //
   char option;
-  while ((option = getopt(argc, argv, "bh:R:C:t:s:")) != EOF) {
+  while ((option = getopt(argc, argv, "boh:R:C:t:s:")) != EOF) {
           switch (option) {
           case 'b':
               Q0 = -Q0;
+              break;
+          case 'o':
+              flag_os = 1;
               break;
           case 'h':
               sscanf(optarg, "%lf", &h);
@@ -112,31 +117,27 @@ int main(int argc,char* argv[]){
               sscanf(optarg, "%lf", &CFL);
               break;
           case 't':
-              sscanf(optarg, "%lf", &tau);
+              sscanf(optarg, "%lf", &tau_max);
               break;
           case 's':
               sscanf(optarg, "%lf", &t_snapshot);
               break;
           }
   }
-  if( h <= 0 || h >= 1 || t_snapshot > 1 || tau < 0 || Rey <= 0 || CFL <= 0){printf("[DEADSTOP] Input Error\n");exit(-1);}
+  if( h <= 0 || h >= 1 || t_snapshot > 1 || tau_max < 0 || Rey <= 0 || CFL <= 0){printf("[DEADSTOP] Input Error\n");exit(-1);}
 
   //
-  double Um    =   Q0/H;
-  double dt    =  fabs(CFL*h/Um);
-  double tmax  =  fabs(tau*L/Um);
+
   double phi   =   1.98;
   double tol   =   1e-4;
 
   // ########
   fprintf(stderr, "CFD - Oscillating flow in a channel with abrupt step\n");
   fprintf(stderr, "by S. Tran - J. Demey \n");
-  fprintf(stderr, "CFL: %f Tau: %f Reynold: %f\n",CFL,tau,Rey);
-  fprintf(stderr, "Average Velocity: %f Grid size h: %f Timestep: %f\n",Um,h,dt);
 
   struct _problem* Problem = init_problem();
-  init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,dt,tmax,Q0,tol,nu,Um);
-  init_problem_numerical(Problem,phi,t_snapshot);
+  init_problem_physical(Problem,CFL,L,H,Ls,Hs,h,Q0,tol,nu,Rey,Str,tau_max);
+  init_problem_numerical(Problem,phi,t_snapshot,flag_os);
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
   init_problem_poiseuille(Problem);
@@ -146,8 +147,11 @@ int main(int argc,char* argv[]){
   //boundary_omega_dwdx_update(Problem);
   inner_u_v_compute(Problem);
 
+  fprintf(stderr, "CFL: %f Tau: %f Reynold: %f Strouhal: %f\n",(*Problem).CFL,(*Problem).tau_max,(*Problem).Rey,(*Problem).Str);
+  fprintf(stderr, "Average Velocity: %f Grid size h: %f Timestep: %f Frequency: %f\n",(*Problem).Um,(*Problem).h,(*Problem).dt,(*Problem).f);
   print_problem_data(Problem);
   fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs);
+  fprintf(stderr,"|Option| Backward Mode: %d  | Oscillating Mode: %d  |\n",Q0<0,flag_os);
   printf("Simulation Starting\n");
   // ---Code Benchmarking-------
   struct timespec start, finish;

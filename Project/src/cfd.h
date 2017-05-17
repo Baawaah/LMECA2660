@@ -19,9 +19,13 @@
    double t;
    double tau;
    double tmax;
+   double tau_max;
    double Q0;
    double nu;
    double Um;
+   double Rey;
+   double Str;
+   double f;
    //Domain Numerical property
    int    Nx;
    int    Ny;
@@ -35,6 +39,8 @@
    double* Re_h;
    double* Re_h_omega;
    double* Beta_CFL;
+
+   int    flag_os;
 
    double r;
    double t_snapshot;
@@ -54,8 +60,8 @@ void             deadstop_exit                (struct _problem* Problem);
  * ###################################
  */
 struct _problem* init_problem();
-void             init_problem_physical        (struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double dt, double tmax, double Q0, double tol, double nu,double Um);
-void             init_problem_numerical       (struct _problem* Problem, double phi, double t_snapshot);
+void             init_problem_physical        (struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double Q0, double tol, double nu,double Rey,double Str, double tau_max);
+void             init_problem_numerical       (struct _problem* Problem, double phi, double t_snapshot,int flag_os);
 void             init_problem_map             (struct _problem* Problem);
 void             init_problem_vector_domain   (struct _problem* Problem);
 void             init_problem_poiseuille      (struct _problem* Problem);

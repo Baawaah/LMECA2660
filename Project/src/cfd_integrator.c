@@ -4,7 +4,9 @@
 #include <stddef.h>
 
 double functionQ(struct _problem* Problem){
-  return  (*Problem).Q0; //(*Problem).Q0*cos(2*M_PI*t);
+  if((*Problem).flag_os == 1)  return (*Problem).Q0*cos(2*M_PI*(*Problem).f*(*Problem).t);
+  else                         return (*Problem).Q0;
+
 }
 
 double scalar_rhs_conv(struct _problem* Problem, int i, int j){
@@ -43,7 +45,7 @@ void first_iteration_omega(struct _problem* Problem){
             (*Problem).f_old[i][j]= dom_old_conv;
         }
     }
-
+    boundary_psi_update(Problem,functionQ);
     poisson_inner_psi_iterator(Problem);
     boundary_omega_update(Problem);
     boundary_omega_dwdx_update(Problem);
@@ -72,6 +74,7 @@ void integration_omega(struct _problem* Problem){
               //if(check != 0 ){ fprintf(stderr, "[DEADSTOP] Diagnose Check: %d\n",check); deadstop_exit(Problem);}
           }
       }
+      boundary_psi_update(Problem,functionQ);
       poisson_inner_psi_iterator(Problem);
       boundary_omega_update(Problem);
       boundary_omega_dwdx_update(Problem);
