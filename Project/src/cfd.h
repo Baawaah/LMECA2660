@@ -57,6 +57,8 @@
    double **f_old;
    double **R_res;
    // Staggered Part
+   double *psi_in;
+   double *psi_out;
    double **P;
 
  };

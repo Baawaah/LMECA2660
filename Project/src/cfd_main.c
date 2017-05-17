@@ -69,9 +69,13 @@ void init_problem_vector_domain(struct _problem* Problem){
   (*Problem).f_old       = (double**) malloc((*Problem).Nx*sizeof(double*));
   (*Problem).R_res       = (double**) malloc((*Problem).Nx*sizeof(double*));
 
+  (*Problem).psi_in      = (double*) calloc((*Problem).Ny,sizeof(double));
+  (*Problem).psi_out     = (double*) calloc((*Problem).Ny,sizeof(double));
+
   (*Problem).Re_h        = (double*) calloc((*Problem).Ntime,sizeof(double));
   (*Problem).Re_h_omega  = (double*) calloc((*Problem).Ntime,sizeof(double));
   (*Problem).Beta_CFL    = (double*) calloc((*Problem).Ntime,sizeof(double));
+
 
   for(int i=0 ; i < (*Problem).Nx ; i++){
     (*Problem).omega[i]  = (double*) calloc((*Problem).Ny,sizeof(double));
