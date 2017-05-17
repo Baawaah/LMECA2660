@@ -49,8 +49,8 @@ void inner_u_v_compute(struct _problem* Problem){
   for(int i= 1 ; i < (*Problem).Nx-1; i++){
      for(int j=(*Problem).imap[i]+1; j < (*Problem).Ny-1; j++){
        // by centred finite differences
-       (*Problem).u_stag    [i][j] =     ((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/(2.0*(*Problem).h);
-       (*Problem).v_stag    [i][j] =    -((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/(2.0*(*Problem).h);
+       (*Problem).u    [i][j] =     ((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/(2.0*(*Problem).h);
+       (*Problem).v    [i][j] =    -((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/(2.0*(*Problem).h);
      }
   }
 }
