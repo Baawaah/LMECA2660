@@ -137,14 +137,14 @@ void boundary_pression_ghost_update(struct _problem* Problem){
 void boundary_pression_ghost_in_out(struct _problem* Problem){
   // Inflow
   for(int j = (*Problem).imap[0]+2; j < (*Problem).Ny_p-1 ; j++)
-  (*Problem).P[0][j] =   (*Problem).P[0][j]
-                       + (((*Problem).psi[0][j+1]-(*Problem).psi[0][j]) - ((*Problem).psi_in[j+1]-(*Problem).psi_in[j]))/((*Problem).t)
+  (*Problem).P[0][j] =   (*Problem).P[1][j]
+                       + (((*Problem).psi[0][j+1]-(*Problem).psi[0][j]) - ((*Problem).psi_in[j+1]-(*Problem).psi_in[j]))/((*Problem).dt)
                        + (*Problem).nu*((*Problem).omega[0][j+1]-(*Problem).omega[0][j]);
   // outflow
-  for(int j = (*Problem).imap[(*Problem).Nx_p-1]+2; j < (*Problem).Ny_p-1 ; j++)
-  (*Problem).P[(*Problem).Nx_p-1][j] =   (*Problem).P[(*Problem).Nx-1][j]
-                                       + (((*Problem).psi[(*Problem).Nx][j+1]-(*Problem).psi[(*Problem).Nx][j]) - ((*Problem).psi_in[j+1]-(*Problem).psi_in[j]))/((*Problem).t)
-                                       + (*Problem).nu*((*Problem).omega[(*Problem).Nx-1][j+1]-(*Problem).omega[(*Problem).Nx-1][j]);
+  for(int j = (*Problem).imap[(*Problem).Nx_p-1]; j < (*Problem).Ny_p-1 ; j++)
+  (*Problem).P[(*Problem).Nx_p-1][j] = -(  (*Problem).P[(*Problem).Nx-1][j]
+                                       + (((*Problem).psi[(*Problem).Nx][j+1]-(*Problem).psi[(*Problem).Nx][j]) - ((*Problem).psi_in[j+1]-(*Problem).psi_in[j]))/((*Problem).dt)
+                                       + (*Problem).nu*((*Problem).omega[(*Problem).Nx-1][j+1]-(*Problem).omega[(*Problem).Nx-1][j]));
 }
 void boundary_pression_ghost_corner(struct _problem* Problem,int flag){
   // 1 - Right, else - Left
