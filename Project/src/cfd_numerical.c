@@ -56,14 +56,14 @@ void inner_u_v_compute(struct _problem* Problem){
 }
 
 double scalar_Ax(struct _problem* Problem, int i, int j){
-  double part1, part2, part3;
+  double part1, part2;
   part1 = (*Problem).u_stag[i][j]*((*Problem).u_stag[i+1][j]-(*Problem).u_stag[i-1][j])/(2.0*(*Problem).h);
   part2 = ((*Problem).v_stag[i+1][j]+(*Problem).v_stag[i+1][j+1]+(*Problem).v_stag[i][j+1]+(*Problem).v_stag[i][j])/4;
   return part1+part2*((*Problem).u_stag[i][j+1]-(*Problem).u_stag[i][j])/(2.0*(*Problem).h);
 }
 
 double scalar_Ay(struct _problem* Problem, int i, int j){
-  double part1, part2, part3;
+  double part1, part2;
   part1 = (*Problem).v_stag[i][j]*((*Problem).v_stag[i][j+1]-(*Problem).v_stag[i][j-1])/(2.0*(*Problem).h);
   part2 = ((*Problem).u_stag[i+1][j]+(*Problem).u_stag[i+1][j+1]+(*Problem).u_stag[i][j+1]+(*Problem).u_stag[i][j])/4;
   return part1+part2*((*Problem).v_stag[i+1][j]-(*Problem).v_stag[i][j])/(2.0*(*Problem).h);
