@@ -29,8 +29,8 @@ double scalar_pres_star_compute(struct _problem* Problem,int i,int j){
 }
 
 double scalar_pres_compute(struct _problem* Problem,int i,int j){
-  return    (1.0-(*Problem).P) * (*Problem).P[i][j]
-          +      (*Problem).P  * scalar_pres_star_compute(Problem,i,j);
+  return    (1.0-(*Problem).phi) * (*Problem).P[i][j]
+          +      (*Problem).phi  * scalar_pres_star_compute(Problem,i,j);
 }
 
 double scalar_pres_r_compute(struct _problem* Problem,int i, int j){
