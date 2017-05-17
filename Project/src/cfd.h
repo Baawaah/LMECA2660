@@ -63,7 +63,8 @@
    double **R_res_pres;
 
  };
-
+void             print_problem_diag           (struct _problem* Problem);
+void             print_problem_pressure       (struct _problem* Problem);
 void             print_problem_data           (struct _problem* Problem);
 void             deadstop_exit                (struct _problem* Problem);
 /* ###################################
@@ -90,10 +91,6 @@ double           scalar_Ay                    (struct _problem* Problem, int i, 
 double           scalar_u_v_poiseuille        (struct _problem* Problem,double y);
 double           scalar_u_v_poiseuille_dy     (struct _problem* Problem,double y);
 double           scalar_u_v_poiseuille_int    (struct _problem* Problem,double y);
-double           scalar_u_v_poiseuille        (struct _problem* Problem,double y);
-double           scalar_u_v_poiseuille_eta    (struct _problem* Problem,double eta);
-double           scalar_u_v_poiseuille_eta_dy (struct _problem* Problem,double eta);
-double           scalar_u_v_poiseuille_eta_int(struct _problem* Problem,double eta);
 void             inner_u_v_compute            (struct _problem* Problem);
 void             u_v_stag                     (struct _problem* Problem);
 void             boundary_psi_update          (struct _problem* Problem, double (*Q)(struct _problem*) );

@@ -48,19 +48,6 @@ double scalar_u_v_poiseuille_int (struct _problem* Problem,double y){
   return 6.0*functionQ(Problem)/((*Problem).Hc*(*Problem).Hc)  * ((1.0/2.0)*y*y - (1.0/3.0)*(y*y*y)/(*Problem).Hc) + functionQ(Problem);
 }
 
-
-double scalar_u_v_poiseuille_eta(struct _problem* Problem,double eta){
-  return 1.5*functionQ(Problem)*(1.0 - pow(eta,2));
-}
-
-double scalar_u_v_poiseuille_eta_dy(struct _problem* Problem,double eta){
-  return -3.0*functionQ(Problem)*(eta);
-}
-
-double scalar_u_v_poiseuille_eta_int(struct _problem* Problem,double eta){
-  return 3.0/2.0*functionQ(Problem)*(eta - eta*eta*eta * 1.0/3.0) + functionQ(Problem);
-}
-
 void inner_u_v_compute(struct _problem* Problem){
   for(int i= 1 ; i < (*Problem).Nx-1; i++){
      for(int j=(*Problem).imap[i]+1; j < (*Problem).Ny-1; j++){
@@ -182,6 +169,19 @@ void inner_psi_update(struct _problem* Problem){
     }
   }*/
 }
+void inner_pres_update(struct _problem* Problem){
+
+  for(int i = 1; i < (*Problem).Nx_p-1; i++){
+    for(int j = (*Problem).imap[i]+2; j < (*Problem).Ny_p-1; j++){
+      (*Problem).P[i][j] = scalar_pres_compute(Problem,i,j);
+    }
+  }/*
+  for(int i = (*Problem).Nx-2; i > 0 ; i--){
+   for(int j = 1; j < (*Problem).imax_map[i]-1; j++){
+      (*Problem).psi[i][j] = scalar_psi_compute(Problem,i,j);
+    }
+  }*/
+}
 
 double inner_psi_error_compute(struct _problem* Problem){
   double e_error = 0.0;
@@ -198,7 +198,15 @@ double inner_psi_error_compute(struct _problem* Problem){
 double inner_pres_error_compute(struct _problem* Problem){
   double e_error = 0.0;
   double square = 0.0;
-  for(int i=1; i < (*Problem).Nx_p -1; i++){
+  boundary_pression_ghost_corner(Problem,0);
+  for(int i=1; i < (*Problem).NLs-1; i++){
+    for(int j= (*Problem).imap[i]+1; j < (*Problem).Ny_p-1; j++){
+      (*Problem).R_res_pres[i][j] = scalar_pres_r_compute(Problem,i,j);
+      square = (*Problem).R_res_pres[i][j]*(*Problem).R_res_pres[i][j] + square;
+    }
+  }
+  boundary_pression_ghost_corner(Problem,1);
+  for(int i= (*Problem).NLs ; i < (*Problem).Nx_p -1; i++){
     for(int j= (*Problem).imap[i]+1; j < (*Problem).Ny_p-1; j++){
       (*Problem).R_res_pres[i][j] = scalar_pres_r_compute(Problem,i,j);
       square = (*Problem).R_res_pres[i][j]*(*Problem).R_res_pres[i][j] + square;
@@ -235,13 +243,10 @@ void poisson_inner_pres_iterator(struct _problem* Problem){
 
   while( error>(*Problem).tol && iter < iter_max){
     n_iter++;
-    //inner_psi_update(Problem);
-    // Inflow Boundary - Natural Condition
-    for(int j = (*Problem).imap[0]; j < (*Problem).Ny-1 ; j++) (*Problem).psi[0][j]               = (*Problem).psi[1][j];
-    // Outflow Boundary - Natural Condition
-    for(int i = (*Problem).imap[(*Problem).Nx-1]; i < (*Problem).Ny -1 ; i++) (*Problem).psi[(*Problem).Nx-1][i] = (*Problem).psi[(*Problem).Nx-2][i];
 
-    error = inner_psi_error_compute(Problem);
+
+    boundary_pression_ghost_in_out(Problem);
+    error = inner_pres_error_compute(Problem);
     iter++;
   }
   if(iter >= iter_max){fprintf(stderr, "[DEADSTOP] Maximum Iteration Reached Current Error: %f\n",error); deadstop_exit(Problem);}

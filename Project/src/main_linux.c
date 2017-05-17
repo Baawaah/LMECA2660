@@ -36,6 +36,20 @@ void print_problem_diag(struct _problem* Problem){
     fclose(file_diag);
 }
 
+void print_problem_pressure(struct _problem* Problem){
+  char buff_P_name[50];
+  sprintf(buff_P_name ,"data/CFD_P_%d.txt",(int) ( (*Problem).tau * 100 ));
+  FILE* file_P = fopen(buff_P_name,"w");
+  if(file_P == NULL){ fprintf(stderr,"File error\n"); exit(1);}
+    for(int j = 0 ; j < (*Problem).Ny_p ; j++){
+      for(int i = 0; i < (*Problem).Nx_p ; i++){
+        fprintf(file_P,"%5.16f "   ,(*Problem).P[i][j]);
+    }
+    fprintf(file_P ,"\n");
+  }
+  fclose(file_P);
+}
+
 void print_problem_data(struct _problem* Problem){
   char buff_omega_name[50];
   char buff_psi_name[50];
