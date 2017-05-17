@@ -82,6 +82,7 @@ double           scalar_u_v_poiseuille_eta    (struct _problem* Problem,double e
 double           scalar_u_v_poiseuille_eta_dy (struct _problem* Problem,double eta);
 double           scalar_u_v_poiseuille_eta_int(struct _problem* Problem,double eta);
 void             inner_u_v_compute            (struct _problem* Problem);
+void             u_v_stag                     (struct _problem* Problem)
 void             boundary_psi_update          (struct _problem* Problem, double (*Q)(struct _problem*) );
 void             boundary_omega_update        (struct _problem* Problem);
 void             boundary_omega_dwdx_update   (struct _problem* Problem);

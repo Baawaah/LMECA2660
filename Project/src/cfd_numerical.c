@@ -55,7 +55,14 @@ void inner_u_v_compute(struct _problem* Problem){
   }
 }
 
-
+void u_v_stag(struct _problem* Problem){
+  for(int i= 1 ; i < (*Problem).Nx_p-1; i++){
+     for(int j=(*Problem).imap_p[i]+1; j < (*Problem).Ny_p-1; j++){
+        (*Problem).u    [i][j] =     ((*Problem).psi[i][j+1]-(*Problem).psi[i][j])/(*Problem).h;
+        (*Problem).v    [i][j] =    -((*Problem).psi[i+1][j]-(*Problem).psi[i][j])/(*Problem).h;
+     }
+  }
+}
 
 void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*)){
 // Upper boundary

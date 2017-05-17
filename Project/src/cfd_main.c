@@ -33,16 +33,19 @@ void init_problem_physical(struct _problem* Problem, double CFL, double L, doubl
 //comment
 
 void init_problem_numerical(struct _problem* Problem, double phi,double t_snapshot,int flag_os){
-  (*Problem).Nx         = (*Problem).L   /(*Problem).h;
-  (*Problem).Ny         = (*Problem).H   /(*Problem).h;
-  (*Problem).Ntime      = (*Problem).tmax/(*Problem).dt;
+  (*Problem).Nx         = (*Problem).L    /(*Problem).h;
+  (*Problem).Ny         = (*Problem).H    /(*Problem).h;
+  (*Problem).Nx_p       = ((*Problem).L+2)/(*Problem).h;
+  (*Problem).Ny_p       = ((*Problem).H+2)/(*Problem).h;
+  (*Problem).Ntime      = (*Problem).tmax /(*Problem).dt;
   (*Problem).phi        = phi;
   (*Problem).t_snapshot = t_snapshot;
   (*Problem).flag_os    = flag_os;
 }
 
 void init_problem_map(struct _problem* Problem){
-  (*Problem).imap = calloc((*Problem).Nx,sizeof(int));
+  (*Problem).imap   = calloc((*Problem).Nx,sizeof(int));
+  (*Problem).imap_p = calloc((*Problem).Nx_p,sizeof(int));
   (*Problem).NHs = (*Problem).Hs/(*Problem).h;
   (*Problem).NLs = (*Problem).Ls/(*Problem).h;
   for(int i = 0 ; i < (*Problem).Nx ; i++){
