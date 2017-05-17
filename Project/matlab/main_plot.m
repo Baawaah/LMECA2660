@@ -2,8 +2,10 @@
 
 plot_all = 1;
 plot_R   = 0;
+plot_diag= 1;
 %%
-t = [0 25 50 75 99];
+t = [0 25 37 50 62 75 87 99];
+%t = [0 25 50 75 99];
 %t = 5;
 for k = 1 : length(t); 
     file_omega = sprintf('../data/CFD_omega_%d.txt',t(k));
@@ -17,7 +19,7 @@ for k = 1 : length(t);
     v    (:,:,k) = load(file_v);
     R    (:,:,k) = load(file_R);
 end
-%Diag = load('../data/CFD_DIAG.txt');
+Diag = load('../data/CFD_DIAG.txt');
 %% 
 k = 2;
 [SY SX] = size(omega(:,:,1))
@@ -69,4 +71,11 @@ title('R - Residu')
 end    
 end
 end
-
+%%
+if plot_diag == 1
+figure;
+RE_HL  = 10 * ones(length(Diag(:,1)));
+RE_HOL = 5  * ones(length(Diag(:,1)));
+plot(Diag(:,1),Diag(:,2),Diag(:,1),Diag(:,3),Diag(:,1),RE_HL,'--',Diag(:,1),RE_HOL,'--');
+legend('Re_h','Re_h_\omega','Re_h Limit','Re_h_\omega Limit');
+end    
