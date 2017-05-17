@@ -29,6 +29,8 @@
    //Domain Numerical property
    int    Nx;
    int    Ny;
+   int    Nx_p;
+   int    Ny_p;
    int    NLs;
    int    NHs;
    int    Ntime;
@@ -36,6 +38,7 @@
    double e_max;
    double tol;
    int   * imap;
+   int   * imap_p;
    double* Re_h;
    double* Re_h_omega;
    double* Beta_CFL;
@@ -49,6 +52,8 @@
    double **psi;
    double **u;
    double **v;
+   double **u_stag;
+   double **v_stag;
    double **f_old;
    double **R_res;
    // Staggered Part
@@ -85,7 +90,7 @@ double           scalar_u_v_poiseuille_eta    (struct _problem* Problem,double e
 double           scalar_u_v_poiseuille_eta_dy (struct _problem* Problem,double eta);
 double           scalar_u_v_poiseuille_eta_int(struct _problem* Problem,double eta);
 void             inner_u_v_compute            (struct _problem* Problem);
-void             u_v_stag                     (struct _problem* Problem)
+void             u_v_stag                     (struct _problem* Problem);
 void             boundary_psi_update          (struct _problem* Problem, double (*Q)(struct _problem*) );
 void             boundary_omega_update        (struct _problem* Problem);
 void             boundary_omega_dwdx_update   (struct _problem* Problem);

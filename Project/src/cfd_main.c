@@ -52,6 +52,10 @@ void init_problem_map(struct _problem* Problem){
       if( i < (*Problem).NLs ) (*Problem).imap[i] = (*Problem).NHs-1;
       else (*Problem).imap[i] = 0;
   }
+  for(int i = 0 ; i < (*Problem).Nx_p ; i++){
+      if( i < (*Problem).NLs+1 ) (*Problem).imap_p[i] = (*Problem).NHs;
+      else (*Problem).imap_p[i] = 0;
+  }
 }
 
 void init_problem_vector_domain(struct _problem* Problem){
@@ -112,10 +116,12 @@ void free_problem_vector_domain(struct _problem* Problem){
     free((*Problem).psi[i]);
     free((*Problem).u[i]);
     free((*Problem).v[i]);
-    free((*Problem).u_stag[i]);
-    free((*Problem).v_stag[i]);
     free((*Problem).f_old[i]);
     free((*Problem).R_res[i]);
+  }
+  for(int i=0 ; i < (*Problem).Nx_p ; i++){
+    free((*Problem).u_stag[i]);
+    free((*Problem).v_stag[i]);
   }
   free((*Problem).omega);
   free((*Problem).psi);
