@@ -157,10 +157,12 @@ void boundary_pression_ghost_in_out(struct _problem* Problem){
 }
 void boundary_pression_ghost_corner(struct _problem* Problem,int flag){
   // 1 - Right, else - Left
+  // Vertical
   if(flag == 1) (*Problem).P[(*Problem).NLs][(*Problem).NHs] =
-                (*Problem).P[(*Problem).NLs][(*Problem).NHs+1] - (*Problem).nu * ( (*Problem).omega[(*Problem).NLs][(*Problem).NHs] - (*Problem).omega[(*Problem).NLs][(*Problem).NHs+1] );
+                (*Problem).P[(*Problem).NLs+1][(*Problem).NHs]  + (*Problem).nu * ( (*Problem).omega[(*Problem).NLs+1][(*Problem).NHs-1] - (*Problem).omega[(*Problem).NLs][(*Problem).NHs-1] );
+  // Horizontal
   else          (*Problem).P[(*Problem).NLs][(*Problem).NHs] =
-                (*Problem).P[(*Problem).NLs+1][(*Problem).NHs]  + (*Problem).nu * ( (*Problem).omega[(*Problem).NLs][(*Problem).NHs] - (*Problem).omega[(*Problem).NLs+1][(*Problem).NHs] );
+                (*Problem).P[(*Problem).NLs][(*Problem).NHs+1]  - (*Problem).nu * ( (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs+1] - (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs] );
 }
 
 void inner_psi_update(struct _problem* Problem){
