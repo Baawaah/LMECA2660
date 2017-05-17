@@ -49,10 +49,24 @@ void inner_u_v_compute(struct _problem* Problem){
   for(int i= 1 ; i < (*Problem).Nx-1; i++){
      for(int j=(*Problem).imap[i]+1; j < (*Problem).Ny-1; j++){
        // by centred finite differences
-       (*Problem).u    [i][j] =     ((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/(2.0*(*Problem).h);
-       (*Problem).v    [i][j] =    -((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/(2.0*(*Problem).h);
+       (*Problem).u_stag    [i][j] =     ((*Problem).psi[i][j+1]-(*Problem).psi[i][j-1])/(2.0*(*Problem).h);
+       (*Problem).v_stag    [i][j] =    -((*Problem).psi[i+1][j]-(*Problem).psi[i-1][j])/(2.0*(*Problem).h);
      }
   }
+}
+
+double scalar_Ax(struct _problem* Problem, int i, int j){
+  double part1, part2, part3;
+  part1 = (*Problem).u_stag[i][j]*((*Problem).u_stag[i+1][j]-(*Problem).u_stag[i-1][j])/(2.0*(*Problem).h);
+  part2 = ((*Problem).v_stag[i+1][j]+(*Problem).v_stag[i+1][j+1]+(*Problem).v_stag[i][j+1]+(*Problem).v_stag[i][j])/4;
+  return part1+part2*((*Problem).u_stag[i][j+1]-(*Problem).u_stag[i][j])/(2.0*(*Problem).h);
+}
+
+double scalar_Ay(struct _problem* Problem, int i, int j){
+  double part1, part2, part3;
+  part1 = (*Problem).v_stag[i][j]*((*Problem).v_stag[i][j+1]-(*Problem).v_stag[i][j-1])/(2.0*(*Problem).h);
+  part2 = ((*Problem).u_stag[i+1][j]+(*Problem).u_stag[i+1][j+1]+(*Problem).u_stag[i][j+1]+(*Problem).u_stag[i][j])/4;
+  return part1+part2*((*Problem).v_stag[i+1][j]-(*Problem).v_stag[i][j])/(2.0*(*Problem).h);
 }
 
 void u_v_stag(struct _problem* Problem){
