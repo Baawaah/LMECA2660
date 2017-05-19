@@ -127,7 +127,7 @@ void boundary_pression_ghost_update(struct _problem* Problem){
   (*Problem).P[i][(*Problem).Ny_p-2] = (*Problem).P[i][(*Problem).Ny_p-3] + (*Problem).nu * ( (*Problem).omega[i][(*Problem).Ny-1] - (*Problem).omega[i-1][(*Problem).Ny-1] );
   // Down
   for(int i = 1; i < (*Problem).Nx_p-2 ; i++ )
-  (*Problem).P[i][(*Problem).imap[i]+1] = (*Problem).P[i][(*Problem).imap[i]+2] - (*Problem).nu * ( (*Problem).omega[i][(*Problem).imap[i]] - (*Problem).omega[i-1][(*Problem).imap[i]+1] );
+  (*Problem).P[i][(*Problem).imap[i]] = (*Problem).P[i][(*Problem).imap[i]+1] - (*Problem).nu * ( (*Problem).omega[i][(*Problem).imap[i]] - (*Problem).omega[i-1][(*Problem).imap[i]+1] );
   // Side
   if( (*Problem).Ls != (*Problem).L && (*Problem).Ls != 0.0 )
   for(int j = 1; j < (*Problem).NHs; j++ )
@@ -172,15 +172,15 @@ void inner_psi_update(struct _problem* Problem){
   }*/
 }
 void inner_pres_update(struct _problem* Problem){
-  boundary_pression_ghost_corner(Problem,0);
-  for(int i = 1; i < (*Problem).NLs; i++){
-    for(int j = (*Problem).imap[i]+2; j < (*Problem).Ny_p-2; j++){
+   boundary_pression_ghost_corner(Problem,0);
+  for(int i = 1; i < (*Problem).NLs+1; i++){
+    for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny_p-2; j++){
       (*Problem).P[i][j] = scalar_pres_compute(Problem,i,j);
     }
   }
   boundary_pression_ghost_corner(Problem,1);
   for(int i =  (*Problem).NLs+1; i < (*Problem).Nx_p-2; i++){
-    for(int j = (*Problem).imap[i]+2; j < (*Problem).Ny_p-2; j++){
+    for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny_p-2; j++){
       (*Problem).P[i][j] = scalar_pres_compute(Problem,i,j);
     }
   }
@@ -212,7 +212,7 @@ double inner_pres_error_compute(struct _problem* Problem){
   double e_error_R = 0.0;
   boundary_pression_ghost_corner(Problem,0);
   for(int i=1; i < (*Problem).NLs+1; i++){
-    for(int j= (*Problem).imap[i]+1; j < (*Problem).Ny_p-2; j++){
+    for(int j= (*Problem).imap[i]; j < (*Problem).Ny_p-2; j++){
       (*Problem).R_res_pres[i][j] = scalar_pres_r_compute(Problem,i,j);
       square_L = (*Problem).R_res_pres[i][j]*(*Problem).R_res_pres[i][j] + square_L;
     }
@@ -220,7 +220,7 @@ double inner_pres_error_compute(struct _problem* Problem){
   e_error_L = fabs((*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square_L));
   boundary_pression_ghost_corner(Problem,1);
   for(int i =  (*Problem).NLs+1; i < (*Problem).Nx_p-2; i++){
-    for(int j = (*Problem).imap[i]+2; j < (*Problem).Ny_p-2; j++){
+    for(int j = (*Problem).imap[i]; j < (*Problem).Ny_p-2; j++){
       (*Problem).R_res_pres[i][j] = scalar_pres_r_compute(Problem,i,j);
       square_R = (*Problem).R_res_pres[i][j]*(*Problem).R_res_pres[i][j] + square_R;
     }
@@ -257,7 +257,7 @@ void poisson_inner_pres_iterator(struct _problem* Problem){
   while( error>(*Problem).tol && iter < iter_max){
     n_iter++;
 
-
+    inner_pres_update(Problem);
     boundary_pression_ghost_in_out(Problem);
     error = inner_pres_error_compute(Problem);
     iter++;

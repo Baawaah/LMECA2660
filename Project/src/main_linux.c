@@ -22,7 +22,9 @@ void deadstop_exit(struct _problem* Problem){
   fprintf(stderr, "Emergency Exit Procedure Initiate\n");
   fprintf(stderr, "Problem occured at tau = %d\n",(int) ( (*Problem).tau * 100 ));
   fprintf(stderr, "Saving current data under  _%d_\n",(int) ( (*Problem).tau * 100 ));
-  print_problem_data(Problem);
+  print_problem_data    (Problem);
+  print_problem_pressure(Problem);
+  //print_problem_diag    (Problem);
   free_problem_vector_domain(Problem);
   exit(-1);
 }
@@ -40,12 +42,12 @@ void print_problem_pressure(struct _problem* Problem){
   char buff_P_name[50];
   char buff_R_name[50];
   sprintf(buff_P_name ,"data/CFD_P_%d.txt",(int) ( (*Problem).tau * 100 ));
-  sprintf(buff_R_name ,"data/CFD_R_%d.txt",(int) ( (*Problem).tau * 100 ));
+  sprintf(buff_R_name ,"data/CFD_R_pres_%d.txt",(int) ( (*Problem).tau * 100 ));
   FILE* file_P = fopen(buff_P_name,"w");
-  FILE* file_R = fopen(buff_P_name,"w");
+  FILE* file_R = fopen(buff_R_name,"w");
   if(file_P == NULL || file_R == NULL){ fprintf(stderr,"File error\n"); exit(1);}
-    for(int j = 0 ; j < (*Problem).Ny_p ; j++){
-      for(int i = 0; i < (*Problem).Nx_p ; i++){
+    for(int j = 0 ; j < (*Problem).Ny_p-1 ; j++){
+      for(int i = 0; i < (*Problem).Nx_p-1 ; i++){
         fprintf(file_P,"%5.16f "   ,(*Problem).P[i][j]);
         fprintf(file_R,"%5.16f "   ,(*Problem).R_res_pres[i][j]);
     }
@@ -168,10 +170,10 @@ int main(int argc,char* argv[]){
   inner_u_v_compute(Problem);
 
   //
-  
+
   boundary_pression_ghost_update(Problem);
   boundary_pression_ghost_in_out(Problem);
-  poisson_inner_pres_iterator(Problem);
+  //poisson_inner_pres_iterator(Problem);
   print_problem_pressure(Problem);
 
 
