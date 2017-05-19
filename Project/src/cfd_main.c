@@ -35,8 +35,8 @@ void init_problem_physical(struct _problem* Problem, double CFL, double L, doubl
 void init_problem_numerical(struct _problem* Problem, double phi,double t_snapshot,int flag_os){
   (*Problem).Nx         = (*Problem).L    /(*Problem).h;
   (*Problem).Ny         = (*Problem).H    /(*Problem).h;
-  (*Problem).Nx_p       = ((*Problem).L)/(*Problem).h +2;
-  (*Problem).Ny_p       = ((*Problem).H)/(*Problem).h +2;
+  (*Problem).Nx_p       = (*Problem).Nx +2;
+  (*Problem).Ny_p       = (*Problem).Ny +2;
   (*Problem).Ntime      = (*Problem).tmax /(*Problem).dt;
   (*Problem).phi        = phi;
   (*Problem).t_snapshot = t_snapshot;
@@ -81,10 +81,14 @@ void init_problem_vector_domain(struct _problem* Problem){
     (*Problem).v[i]          = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).f_old[i]      = (double*) calloc((*Problem).Ny,sizeof(double));
     (*Problem).R_res[i]      = (double*) calloc((*Problem).Ny,sizeof(double));
-    (*Problem).P[i]          = (double*) calloc((*Problem).Ny_p,sizeof(double));
+  }
+  for(int i=0 ; i < (*Problem).Nx+1 ; i++){
+    (*Problem).P[i]          = (double*) calloc((*Problem).Ny+1,sizeof(double));
+    (*Problem).R_res_pres[i] = (double*) calloc((*Problem).Ny+1,sizeof(double));
+  }
+  for(int i=0 ; i < (*Problem).Nx_p ; i++){
     (*Problem).u_stag[i]     = (double*) calloc((*Problem).Ny_p,sizeof(double));
     (*Problem).v_stag[i]     = (double*) calloc((*Problem).Ny_p,sizeof(double));
-    (*Problem).R_res_pres[i] = (double*) calloc((*Problem).Ny_p,sizeof(double));
   }
 }
 

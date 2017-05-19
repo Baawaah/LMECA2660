@@ -38,16 +38,22 @@ void print_problem_diag(struct _problem* Problem){
 
 void print_problem_pressure(struct _problem* Problem){
   char buff_P_name[50];
+  char buff_R_name[50];
   sprintf(buff_P_name ,"data/CFD_P_%d.txt",(int) ( (*Problem).tau * 100 ));
+  sprintf(buff_R_name ,"data/CFD_R_%d.txt",(int) ( (*Problem).tau * 100 ));
   FILE* file_P = fopen(buff_P_name,"w");
-  if(file_P == NULL){ fprintf(stderr,"File error\n"); exit(1);}
+  FILE* file_R = fopen(buff_P_name,"w");
+  if(file_P == NULL || file_R == NULL){ fprintf(stderr,"File error\n"); exit(1);}
     for(int j = 0 ; j < (*Problem).Ny_p ; j++){
       for(int i = 0; i < (*Problem).Nx_p ; i++){
         fprintf(file_P,"%5.16f "   ,(*Problem).P[i][j]);
+        fprintf(file_R,"%5.16f "   ,(*Problem).R_res_pres[i][j]);
     }
     fprintf(file_P ,"\n");
+    fprintf(file_R ,"\n");
   }
   fclose(file_P);
+  fclose(file_R);
 }
 
 void print_problem_data(struct _problem* Problem){
@@ -161,6 +167,13 @@ int main(int argc,char* argv[]){
   //boundary_omega_dwdx_update(Problem);
   inner_u_v_compute(Problem);
 
+  //
+  boundary_pression_ghost_update(Problem);
+  boundary_pression_ghost_in_out(Problem);
+  //poisson_inner_pres_iterator(Problem);
+  //print_problem_pressure(Problem);
+
+
   fprintf(stderr, "CFL: %f Tau: %f Reynold: %f Strouhal: %f\n",(*Problem).CFL,(*Problem).tau_max,(*Problem).Rey,(*Problem).Str);
   fprintf(stderr, "Average Velocity: %f Grid size h: %f Timestep: %f Frequency: %f\n",(*Problem).Um,(*Problem).h,(*Problem).dt,(*Problem).f);
   print_problem_data(Problem);
@@ -173,7 +186,7 @@ int main(int argc,char* argv[]){
   clock_gettime(CLOCK_MONOTONIC, &start);
   // ---------------------------
 
-  integration_omega(Problem);
+  //integration_omega(Problem);
 
   // ---Code Benchmarking-------
   clock_gettime(CLOCK_MONOTONIC, &finish);

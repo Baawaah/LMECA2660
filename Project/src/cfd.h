@@ -81,25 +81,31 @@ void             free_problem_vector_domain   (struct _problem* Problem);
  *  CFD Numerical
  * ###################################
  */
-void             scalar_rhs                   (struct _problem* Problem, int i, int j, double du);
-double           scalar_psi_star_compute      (struct _problem* Problem,int i,int j);
-double           scalar_psi_compute           (struct _problem* Problem,int i,int j);
-double           scalar_psi_r_compute         (struct _problem* Problem,int i, int j);
-double           scalar_Ax                    (struct _problem* Problem, int i, int j);
-double           scalar_Ay                    (struct _problem* Problem, int i, int j);
-double           scalar_u_v_poiseuille        (struct _problem* Problem,double y);
-double           scalar_u_v_poiseuille_dy     (struct _problem* Problem,double y);
-double           scalar_u_v_poiseuille_int    (struct _problem* Problem,double y);
-void             inner_u_v_compute            (struct _problem* Problem);
-void             u_v_stag                     (struct _problem* Problem);
-void             boundary_psi_update          (struct _problem* Problem, double (*Q)(struct _problem*) );
-void             boundary_omega_update        (struct _problem* Problem);
-void             boundary_omega_dwdx_update   (struct _problem* Problem);
-void             inner_psi_star_update        (struct _problem* Problem);
-double           inner_psi_error_compute      (struct _problem* Problem);
-void             poisson_inner_psi_iterator   (struct _problem* Problem);
-void             poisson_inner_pres_iterator  (struct _problem* Problem);
-int              diagnose_check               (struct _problem* Problem,int i,int j, int ktime);
+void             scalar_rhs                    (struct _problem* Problem, int i, int j, double du);
+double           scalar_psi_star_compute       (struct _problem* Problem,int i,int j);
+double           scalar_psi_compute            (struct _problem* Problem,int i,int j);
+double           scalar_psi_r_compute          (struct _problem* Problem,int i, int j);
+double           scalar_pres_star_compute      (struct _problem* Problem,int i,int j);
+double           scalar_Ax                     (struct _problem* Problem, int i, int j);
+double           scalar_Ay                     (struct _problem* Problem, int i, int j);
+double           scalar_u_v_poiseuille         (struct _problem* Problem,double y);
+double           scalar_u_v_poiseuille_dy      (struct _problem* Problem,double y);
+double           scalar_u_v_poiseuille_int     (struct _problem* Problem,double y);
+void             inner_u_v_compute             (struct _problem* Problem);
+void             u_v_stag                      (struct _problem* Problem);
+void             boundary_psi_update           (struct _problem* Problem, double (*Q)(struct _problem*) );
+void             boundary_omega_update         (struct _problem* Problem);
+void             boundary_omega_dwdx_update    (struct _problem* Problem);
+void             boundary_pression_ghost_update(struct _problem* Problem);
+void             boundary_pression_ghost_in_out(struct _problem* Problem);
+void             boundary_pression_ghost_corner(struct _problem* Problem,int flag);
+void             inner_psi_update              (struct _problem* Problem);
+double           inner_psi_error_compute       (struct _problem* Problem);
+void             inner_pres_update             (struct _problem* Problem);
+double           inner_pres_error_compute      (struct _problem* Problem);
+void             poisson_inner_psi_iterator    (struct _problem* Problem);
+void             poisson_inner_pres_iterator   (struct _problem* Problem);
+int              diagnose_check                (struct _problem* Problem,int i,int j, int ktime);
 /* ###################################
  *  CFD Integrator
  * ###################################
