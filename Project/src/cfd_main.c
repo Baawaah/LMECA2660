@@ -45,16 +45,11 @@ void init_problem_numerical(struct _problem* Problem, double phi,double t_snapsh
 
 void init_problem_map(struct _problem* Problem){
   (*Problem).imap   = calloc((*Problem).Nx,sizeof(int));
-  (*Problem).imap_p = calloc((*Problem).Nx_p,sizeof(int));
   (*Problem).NHs = (*Problem).Hs/(*Problem).h;
   (*Problem).NLs = (*Problem).Ls/(*Problem).h;
   for(int i = 0 ; i < (*Problem).Nx ; i++){
       if( i < (*Problem).NLs ) (*Problem).imap[i] = (*Problem).NHs-1;
       else (*Problem).imap[i] = 0;
-  }
-  for(int i = 0 ; i < (*Problem).Nx_p ; i++){
-      if( i < (*Problem).NLs+1 ) (*Problem).imap_p[i] = (*Problem).NHs;
-      else (*Problem).imap_p[i] = 0;
   }
 }
 
@@ -66,10 +61,10 @@ void init_problem_vector_domain(struct _problem* Problem){
   (*Problem).f_old       = (double**) malloc((*Problem).Nx*sizeof(double*));
   (*Problem).R_res       = (double**) malloc((*Problem).Nx*sizeof(double*));
 
-  (*Problem).P           = (double**) malloc((*Problem).Nx_p*sizeof(double*));
+  (*Problem).P           = (double**) malloc(((*Problem).Nx+1)*sizeof(double*));
+  (*Problem).R_res_pres  = (double**) malloc(((*Problem).Nx+1)*sizeof(double*));
   (*Problem).u_stag      = (double**) malloc((*Problem).Nx_p*sizeof(double*));
   (*Problem).v_stag      = (double**) malloc((*Problem).Nx_p*sizeof(double*));
-  (*Problem).R_res_pres  = (double**) malloc((*Problem).Nx_p*sizeof(double*));
 
   (*Problem).psi_in      = (double*) calloc((*Problem).Ny,sizeof(double));
   (*Problem).psi_out     = (double*) calloc((*Problem).Ny,sizeof(double));
@@ -127,11 +122,14 @@ void free_problem_vector_domain(struct _problem* Problem){
     free((*Problem).R_res[i]);
   }
   for(int i=0 ; i < (*Problem).Nx_p ; i++){
-    free((*Problem).P[i]);
     free((*Problem).u_stag[i]);
     free((*Problem).v_stag[i]);
+  }
+  for(int i=0 ; i < (*Problem).Nx_p-1 ; i++){
+    free((*Problem).P[i]);
     free((*Problem).R_res_pres[i]);
   }
+
   free((*Problem).omega);
   free((*Problem).psi);
   free((*Problem).u);

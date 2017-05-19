@@ -38,7 +38,6 @@
    double e_max;
    double tol;
    int   * imap;
-   int   * imap_p;
    double* Re_h;
    double* Re_h_omega;
    double* Beta_CFL;

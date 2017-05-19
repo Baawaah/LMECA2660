@@ -164,7 +164,7 @@ int main(int argc,char* argv[]){
   fprintf(stderr, "CFL: %f Tau: %f Reynold: %f Strouhal: %f\n",(*Problem).CFL,(*Problem).tau_max,(*Problem).Rey,(*Problem).Str);
   fprintf(stderr, "Average Velocity: %f Grid size h: %f Timestep: %f Frequency: %f\n",(*Problem).Um,(*Problem).h,(*Problem).dt,(*Problem).f);
   print_problem_data(Problem);
-  fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs);
+  fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d NTime: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs,(*Problem).Ntime);
   fprintf(stderr,"|Option| Backward Mode: %d  | Oscillating Mode: %d  |\n",Q0<0,flag_os);
   printf("Simulation Starting\n");
   // ---Code Benchmarking-------
