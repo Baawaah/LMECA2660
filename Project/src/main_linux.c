@@ -163,6 +163,13 @@ int main(int argc,char* argv[]){
   init_problem_map(Problem);
   init_problem_vector_domain(Problem);
   init_problem_poiseuille(Problem);
+  fprintf(stderr, "CFL: %f Tau: %f Reynold: %f Strouhal: %f\n",(*Problem).CFL,(*Problem).tau_max,(*Problem).Rey,(*Problem).Str);
+  fprintf(stderr, "Average Velocity: %f Grid size h: %f Timestep: %f Frequency: %f\n",(*Problem).Um,(*Problem).h,(*Problem).dt,(*Problem).f);
+  fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d NTime: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs,(*Problem).Ntime);
+  fprintf(stderr,"|Option| Backward Mode: %d  | Oscillating Mode: %d  |\n",Q0<0,flag_os);
+  printf("Simulation Starting\n");
+
+  
   boundary_psi_update(Problem,functionQ);
   poisson_inner_psi_iterator(Problem);
   boundary_omega_update(Problem);
@@ -173,16 +180,11 @@ int main(int argc,char* argv[]){
 
   boundary_pression_ghost_update(Problem);
   boundary_pression_ghost_in_out(Problem);
-  //poisson_inner_pres_iterator(Problem);
+  poisson_inner_pres_iterator(Problem);
+  print_problem_data(Problem);
   print_problem_pressure(Problem);
 
 
-  fprintf(stderr, "CFL: %f Tau: %f Reynold: %f Strouhal: %f\n",(*Problem).CFL,(*Problem).tau_max,(*Problem).Rey,(*Problem).Str);
-  fprintf(stderr, "Average Velocity: %f Grid size h: %f Timestep: %f Frequency: %f\n",(*Problem).Um,(*Problem).h,(*Problem).dt,(*Problem).f);
-  print_problem_data(Problem);
-  fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d NTime: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs,(*Problem).Ntime);
-  fprintf(stderr,"|Option| Backward Mode: %d  | Oscillating Mode: %d  |\n",Q0<0,flag_os);
-  printf("Simulation Starting\n");
   // ---Code Benchmarking-------
   struct timespec start, finish;
   double elapsed;

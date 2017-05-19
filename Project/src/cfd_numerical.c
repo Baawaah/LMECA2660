@@ -151,11 +151,11 @@ void boundary_pression_ghost_in_out(struct _problem* Problem){
 void boundary_pression_ghost_corner(struct _problem* Problem,int flag){
   // 1 - Right, else - Left
   // Vertical
-  if(flag == 1) (*Problem).P[(*Problem).NLs+1][(*Problem).NHs+1] =
-                (*Problem).P[(*Problem).NLs+2][(*Problem).NHs+1]  + (*Problem).nu * ( (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-1] - (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-2] );
+  if(flag == 1) (*Problem).P[(*Problem).NLs][(*Problem).NHs] =
+                (*Problem).P[(*Problem).NLs+1][(*Problem).NHs]  + (*Problem).nu * ( (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-1] - (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-2] );
   // Horizontal
-  else          (*Problem).P[(*Problem).NLs+1][(*Problem).NHs+1] =
-                (*Problem).P[(*Problem).NLs+1][(*Problem).NHs+2]  - (*Problem).nu * ( (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-1] - (*Problem).omega[(*Problem).NLs-2][(*Problem).NHs-1] );
+  else          (*Problem).P[(*Problem).NLs][(*Problem).NHs] =
+                (*Problem).P[(*Problem).NLs][(*Problem).NHs+1]  - (*Problem).nu * ( (*Problem).omega[(*Problem).NLs-1][(*Problem).NHs-1] - (*Problem).omega[(*Problem).NLs-2][(*Problem).NHs-1] );
 }
 
 void inner_psi_update(struct _problem* Problem){
@@ -212,7 +212,7 @@ double inner_pres_error_compute(struct _problem* Problem){
   double e_error_R = 0.0;
   boundary_pression_ghost_corner(Problem,0);
   for(int i=1; i < (*Problem).NLs+1; i++){
-    for(int j= (*Problem).imap[i]; j < (*Problem).Ny_p-2; j++){
+    for(int j= (*Problem).imap[i]+1; j < (*Problem).Ny_p-2; j++){
       (*Problem).R_res_pres[i][j] = scalar_pres_r_compute(Problem,i,j);
       square_L = (*Problem).R_res_pres[i][j]*(*Problem).R_res_pres[i][j] + square_L;
     }
@@ -220,7 +220,7 @@ double inner_pres_error_compute(struct _problem* Problem){
   e_error_L = fabs((*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square_L));
   boundary_pression_ghost_corner(Problem,1);
   for(int i =  (*Problem).NLs+1; i < (*Problem).Nx_p-2; i++){
-    for(int j = (*Problem).imap[i]; j < (*Problem).Ny_p-2; j++){
+    for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny_p-2; j++){
       (*Problem).R_res_pres[i][j] = scalar_pres_r_compute(Problem,i,j);
       square_R = (*Problem).R_res_pres[i][j]*(*Problem).R_res_pres[i][j] + square_R;
     }
@@ -259,6 +259,8 @@ void poisson_inner_pres_iterator(struct _problem* Problem){
 
     inner_pres_update(Problem);
     boundary_pression_ghost_in_out(Problem);
+    boundary_pression_ghost_update(Problem);
+
     error = inner_pres_error_compute(Problem);
     iter++;
   }
