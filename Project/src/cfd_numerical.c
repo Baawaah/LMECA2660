@@ -142,10 +142,10 @@ void boundary_pression_ghost_in_out(struct _problem* Problem){
                        + (*Problem).nu*((*Problem).omega[0][j]-(*Problem).omega[0][j-1]);
    // outflow
 
-  for(int j = (*Problem).imap[(*Problem).Nx-1]+1; j < (*Problem).Ny_p-2 ; j++){ fprintf(stderr,"O: %d\n",j);
+  for(int j = (*Problem).imap[(*Problem).Nx-1]+1; j < (*Problem).Ny_p-2 ; j++)
   (*Problem).P[(*Problem).Nx_p-2][j] = -(  (*Problem).P[(*Problem).Nx_p-3][j]
                                        + (( (*Problem).psi[(*Problem).Nx-1][j] - (*Problem).psi[(*Problem).Nx-1][j-1] ) - ((*Problem).psi_out[j]-(*Problem).psi_out[j-1]))/((*Problem).dt)
-                                       + (*Problem).nu*((*Problem).omega[(*Problem).Nx-1][j]-(*Problem).omega[(*Problem).Nx-1][j-1]));}
+                                       + (*Problem).nu*((*Problem).omega[(*Problem).Nx-1][j]-(*Problem).omega[(*Problem).Nx-1][j-1]));
 
 }
 void boundary_pression_ghost_corner(struct _problem* Problem,int flag){
@@ -174,13 +174,13 @@ void inner_psi_update(struct _problem* Problem){
 void inner_pres_update(struct _problem* Problem){
   boundary_pression_ghost_corner(Problem,0);
   for(int i = 1; i < (*Problem).NLs; i++){
-    for(int j = (*Problem).imap[i]+2; j < (*Problem).Ny_p-1; j++){
+    for(int j = (*Problem).imap[i]+2; j < (*Problem).Ny_p-2; j++){
       (*Problem).P[i][j] = scalar_pres_compute(Problem,i,j);
     }
   }
   boundary_pression_ghost_corner(Problem,1);
-  for(int i =  (*Problem).NLs+1; i < (*Problem).Nx_p-1; i++){
-    for(int j = (*Problem).imap[i]+2; j < (*Problem).Ny_p-1; j++){
+  for(int i =  (*Problem).NLs+1; i < (*Problem).Nx_p-2; i++){
+    for(int j = (*Problem).imap[i]+2; j < (*Problem).Ny_p-2; j++){
       (*Problem).P[i][j] = scalar_pres_compute(Problem,i,j);
     }
   }
@@ -212,15 +212,15 @@ double inner_pres_error_compute(struct _problem* Problem){
   double e_error_R = 0.0;
   boundary_pression_ghost_corner(Problem,0);
   for(int i=1; i < (*Problem).NLs+1; i++){
-    for(int j= (*Problem).imap[i]+1; j < (*Problem).Ny_p-1; j++){
+    for(int j= (*Problem).imap[i]+1; j < (*Problem).Ny_p-2; j++){
       (*Problem).R_res_pres[i][j] = scalar_pres_r_compute(Problem,i,j);
       square_L = (*Problem).R_res_pres[i][j]*(*Problem).R_res_pres[i][j] + square_L;
     }
   }
   e_error_L = fabs((*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square_L));
   boundary_pression_ghost_corner(Problem,1);
-  for(int i =  (*Problem).NLs+1; i < (*Problem).Nx_p-1; i++){
-    for(int j = (*Problem).imap[i]+2; j < (*Problem).Ny_p-1; j++){
+  for(int i =  (*Problem).NLs+1; i < (*Problem).Nx_p-2; i++){
+    for(int j = (*Problem).imap[i]+2; j < (*Problem).Ny_p-2; j++){
       (*Problem).R_res_pres[i][j] = scalar_pres_r_compute(Problem,i,j);
       square_R = (*Problem).R_res_pres[i][j]*(*Problem).R_res_pres[i][j] + square_R;
     }
@@ -246,12 +246,12 @@ void poisson_inner_psi_iterator(struct _problem* Problem){
     error = inner_psi_error_compute(Problem);
     iter++;
   }
-  if(iter >= iter_max){fprintf(stderr, "[DEADSTOP] Maximum Pressure Iteration Reached Current Error: %f\n",error); deadstop_exit(Problem);}
+  if(iter >= iter_max){fprintf(stderr, "[DEADSTOP] Maximum Psi Iteration Reached Current Error: %f\n",error); deadstop_exit(Problem);}
 }
 void poisson_inner_pres_iterator(struct _problem* Problem){
   int n_iter = 0;
   int iter = 0 ;
-  int iter_max = 5000;
+  int iter_max = 30000;
   double error = (*Problem).tol+1;
 
   while( error>(*Problem).tol && iter < iter_max){
@@ -262,7 +262,7 @@ void poisson_inner_pres_iterator(struct _problem* Problem){
     error = inner_pres_error_compute(Problem);
     iter++;
   }
-  if(iter >= iter_max){fprintf(stderr, "[DEADSTOP] Maximum Psi Iteration Reached Current Error: %f\n",error); deadstop_exit(Problem);}
+  if(iter >= iter_max){fprintf(stderr, "[DEADSTOP] Maximum Pressure Iteration Reached Current Error: %f\n",error); deadstop_exit(Problem);}
 }
 
 int diagnose_check(struct _problem* Problem,int i,int j,int ktime){

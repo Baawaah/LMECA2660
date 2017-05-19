@@ -168,10 +168,11 @@ int main(int argc,char* argv[]){
   inner_u_v_compute(Problem);
 
   //
+  
   boundary_pression_ghost_update(Problem);
   boundary_pression_ghost_in_out(Problem);
-  //poisson_inner_pres_iterator(Problem);
-  //print_problem_pressure(Problem);
+  poisson_inner_pres_iterator(Problem);
+  print_problem_pressure(Problem);
 
 
   fprintf(stderr, "CFL: %f Tau: %f Reynold: %f Strouhal: %f\n",(*Problem).CFL,(*Problem).tau_max,(*Problem).Rey,(*Problem).Str);
