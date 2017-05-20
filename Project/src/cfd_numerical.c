@@ -81,10 +81,10 @@ void u_v_stag(struct _problem* Problem){
   }
   // Upper
   for(int i = 1; i < (*Problem).Nx_p-2 ; i++ )
-  (*Problem).u_stag[i][(*Problem).Ny_p-1] = -0.2*(15*(*Problem).u_stag[i][Ny_p-2] -5.0*(*Problem).u_stag[i][Ny_p-3] + (*Problem).u_stag[i][Ny_p-4]);
+  (*Problem).u_stag[i][(*Problem).Ny_p-1] = -0.2*(15*(*Problem).u_stag[i][(*Problem).Ny_p-2] -5.0*(*Problem).u_stag[i][(*Problem).Ny_p-3] + (*Problem).u_stag[i][(*Problem).Ny_p-4]);
   // Down
   for(int i = 1; i < (*Problem).Nx_p-2 ; i++ )
-  (*Problem).u_stag[i][(*Problem).imap[i]-1] = -0.2*(15*(*Problem).u_stag[i][Nimap[i]-2] -5.0*(*Problem).u_stag[i][imap[i]-3] + (*Problem).u_stag[i][imap[i]-4]);
+  (*Problem).u_stag[i][(*Problem).imap[i]-1] = -0.2*(15*(*Problem).u_stag[i][(*Problem).imap[i]-2] -5.0*(*Problem).u_stag[i][(*Problem).imap[i]-3] + (*Problem).u_stag[i][(*Problem).imap[i]-4]);
   // Side
   if( (*Problem).Ls != (*Problem).L && (*Problem).Ls != 0.0 )
   for(int j = 0; j < (*Problem).NHs-2; j++ )
