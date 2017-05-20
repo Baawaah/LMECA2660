@@ -177,10 +177,7 @@ int main(int argc,char* argv[]){
   inner_u_v_compute(Problem);
 
   //
-  u_v_stag(Problem);
-  boundary_pression_ghost_update(Problem);
-  boundary_pression_ghost_in_out(Problem);
-  poisson_inner_pres_iterator(Problem);
+
   print_problem_data(Problem);
   print_problem_pressure(Problem);
 
@@ -191,17 +188,23 @@ int main(int argc,char* argv[]){
   clock_gettime(CLOCK_MONOTONIC, &start);
   // ---------------------------
 
-  //integration_omega(Problem);
+  integration_omega(Problem);
 
   // ---Code Benchmarking-------
   clock_gettime(CLOCK_MONOTONIC, &finish);
   elapsed = (finish.tv_sec - start.tv_sec);
   elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
   // ---------------------------
+  u_v_stag(Problem);
+  boundary_pression_ghost_update(Problem);
+  boundary_pression_ghost_in_out(Problem);
+  poisson_inner_pres_iterator(Problem);
 
   print_problem_data(Problem);
-  printf("Simulation Done\n");
   print_problem_diag(Problem);
+  print_problem_pressure(Problem);
+  printf("Simulation Done\n");
+
 
   printf("Time Elapsed: %f s\n",elapsed);
   printf("Final File save under _%d_\n",(int) ( (*Problem).tau * 100 ));
