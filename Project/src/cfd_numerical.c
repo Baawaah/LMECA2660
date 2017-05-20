@@ -23,7 +23,7 @@ double scalar_psi_r_compute(struct _problem* Problem,int i, int j){
 }
 double scalar_pres_star_compute(struct _problem* Problem,int i,int j){
     return 0.25*(
-                 (scalar_Ax(Problem,i+1,j) - scalar_Ax(Problem,i,j) + scalar_Ay(Problem,i+1,j) - scalar_Ay(Problem,i,j) ) * ((*Problem).h)
+                 (scalar_Ax(Problem,i+1,j) - scalar_Ax(Problem,i,j) - scalar_Ay(Problem,i,j+1) + scalar_Ay(Problem,i,j) ) * ((*Problem).h)
                  + ((*Problem).P[i+1][j] + (*Problem).P[i-1][j])
                  + ((*Problem).P[i][j+1] + (*Problem).P[i][j-1])    );
 }
@@ -34,8 +34,8 @@ double scalar_pres_compute(struct _problem* Problem,int i,int j){
 }
 
 double scalar_pres_r_compute(struct _problem* Problem,int i, int j){
-    return  (scalar_Ax(Problem,i+1,j) - scalar_Ax(Problem,i,j) + scalar_Ay(Problem,i+1,j) - scalar_Ay(Problem,i,j)             )/(*Problem).h
-    + ((*Problem).P[i+1][j] + (*Problem).P[i-1][j] - 4*(*Problem).P[i][j] + (*Problem).P[i]  [j+1] + (*Problem).P[i][j-1])/pow((*Problem).h,2);
+    return  (scalar_Ax(Problem,i+1,j) - scalar_Ax(Problem,i,j) - scalar_Ay(Problem,i,j+1) + scalar_Ay(Problem,i,j)             )/(*Problem).h
+    + ((*Problem).P[i+1][j] + (*Problem).P[i-1][j] - 4*(*Problem).P[i][j] + (*Problem).P[i][j+1] + (*Problem).P[i][j-1])/pow((*Problem).h,2);
 }
 
 double scalar_u_v_poiseuille     (struct _problem* Problem,double y){
@@ -263,7 +263,7 @@ void poisson_inner_psi_iterator(struct _problem* Problem){
 void poisson_inner_pres_iterator(struct _problem* Problem){
     int n_iter = 0;
     int iter = 0 ;
-    int iter_max = 50000;
+    int iter_max = 30000;
     double error = (*Problem).tol+1;
     
     while( error>(*Problem).tol && iter < iter_max){
