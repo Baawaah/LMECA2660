@@ -169,7 +169,7 @@ int main(int argc,char* argv[]){
   fprintf(stderr,"|Option| Backward Mode: %d  | Oscillating Mode: %d  |\n",Q0<0,flag_os);
   printf("Simulation Starting\n");
 
-  
+
   boundary_psi_update(Problem,functionQ);
   poisson_inner_psi_iterator(Problem);
   boundary_omega_update(Problem);
@@ -177,7 +177,7 @@ int main(int argc,char* argv[]){
   inner_u_v_compute(Problem);
 
   //
-
+  u_v_stag(Problem);
   boundary_pression_ghost_update(Problem);
   boundary_pression_ghost_in_out(Problem);
   poisson_inner_pres_iterator(Problem);

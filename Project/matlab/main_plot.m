@@ -1,28 +1,34 @@
 %% Load
 
-plot_all = 1;
+plot_all = 0;
 plot_R   = 0;
 plot_diag= 0;
+plot_pres= 1;
 %%
 load('colormapsavefile.mat')
 %t = [0 25 37 50 62 75 87 99];
-t = [0 25 50 75 99];
+%t = [0 25 50 75 99];
 %t =  [0 24];
+ t = 0;
 for k = 1 : length(t); 
     file_omega = sprintf('../data/CFD_omega_%d.txt',t(k));
     file_psi   = sprintf('../data/CFD_psi_%d.txt',t(k));
     file_u     = sprintf('../data/CFD_u_%d.txt',t(k));
     file_v     = sprintf('../data/CFD_v_%d.txt',t(k));
     file_R     = sprintf('../data/CFD_R_%d.txt',t(k));
-    omega(:,:,k) = load(file_omega);
-    psi  (:,:,k) = load(file_psi);
-    u    (:,:,k) = load(file_u);
-    v    (:,:,k) = load(file_v);
-    R    (:,:,k) = load(file_R);
+    file_P     = sprintf('../data/CFD_P_%d.txt',t(k));
+    file_R_pres= sprintf('../data/CFD_R_pres_%d.txt',t(k));
+    omega (:,:,k) = load(file_omega);
+    psi   (:,:,k) = load(file_psi);
+    u     (:,:,k) = load(file_u);
+    v     (:,:,k) = load(file_v);
+    R     (:,:,k) = load(file_R);
+    P     (:,:,k) = load(file_P);
+    R_pres(:,:,k) = load(file_R_pres);
 end
 Diag = load('../data/CFD_DIAG.txt');
 %% 
-k = 2;
+k = 1;
 [SY SX] = size(omega(:,:,1));
 %%
 if plot_all == 1 
@@ -82,4 +88,23 @@ plot(Diag(sample,1),Diag(sample,2),Diag(sample,1),Diag(sample,3),Diag(sample,1),
 %plot(Diag(:,1),Diag(:,3),Diag(:,1),RE_HOL,'--');
 legend('Re_h','Re_h_\omega','Re_h Limit','Re_h_\omega Limit');
 %legend('Re_h_\omega','Re_h_\omega Limit');
+end    
+%% 
+if plot_pres == 1
+figure;
+imP1 = imagesc(P(:,:,k));
+axis equal; axis xy;
+axis([0,SX,0,SY]);
+%caxis([-0.0001 0.0001]);
+colormap(myColormap);
+colorbar;
+title('P - Pressure')
+figure;
+imP2 = imagesc(R_pres(:,:,k));
+axis equal; axis xy;
+axis([0,SX,0,SY]);
+%caxis([-0.0001 0.0001]);
+colormap(myColormap);
+colorbar;
+title('R - Residu')    
 end    
