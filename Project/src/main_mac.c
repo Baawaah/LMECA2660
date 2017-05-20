@@ -22,7 +22,9 @@ void deadstop_exit(struct _problem* Problem){
     fprintf(stderr, "Emergency Exit Procedure Initiate\n");
     fprintf(stderr, "Problem occured at tau = %d\n",(int) ( (*Problem).tau * 100 ));
     fprintf(stderr, "Saving current data under  _%d_\n",(int) ( (*Problem).tau * 100 ));
-    print_problem_data(Problem);
+    print_problem_data    (Problem);
+    print_problem_pressure(Problem);
+    //print_problem_diag    (Problem);
     free_problem_vector_domain(Problem);
     exit(-1);
 }
@@ -34,6 +36,26 @@ void print_problem_diag(struct _problem* Problem){
         fprintf(file_diag,"%f %5.16f %5.16f %5.16f \n",i*(*Problem).dtau,(*Problem).Re_h[i],(*Problem).Re_h_omega[i],(*Problem).Beta_CFL[i]);
     }
     fclose(file_diag);
+}
+
+void print_problem_pressure(struct _problem* Problem){
+    char buff_P_name[50];
+    char buff_R_name[50];
+    sprintf(buff_P_name ,"data/CFD_P_%d.txt",(int) ( (*Problem).tau * 100 ));
+    sprintf(buff_R_name ,"data/CFD_R_pres_%d.txt",(int) ( (*Problem).tau * 100 ));
+    FILE* file_P = fopen(buff_P_name,"w");
+    FILE* file_R = fopen(buff_R_name,"w");
+    if(file_P == NULL || file_R == NULL){ fprintf(stderr,"File error\n"); exit(1);}
+    for(int j = 0 ; j < (*Problem).Ny_p-1 ; j++){
+        for(int i = 0; i < (*Problem).Nx_p-1 ; i++){
+            fprintf(file_P,"%5.16f "   ,(*Problem).P[i][j]);
+            fprintf(file_R,"%5.16f "   ,(*Problem).R_res_pres[i][j]);
+        }
+        fprintf(file_P ,"\n");
+        fprintf(file_R ,"\n");
+    }
+    fclose(file_P);
+    fclose(file_R);
 }
 
 void print_problem_data(struct _problem* Problem){
@@ -141,25 +163,35 @@ int main(int argc,char* argv[]){
     init_problem_map(Problem);
     init_problem_vector_domain(Problem);
     init_problem_poiseuille(Problem);
+    fprintf(stderr, "CFL: %f Tau: %f Reynold: %f Strouhal: %f\n",(*Problem).CFL,(*Problem).tau_max,(*Problem).Rey,(*Problem).Str);
+    fprintf(stderr, "Average Velocity: %f Grid size h: %f Timestep: %f Frequency: %f\n",(*Problem).Um,(*Problem).h,(*Problem).dt,(*Problem).f);
+    fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d NTime: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs,(*Problem).Ntime);
+    fprintf(stderr,"|Option| Backward Mode: %d  | Oscillating Mode: %d  |\n",Q0<0,flag_os);
+    printf("Simulation Starting\n");
+    
+    
     boundary_psi_update(Problem,functionQ);
     poisson_inner_psi_iterator(Problem);
     boundary_omega_update(Problem);
     //boundary_omega_dwdx_update(Problem);
     inner_u_v_compute(Problem);
     
-    fprintf(stderr, "CFL: %f Tau: %f Reynold: %f Strouhal: %f\n",(*Problem).CFL,(*Problem).tau_max,(*Problem).Rey,(*Problem).Str);
-    fprintf(stderr, "Average Velocity: %f Grid size h: %f Timestep: %f Frequency: %f\n",(*Problem).Um,(*Problem).h,(*Problem).dt,(*Problem).f);
+    //
+    
+    boundary_pression_ghost_update(Problem);
+    boundary_pression_ghost_in_out(Problem);
+    poisson_inner_pres_iterator(Problem);
     print_problem_data(Problem);
-    fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs);
-    fprintf(stderr,"|Option| Backward Mode: %d  | Oscillating Mode: %d  |\n",Q0<0,flag_os);
-    printf("Simulation Starting\n");
+    print_problem_pressure(Problem);
+    
+    
     // ---Code Benchmarking-------
     struct timespec start, finish;
     double elapsed;
     clock_gettime(CLOCK_MONOTONIC, &start);
     // ---------------------------
     
-    integration_omega(Problem);
+    //integration_omega(Problem);
     
     // ---Code Benchmarking-------
     clock_gettime(CLOCK_MONOTONIC, &finish);

@@ -62,23 +62,34 @@ double scalar_Ax(struct _problem* Problem, int i, int j){
   double part1, part2;
   part1 = (*Problem).u_stag[i][j]*((*Problem).u_stag[i+1][j]-(*Problem).u_stag[i-1][j])/(2.0*(*Problem).h);
   part2 = ((*Problem).v_stag[i+1][j]+(*Problem).v_stag[i+1][j+1]+(*Problem).v_stag[i][j+1]+(*Problem).v_stag[i][j])/4;
-  return part1+part2*((*Problem).u_stag[i][j+1]-(*Problem).u_stag[i][j])/(2.0*(*Problem).h);
+  return part1+part2*((*Problem).u_stag[i][j+1]-(*Problem).u_stag[i][j-1])/(2.0*(*Problem).h);
 }
 
 double scalar_Ay(struct _problem* Problem, int i, int j){
   double part1, part2;
   part1 = (*Problem).v_stag[i][j]*((*Problem).v_stag[i][j+1]-(*Problem).v_stag[i][j-1])/(2.0*(*Problem).h);
   part2 = ((*Problem).u_stag[i+1][j]+(*Problem).u_stag[i+1][j+1]+(*Problem).u_stag[i][j+1]+(*Problem).u_stag[i][j])/4;
-  return part1+part2*((*Problem).v_stag[i+1][j]-(*Problem).v_stag[i][j])/(2.0*(*Problem).h);
+  return part1+part2*((*Problem).v_stag[i+1][j]-(*Problem).v_stag[i-1][j])/(2.0*(*Problem).h);
 }
 
 void u_v_stag(struct _problem* Problem){
-  for(int i= 1 ; i < (*Problem).Nx_p-1; i++){
-     for(int j=(*Problem).imap[i]+1; j < (*Problem).Ny_p-1; j++){
+  for(int i= 1 ; i < (*Problem).Nx_p-2; i++){
+     for(int j=(*Problem).imap[i]; j < (*Problem).Ny_p-2; j++){
         (*Problem).u_stag    [i][j] =     ((*Problem).psi[i][j+1]-(*Problem).psi[i][j])/(*Problem).h;
         (*Problem).v_stag    [i][j] =    -((*Problem).psi[i+1][j]-(*Problem).psi[i][j])/(*Problem).h;
      }
   }
+  // Upper
+  for(int i = 1; i < (*Problem).Nx_p-2 ; i++ )
+  (*Problem).u_stag[i][(*Problem).Ny_p-1] = -0.2*(15*(*Problem).u_stag[i][Ny_p-2] -5.0*(*Problem).u_stag[i][Ny_p-3] + (*Problem).u_stag[i][Ny_p-4]);
+  // Down
+  for(int i = 1; i < (*Problem).Nx_p-2 ; i++ )
+  (*Problem).u_stag[i][(*Problem).imap[i]-1] = -0.2*(15*(*Problem).u_stag[i][Nimap[i]-2] -5.0*(*Problem).u_stag[i][imap[i]-3] + (*Problem).u_stag[i][imap[i]-4]);
+  // Side
+  if( (*Problem).Ls != (*Problem).L && (*Problem).Ls != 0.0 )
+  for(int j = 0; j < (*Problem).NHs-2; j++ )
+  (*Problem).v_stag[(*Problem).NLs-1][j] =  -0.2*(15*(*Problem).v_stag[(*Problem).NLs-2][j] -5.0*(*Problem).v_stag[(*Problem).NLs-3][j] + (*Problem).v_stag[(*Problem).NLs-4][j]);
+
 }
 
 void boundary_psi_update(struct _problem* Problem, double (*Q)(struct _problem*)){
