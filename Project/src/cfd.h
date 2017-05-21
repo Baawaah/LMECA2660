@@ -8,6 +8,7 @@
    //Domain Physical Propiety
    struct _problem {
    double CFL;
+   double r_f;
    double L;
    double H;
    double Ls;
@@ -43,8 +44,8 @@
    double* Beta_CFL;
 
    int    flag_os;
+   int    flag_pres;
 
-   double r;
    double t_snapshot;
    //Domain Data of size N_x * N_y
    double **omega;
@@ -71,8 +72,8 @@ void             deadstop_exit                (struct _problem* Problem);
  * ###################################
  */
 struct _problem* init_problem();
-void             init_problem_physical        (struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double Q0, double tol, double nu,double Rey,double Str, double tau_max);
-void             init_problem_numerical       (struct _problem* Problem, double phi, double t_snapshot,int flag_os);
+void             init_problem_physical        (struct _problem* Problem, double CFL, double r_f, double L, double H, double Ls, double Hs, double h, double Q0, double tol, double nu,double Rey,double Str, double tau_max);
+void             init_problem_numerical       (struct _problem* Problem, double phi, double t_snapshot,int flag_os,int flag_pres);
 void             init_problem_map             (struct _problem* Problem);
 void             init_problem_vector_domain   (struct _problem* Problem);
 void             init_problem_poiseuille      (struct _problem* Problem);
@@ -106,6 +107,7 @@ double           inner_pres_error_compute      (struct _problem* Problem);
 void             poisson_inner_psi_iterator    (struct _problem* Problem);
 void             poisson_inner_pres_iterator   (struct _problem* Problem);
 int              diagnose_check                (struct _problem* Problem,int i,int j, int ktime);
+void             snapshot                      (struct _problem* Problem);
 /* ###################################
  *  CFD Integrator
  * ###################################

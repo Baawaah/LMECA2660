@@ -3,13 +3,13 @@
 plot_all = 1;
 plot_R   = 0;
 plot_diag= 0;
-plot_pres= 1;
+plot_pres= 0;
 %%
 load('colormapsavefile.mat')
 %t = [0 25 37 50 62 75 87 99];
-%t = [0 25 50 75 99];
+t = [0 25 50 75 100];
 %t =  [0 24];
- t = 99;
+%t = 99;
 for k = 1 : length(t); 
     file_omega = sprintf('../data/CFD_omega_%d.txt',t(k));
     file_psi   = sprintf('../data/CFD_psi_%d.txt',t(k));

@@ -58,7 +58,7 @@ void integration_omega(struct _problem* Problem){
     first_iteration_omega(Problem);
     print_problem_data(Problem);
 
-    for(int k=0; k < (*Problem).Ntime; k++ ){
+    for(int k=0; k < (*Problem).Ntime+1; k++ ){
       (*Problem).t = (k+1)*(*Problem).dt;
       (*Problem).tau = (k+1)*(*Problem).dtau;
       // ## Calcule Omega+1
@@ -80,9 +80,20 @@ void integration_omega(struct _problem* Problem){
       boundary_omega_dwdx_update(Problem);
       inner_u_v_compute(Problem);
 
-      if( (*Problem).t_snapshot != 0 &&((int)(100*(*Problem).tau/(*Problem).dtau))%( (int) ((*Problem).t_snapshot*100/(*Problem).dtau)) == 0) print_problem_data(Problem);
+      snapshot(Problem);
 
     }
+}
 
-
+void snapshot(struct _problem* Problem){
+  if( (*Problem).t_snapshot != 0 &&((int)(100*(*Problem).tau/(*Problem).dtau))%( (int) ((*Problem).t_snapshot*100/(*Problem).dtau)) == 0){
+    print_problem_data(Problem);
+    if((*Problem).flag_pres == 1){
+      u_v_stag(Problem);
+      boundary_pression_ghost_update(Problem);
+      boundary_pression_ghost_in_out(Problem);
+      poisson_inner_pres_iterator(Problem);
+      print_problem_pressure(Problem);
+    }
+  }
 }

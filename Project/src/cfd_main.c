@@ -6,8 +6,9 @@ struct _problem* init_problem(){
   return malloc(sizeof(struct _problem));
 }
 
-void init_problem_physical(struct _problem* Problem, double CFL, double L, double H, double Ls, double Hs, double h, double Q0, double tol, double nu,double Rey,double Str,double tau_max){
+void init_problem_physical(struct _problem* Problem, double CFL,double r_f, double L, double H, double Ls, double Hs, double h, double Q0, double tol, double nu,double Rey,double Str,double tau_max){
   (*Problem).CFL   = CFL;
+  (*Problem).r_f     = r_f;
   (*Problem).L     = L;
   (*Problem).H     = H;
   (*Problem).Ls    = Ls;
@@ -25,14 +26,14 @@ void init_problem_physical(struct _problem* Problem, double CFL, double L, doubl
   (*Problem).Um    = Q0/H;
   (*Problem).f     = Q0*Str/(H*H);
   (*Problem).Hc    = H-Hs;
-  (*Problem).dt    = fabs(CFL*h/(*Problem).Um);
+  (*Problem).dt    = fmin(fabs(CFL*h/(*Problem).Um),r_f*h*h/nu);
   (*Problem).dtau  = fabs((*Problem).dt*(*Problem).Um/L);
   (*Problem).tmax  = fabs((*Problem).tau_max*L/(*Problem).Um);
 }
 
 //comment
 
-void init_problem_numerical(struct _problem* Problem, double phi,double t_snapshot,int flag_os){
+void init_problem_numerical(struct _problem* Problem, double phi,double t_snapshot,int flag_os,int flag_pres){
   (*Problem).Nx         = (*Problem).L    /(*Problem).h;
   (*Problem).Ny         = (*Problem).H    /(*Problem).h;
   (*Problem).Nx_p       = (*Problem).Nx +2;
@@ -41,6 +42,7 @@ void init_problem_numerical(struct _problem* Problem, double phi,double t_snapsh
   (*Problem).phi        = phi;
   (*Problem).t_snapshot = t_snapshot;
   (*Problem).flag_os    = flag_os;
+  (*Problem).flag_pres  = flag_pres;
 }
 
 void init_problem_map(struct _problem* Problem){
@@ -69,9 +71,9 @@ void init_problem_vector_domain(struct _problem* Problem){
   (*Problem).psi_in      = (double*) calloc((*Problem).Ny,sizeof(double));
   (*Problem).psi_out     = (double*) calloc((*Problem).Ny,sizeof(double));
 
-  (*Problem).Re_h        = (double*) calloc((*Problem).Ntime,sizeof(double));
-  (*Problem).Re_h_omega  = (double*) calloc((*Problem).Ntime,sizeof(double));
-  (*Problem).Beta_CFL    = (double*) calloc((*Problem).Ntime,sizeof(double));
+  (*Problem).Re_h        = (double*) calloc((*Problem).Ntime+1,sizeof(double));
+  (*Problem).Re_h_omega  = (double*) calloc((*Problem).Ntime+1,sizeof(double));
+  (*Problem).Beta_CFL    = (double*) calloc((*Problem).Ntime+1,sizeof(double));
 
 
   for(int i=0 ; i < (*Problem).Nx ; i++){
