@@ -2,12 +2,12 @@
 
 plot_all = 1;
 plot_R   = 0;
-plot_diag= 0;
+plot_diag= 1;
 plot_pres= 0;
 %%
 load('colormapsavefile.mat')
 %t = [0 25 37 50 62 75 87 99];
-t = [0 25 50 75 100];
+t = [0 50 100];
 %t =  [0 24];
 %t = 99;
 for k = 1 : length(t); 
@@ -23,8 +23,10 @@ for k = 1 : length(t);
     u     (:,:,k) = load(file_u);
     v     (:,:,k) = load(file_v);
     R     (:,:,k) = load(file_R);
+    if plot_pres == 1
     P     (:,:,k) = load(file_P);
     R_pres(:,:,k) = load(file_R_pres);
+    end
 end
 Diag = load('../data/CFD_DIAG.txt');
 %% 

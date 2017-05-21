@@ -80,13 +80,13 @@ void integration_omega(struct _problem* Problem){
       boundary_omega_dwdx_update(Problem);
       inner_u_v_compute(Problem);
 
-      snapshot(Problem);
+      snapshot(Problem,k);
 
     }
 }
 
-void snapshot(struct _problem* Problem){
-  if( (*Problem).t_snapshot != 0 &&((int)(100*(*Problem).tau/(*Problem).dtau))%( (int) ((*Problem).t_snapshot*100/(*Problem).dtau)) == 0){
+void snapshot(struct _problem* Problem,int curNtime){
+  if( (*Problem).t_snapshot != 0 && (curNtime%((int) ((*Problem).t_snapshot*(*Problem).Ntime)))  == 0){
     print_problem_data(Problem);
     if((*Problem).flag_pres == 1){
       u_v_stag(Problem);
@@ -96,4 +96,16 @@ void snapshot(struct _problem* Problem){
       print_problem_pressure(Problem);
     }
   }
+  // Precise Snapshot - Need to be refined but well it works at least
+  /*
+  if( (*Problem).t_snapshot != 0 &&( curNtime == ((int) (0.30/(*Problem).dtau)))){
+    print_problem_data(Problem);
+    if((*Problem).flag_pres == 1){
+      u_v_stag(Problem);
+      boundary_pression_ghost_update(Problem);
+      boundary_pression_ghost_in_out(Problem);
+      poisson_inner_pres_iterator(Problem);
+      print_problem_pressure(Problem);
+    }
+  }*/
 }

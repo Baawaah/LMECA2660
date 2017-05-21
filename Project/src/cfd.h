@@ -107,7 +107,7 @@ double           inner_pres_error_compute      (struct _problem* Problem);
 void             poisson_inner_psi_iterator    (struct _problem* Problem);
 void             poisson_inner_pres_iterator   (struct _problem* Problem);
 int              diagnose_check                (struct _problem* Problem,int i,int j, int ktime);
-void             snapshot                      (struct _problem* Problem);
+void             snapshot                      (struct _problem* Problem,int k);
 /* ###################################
  *  CFD Integrator
  * ###################################
