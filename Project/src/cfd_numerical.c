@@ -229,7 +229,8 @@ double inner_pres_error_compute(struct _problem* Problem){
         }
     }
     //e_error_L = fabs((*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square_L));
-    e_error_L = fabs((*Problem).H*(*Problem).H*(*Problem).H/((*Problem).Q0*(*Problem).Q0)*(*Problem).h*sqrt(square_L));
+    //e_error_L = fabs((*Problem).H*(*Problem).H*(*Problem).H/((*Problem).Q0*(*Problem).Q0)*(*Problem).h*sqrt(square_L));
+    e_error_L = fabs((*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square_L));
     boundary_pression_ghost_corner(Problem,1);
     for(int i =  (*Problem).NLs; i < (*Problem).Nx_p-2; i++){
         for(int j = (*Problem).imap[i]+1; j < (*Problem).Ny_p-2; j++){
@@ -237,7 +238,7 @@ double inner_pres_error_compute(struct _problem* Problem){
             square_R = (*Problem).R_res_pres[i][j]*(*Problem).R_res_pres[i][j] + square_R;
         }
     }
-    e_error_R = fabs((*Problem).H*(*Problem).H*(*Problem).H/((*Problem).Q0*(*Problem).Q0)*(*Problem).h*sqrt(square_R));
+    e_error_R = fabs((*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square_R));
     return e_error_L+e_error_R;
 }
 
@@ -263,7 +264,7 @@ void poisson_inner_psi_iterator(struct _problem* Problem){
 void poisson_inner_pres_iterator(struct _problem* Problem){
     int n_iter = 0;
     int iter = 0 ;
-    int iter_max = 30000;
+    int iter_max = 50000;
     double error = (*Problem).tol+1;
 
     while( error>(*Problem).tol && iter < iter_max){

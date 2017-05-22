@@ -1,15 +1,16 @@
 %% Load
 
-plot_all = 1;
+plot_all = 0;
 plot_R   = 0;
-plot_diag= 1;
-plot_pres= 0;
+plot_diag= 0;
+plot_pres= 1;
 %%
 load('colormapsavefile.mat')
 %t = [0 25 37 50 62 75 87 99];
-t = [0 50 100];
+t = [0 25 50 74 100];
 %t =  [0 24];
 %t = 99;
+%t = 0;
 for k = 1 : length(t); 
     file_omega = sprintf('../data/CFD_omega_%d.txt',t(k));
     file_psi   = sprintf('../data/CFD_psi_%d.txt',t(k));
@@ -28,7 +29,7 @@ for k = 1 : length(t);
     R_pres(:,:,k) = load(file_R_pres);
     end
 end
-Diag = load('../data/CFD_DIAG.txt');
+Diag = load('../data_oink/CFD_DIAG.txt');
 %% 
 k = 1;
 [SY SX] = size(omega(:,:,1));
