@@ -286,7 +286,7 @@ int diagnose_check(struct _problem* Problem,int i,int j,int ktime){
     if(Re_h > (*Problem).Re_h[ktime]) (*Problem).Re_h[ktime] = Re_h;
     double Re_h_omega = (*Problem).h*(*Problem).h*fabs((*Problem).omega[i][j])/(*Problem).nu;
     if(Re_h_omega > (*Problem).Re_h_omega[ktime]) (*Problem).Re_h_omega[ktime] = Re_h_omega;
-    double Beta       = (*Problem).h*(fabs((*Problem).u[i][j]) + fabs((*Problem).v[i][j]))*(*Problem).dt /(*Problem).h;
+    double Beta       = (fabs((*Problem).u[i][j]) + fabs((*Problem).v[i][j]))* (*Problem).dt/(*Problem).h;
     if(Beta > (*Problem).Beta_CFL[ktime]) (*Problem).Beta_CFL[ktime] = Beta;
     if( Re_h       >=  5 )                  check += 1;
     if( Re_h_omega >= 20 )                  check += 2;

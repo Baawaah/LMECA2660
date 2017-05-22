@@ -2,23 +2,23 @@
 
 plot_all = 0;
 plot_R   = 0;
-plot_diag= 0;
+plot_diag= 1;
 plot_pres= 1;
 %%
 load('colormapsavefile.mat')
 %t = [0 25 37 50 62 75 87 99];
-t = [0 25 50 74 100];
+t = [0 50 99 149 200];
 %t =  [0 24];
 %t = 99;
-%t = 0;
+%t = 100;
 for k = 1 : length(t); 
-    file_omega = sprintf('../data/CFD_omega_%d.txt',t(k));
-    file_psi   = sprintf('../data/CFD_psi_%d.txt',t(k));
-    file_u     = sprintf('../data/CFD_u_%d.txt',t(k));
-    file_v     = sprintf('../data/CFD_v_%d.txt',t(k));
-    file_R     = sprintf('../data/CFD_R_%d.txt',t(k));
-    file_P     = sprintf('../data/CFD_P_%d.txt',t(k));
-    file_R_pres= sprintf('../data/CFD_R_pres_%d.txt',t(k));
+    file_omega = sprintf('../data_server_4/CFD_omega_%d.txt',t(k));
+    file_psi   = sprintf('../data_server_4/CFD_psi_%d.txt',t(k));
+    file_u     = sprintf('../data_server_4/CFD_u_%d.txt',t(k));
+    file_v     = sprintf('../data_server_4/CFD_v_%d.txt',t(k));
+    file_R     = sprintf('../data_server_4/CFD_R_%d.txt',t(k));
+    file_P     = sprintf('../data_server_4/CFD_P_%d.txt',t(k));
+    file_R_pres= sprintf('../data_server_4/CFD_R_pres_%d.txt',t(k));
     omega (:,:,k) = load(file_omega);
     psi   (:,:,k) = load(file_psi);
     u     (:,:,k) = load(file_u);
@@ -29,7 +29,7 @@ for k = 1 : length(t);
     R_pres(:,:,k) = load(file_R_pres);
     end
 end
-Diag = load('../data_oink/CFD_DIAG.txt');
+Diag = load('../data_server_4/CFD_DIAG.txt');
 %% 
 k = 1;
 [SY SX] = size(omega(:,:,1));
@@ -91,6 +91,8 @@ plot(Diag(sample,1),Diag(sample,2),Diag(sample,1),Diag(sample,3),Diag(sample,1),
 %plot(Diag(:,1),Diag(:,3),Diag(:,1),RE_HOL,'--');
 legend('Re_h','Re_h_\omega','Re_h Limit','Re_h_\omega Limit');
 %legend('Re_h_\omega','Re_h_\omega Limit');
+figure;
+plot(Diag(sample,1),Diag(sample,3));
 end    
 %% 
 if plot_pres == 1
@@ -111,3 +113,15 @@ colormap(myColormap);
 colorbar;
 title('R - Residu')    
 end    
+%%
+
+k = 5;
+figure;
+UV = sqrt(u(:,:,k).*u(:,:,k) + v(:,:,k).*v(:,:,k))/(1.5e-4);
+imagesc(UV);
+axis equal; axis xy;
+axis([0,SX,0,SY]);
+colormap(myColormap);
+colorbar;
+title('Velocity Field');
+%%

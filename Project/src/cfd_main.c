@@ -24,9 +24,10 @@ void init_problem_physical(struct _problem* Problem, double CFL,double r_f, doub
   (*Problem).Str   = Str;
 
   (*Problem).Um    = Q0/H;
+  (*Problem).Uc    = 3.0/(2.0*(H-Hs)) * Q0;
   (*Problem).f     = Q0*Str/(H*H);
   (*Problem).Hc    = H-Hs;
-  (*Problem).dt    = fmin(fabs(CFL*h/(*Problem).Um),r_f*h*h/nu);
+  (*Problem).dt    = fmin(fabs(CFL*h/(*Problem).Uc),r_f*h*h/nu);
   (*Problem).dtau  = fabs((*Problem).dt*(*Problem).Um/L);
   (*Problem).tmax  = fabs((*Problem).tau_max*L/(*Problem).Um);
 }

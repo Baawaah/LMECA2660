@@ -24,6 +24,7 @@
    double Q0;
    double nu;
    double Um;
+   double Uc;
    double Rey;
    double Str;
    double f;
