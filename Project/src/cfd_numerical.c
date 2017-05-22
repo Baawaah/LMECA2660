@@ -264,7 +264,7 @@ void poisson_inner_psi_iterator(struct _problem* Problem){
 void poisson_inner_pres_iterator(struct _problem* Problem){
     int n_iter = 0;
     int iter = 0 ;
-    int iter_max = 50000;
+    int iter_max = 100000;
     double error = (*Problem).tol+1;
 
     while( error>(*Problem).tol && iter < iter_max){
