@@ -103,7 +103,7 @@ void snapshot(struct _problem* Problem,int curNtime){
 
   // Because i don't have much time anymore, i will hardcode this part
   int N1,N2,N3,N4;
-  N1 = 0;
+  N1 = (int) (5.0/(*Problem).f + 0.0              )/(*Problem).dt
   N2 = (int) (5.0/(*Problem).f + 0.25/(*Problem).f)/(*Problem).dt;
   N3 = (int) (5.0/(*Problem).f + 0.50/(*Problem).f)/(*Problem).dt;
   N4 = (int) (5.0/(*Problem).f + 0.75/(*Problem).f)/(*Problem).dt;
