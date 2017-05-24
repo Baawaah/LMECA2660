@@ -35,8 +35,8 @@ void init_problem_physical(struct _problem* Problem, double CFL,double r_f, doub
 //comment
 
 void init_problem_numerical(struct _problem* Problem, double phi,double t_snapshot,int flag_os,int flag_pres){
-  (*Problem).Nx         = (*Problem).L    /(*Problem).h +1;
-  (*Problem).Ny         = (*Problem).H    /(*Problem).h +1;
+  (*Problem).Nx         = (*Problem).L    /(*Problem).h;
+  (*Problem).Ny         = (*Problem).H    /(*Problem).h;
   (*Problem).Nx_p       = (*Problem).Nx +2;
   (*Problem).Ny_p       = (*Problem).Ny +2;
   (*Problem).Ntime      = (*Problem).tmax /(*Problem).dt;
@@ -101,7 +101,7 @@ void init_problem_poiseuille(struct _problem* Problem){
     for(int j = (*Problem).NHs; j < (*Problem).Ny; j++ ){
       //double eta =  ( (j)*(*Problem).h - ((*Problem).Hs/2.0) )/((*Problem).Hs/2.0);
       //(*Problem).u[i][j]     = scalar_u_v_poiseuille(Problem,eta);
-      (*Problem).u[i][j]     = scalar_u_v_poiseuille(Problem,(j - (*Problem).NHs)*(*Problem).h);
+      (*Problem).u[i][j]     = scalar_u_v_poiseuille(Problem,(j - (*Problem).NHs+1)*(*Problem).h);
     }
   }
   //for(int i = 0; i < 1 ;i++ ){
@@ -111,7 +111,7 @@ void init_problem_poiseuille(struct _problem* Problem){
       //(*Problem).omega[i][j]     = -scalar_u_v_poiseuille_dy(Problem,eta);
       //(*Problem).psi[i][j]       =  scalar_u_v_poiseuille_int(Problem,eta);
       //(*Problem).omega[i][j] = -( (*Problem).u[i][j+1] - (*Problem).u[i][j-1]) /(2.0*(*Problem).h) ;
-      (*Problem).omega[i][j]     = scalar_u_v_poiseuille_dy (Problem,(j - (*Problem).NHs)*(*Problem).h);
+      (*Problem).omega[i][j]     = scalar_u_v_poiseuille_dy (Problem,(j - (*Problem).NHs+1)*(*Problem).h);
       //(*Problem).psi[i][j]       = scalar_u_v_poiseuille_int(Problem,(j - (*Problem).NHs+1)*(*Problem).h);
       //(*Problem).psi[i][j] = 5.0;
     }
