@@ -86,6 +86,7 @@ void integration_omega(struct _problem* Problem){
 }
 
 void snapshot(struct _problem* Problem,int curNtime){
+/*
   if( (*Problem).t_snapshot != 0 && (curNtime%((int) ((*Problem).t_snapshot*(*Problem).Ntime)))  == 0){
     print_problem_data(Problem);
     if((*Problem).flag_pres == 1){
@@ -95,10 +96,25 @@ void snapshot(struct _problem* Problem,int curNtime){
       poisson_inner_pres_iterator(Problem);
       print_problem_pressure(Problem);
     }
-  }
+  }*/
   // Precise Snapshot - Need to be refined but well it works at least
-  /*
-  if( (*Problem).t_snapshot != 0 &&( curNtime == ((int) (0.30/(*Problem).dtau)))){
+
+  //if( (*Problem).t_snapshot != 0 &&( curNtime == ((int) (0.30/(*Problem).dtau)))){
+
+  // Because i don't have much time anymore, i will hardcode this part
+  int N1,N2,N3,N4;
+  N1 = 0;
+  N2 = (int) (5.0/(*Problem).f + 0.25/(*Problem).f)/(*Problem).dt;
+  N3 = (int) (5.0/(*Problem).f + 0.50/(*Problem).f)/(*Problem).dt;
+  N4 = (int) (5.0/(*Problem).f + 0.75/(*Problem).f)/(*Problem).dt;
+  //fprintf(stderr,"%d %d %d \n",N2,N3,N4);
+  if( (*Problem).t_snapshot != 0
+      &&( (curNtime == N1)
+      ||  (curNtime == N2)
+      ||  (curNtime == N3)
+      ||  (curNtime == N4)
+        )
+    ){
     print_problem_data(Problem);
     if((*Problem).flag_pres == 1){
       u_v_stag(Problem);
@@ -107,5 +123,5 @@ void snapshot(struct _problem* Problem,int curNtime){
       poisson_inner_pres_iterator(Problem);
       print_problem_pressure(Problem);
     }
-  }*/
+  }
 }
