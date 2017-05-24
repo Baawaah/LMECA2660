@@ -35,8 +35,8 @@ void init_problem_physical(struct _problem* Problem, double CFL,double r_f, doub
 //comment
 
 void init_problem_numerical(struct _problem* Problem, double phi,double t_snapshot,int flag_os,int flag_pres){
-  (*Problem).Nx         = (*Problem).L    /(*Problem).h;
-  (*Problem).Ny         = (*Problem).H    /(*Problem).h;
+  (*Problem).Nx         = (*Problem).L    /(*Problem).h +1;
+  (*Problem).Ny         = (*Problem).H    /(*Problem).h +1;
   (*Problem).Nx_p       = (*Problem).Nx +2;
   (*Problem).Ny_p       = (*Problem).Ny +2;
   (*Problem).Ntime      = (*Problem).tmax /(*Problem).dt;

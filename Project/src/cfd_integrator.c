@@ -107,7 +107,7 @@ void snapshot(struct _problem* Problem,int curNtime){
   N2 = (int) (5.0/(*Problem).f + 0.25/(*Problem).f)/(*Problem).dt;
   N3 = (int) (5.0/(*Problem).f + 0.50/(*Problem).f)/(*Problem).dt;
   N4 = (int) (5.0/(*Problem).f + 0.75/(*Problem).f)/(*Problem).dt;
-  //fprintf(stderr,"%d %d %d \n",N2,N3,N4);
+  //fprintf(stderr,"%d %d %d \n",N1,N2,N3,N4);
   if( (*Problem).t_snapshot != 0
       &&( (curNtime == N1)
       ||  (curNtime == N2)
