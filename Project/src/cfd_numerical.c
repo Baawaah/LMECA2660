@@ -76,7 +76,7 @@ void u_v_stag(struct _problem* Problem){
     for(int i= 1 ; i < (*Problem).Nx_p-2; i++){
         for(int j=(*Problem).imap[i]; j < (*Problem).Ny_p-2; j++){
             (*Problem).u_stag    [i][j] =     ((*Problem).psi[i-1][j]-(*Problem).psi[i-1][j-1])/(*Problem).h;
-            (*Problem).v_stag    [i][j] =    -((*Problem).psi[i][j-1]-(*Problem).psi[i][j-1])/(*Problem).h;
+            (*Problem).v_stag    [i][j] =    -((*Problem).psi[i][j-1]-(*Problem).psi[i-1][j-1])/(*Problem).h;
         }
     }
     // Upper
