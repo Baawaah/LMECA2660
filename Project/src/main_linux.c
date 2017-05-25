@@ -118,6 +118,7 @@ int main(int argc,char* argv[]){
   double Ls    =   5.0*H ;
   double Hs    =   H/2.0 ;
   double Q0    =   Rey*nu;
+  double sign  =   1.0;
   // Computation parameter
   //double Rey_h =
   //
@@ -125,7 +126,7 @@ int main(int argc,char* argv[]){
   while ((option = getopt(argc, argv, "boph:R:C:r:t:s:")) != EOF) {
           switch (option) {
           case 'b':
-              Q0 = -Q0;
+              sign = -1.0;
               break;
           case 'o':
               flag_os = 1;
@@ -156,7 +157,7 @@ int main(int argc,char* argv[]){
   if( h <= 0 || h >= 1 || t_snapshot > 1 || tau_max < 0 || Rey <= 0 || CFL <= 0){printf("[DEADSTOP] Input Error\n");exit(-1);}
 
   //
-  Q0    =   Rey*nu;
+  Q0    =  sign*Rey*nu;
   double phi   =   1.98;
   double tol   =   1e-4;
 
