@@ -117,7 +117,6 @@ int main(int argc,char* argv[]){
   double L     =   15.0*H;
   double Ls    =   5.0*H ;
   double Hs    =   H/2.0 ;
-  double Q0    =   Rey*nu;
   // Computation parameter
   //double Rey_h =
   //
@@ -156,7 +155,7 @@ int main(int argc,char* argv[]){
   if( h <= 0 || h >= 1 || t_snapshot > 1 || tau_max < 0 || Rey <= 0 || CFL <= 0){printf("[DEADSTOP] Input Error\n");exit(-1);}
 
   //
-
+  double Q0    =   Rey*nu;
   double phi   =   1.98;
   double tol   =   1e-4;
 
@@ -171,7 +170,7 @@ int main(int argc,char* argv[]){
   init_problem_vector_domain(Problem);
   init_problem_poiseuille(Problem);
   fprintf(stderr, "CFL: %f Fourier: %f Tau: %f Reynold: %f Strouhal: %f\n",(*Problem).CFL,(*Problem).r_f,(*Problem).tau_max,(*Problem).Rey,(*Problem).Str);
-  fprintf(stderr, "Average Velocity: %f Grid size h: %f Timestep: %f Frequency: %f Snapshot: %f\n",(*Problem).Um,(*Problem).h,(*Problem).dt,(*Problem).f,(*Problem).t_snapshot);
+  fprintf(stderr, "Average Velocity: %f Q0: %f Grid size h: %f Timestep: %f Frequency: %f Snapshot: %f\n",(*Problem).Um,(*Problem).Q0,(*Problem).h,(*Problem).dt,(*Problem).f,(*Problem).t_snapshot);
   fprintf(stderr, "NX: %d NY: %d NLs: %d NHs: %d NTime: %d \n",(*Problem).Nx,(*Problem).Ny,(*Problem).NLs,(*Problem).NHs,(*Problem).Ntime);
   fprintf(stderr,"|Option| Facing Step Mode: %d  | Oscillating Mode: %d  | Pressure Mode: %d |\n",Q0<0,(*Problem).flag_os,(*Problem).flag_pres);
   printf("Simulation Starting\n");
