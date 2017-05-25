@@ -117,6 +117,7 @@ int main(int argc,char* argv[]){
   double L     =   15.0*H;
   double Ls    =   5.0*H ;
   double Hs    =   H/2.0 ;
+  double Q0    =   Rey*nu;
   // Computation parameter
   //double Rey_h =
   //
@@ -155,7 +156,7 @@ int main(int argc,char* argv[]){
   if( h <= 0 || h >= 1 || t_snapshot > 1 || tau_max < 0 || Rey <= 0 || CFL <= 0){printf("[DEADSTOP] Input Error\n");exit(-1);}
 
   //
-  double Q0    =   Rey*nu;
+  Q0    =   Rey*nu;
   double phi   =   1.98;
   double tol   =   1e-4;
 
