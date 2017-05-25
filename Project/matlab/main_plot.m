@@ -16,21 +16,21 @@ load('colormapsavefile.mat')
 %t= [66 70 73 76 100]
 t = 100
 for k = 1 : length(t); 
-    file_omega = sprintf('../data_server_11_t100_R150_h0015/CFD_omega_%d.txt',t(k));
-    file_psi   = sprintf('../data_server_11_t100_R150_h0015/CFD_psi_%d.txt',t(k));
-    file_u     = sprintf('../data_server_11_t100_R150_h0015/CFD_u_%d.txt',t(k));
-    file_v     = sprintf('../data_server_11_t100_R150_h0015/CFD_v_%d.txt',t(k));
-    file_R     = sprintf('../data_server_11_t100_R150_h0015/CFD_R_%d.txt',t(k));
-    file_P     = sprintf('../data_server_11_t100_R150_h0015/CFD_P_%d.txt',t(k));
-    file_R_pres= sprintf('../data_server_11_t100_R150_h0015/CFD_R_pres_%d.txt',t(k));
+%     file_omega = sprintf('../data_server_11_t100_R150_h0015/CFD_omega_%d.txt',t(k));
+%     file_psi   = sprintf('../data_server_11_t100_R150_h0015/CFD_psi_%d.txt',t(k));
+%     file_u     = sprintf('../data_server_11_t100_R150_h0015/CFD_u_%d.txt',t(k));
+%     file_v     = sprintf('../data_server_11_t100_R150_h0015/CFD_v_%d.txt',t(k));
+%     file_R     = sprintf('../data_server_11_t100_R150_h0015/CFD_R_%d.txt',t(k));
+%     file_P     = sprintf('../data_server_11_t100_R150_h0015/CFD_P_%d.txt',t(k));
+%     file_R_pres= sprintf('../data_server_11_t100_R150_h0015/CFD_R_pres_%d.txt',t(k));
 
-%     file_omega = sprintf('../data_pc_1_t100_R150_h0015_b/CFD_omega_%d.txt',t(k));
-%     file_psi   = sprintf('../data_pc_1_t100_R150_h0015_b/CFD_psi_%d.txt',t(k));
-%     file_u     = sprintf('../data_pc_1_t100_R150_h0015_b/CFD_u_%d.txt',t(k));
-%     file_v     = sprintf('../data_pc_1_t100_R150_h0015_b/CFD_v_%d.txt',t(k));
-%     file_R     = sprintf('../data_pc_1_t100_R150_h0015_b/CFD_R_%d.txt',t(k));
-%     file_P     = sprintf('../data_pc_1_t100_R150_h0015_b/CFD_P_%d.txt',t(k));
-%     file_R_pres= sprintf('../data_pc_1_t100_R150_h0015_b/CFD_R_pres_%d.txt',t(k));
+    file_omega = sprintf('../data_pc_2_t100_R150_h0015_f/CFD_omega_%d.txt',t(k));
+    file_psi   = sprintf('../data_pc_2_t100_R150_h0015_f/CFD_psi_%d.txt',t(k));
+    file_u     = sprintf('../data_pc_2_t100_R150_h0015_f/CFD_u_%d.txt',t(k));
+    file_v     = sprintf('../data_pc_2_t100_R150_h0015_f/CFD_v_%d.txt',t(k));
+    file_R     = sprintf('../data_pc_2_t100_R150_h0015_f/CFD_R_%d.txt',t(k));
+    file_P     = sprintf('../data_pc_2_t100_R150_h0015_f/CFD_P_%d.txt',t(k));
+    file_R_pres= sprintf('../data_pc_2_t100_R150_h0015_f/CFD_R_pres_%d.txt',t(k));
 
 
 %     file_omega = sprintf('../data/CFD_omega_%d.txt',t(k));
@@ -50,9 +50,9 @@ for k = 1 : length(t);
     R_pres(:,:,k) = load(file_R_pres);
 
 end
- Diag = load('../data_server_11_t100_R150_h0015/CFD_DIAG.txt');
+% Diag = load('../data_server_11_t100_R150_h0015/CFD_DIAG.txt');
 % Diag = load('../data/CFD_DIAG.txt');
-% Diag = load('../data_pc_1_t100_R150_h0015_b/CFD_DIAG.txt');
+ Diag = load('../data_pc_2_t100_R150_h0015_f/CFD_DIAG.txt');
 %% 
 k = 1;
 [SY SX] = size(omega(:,:,1));
@@ -121,8 +121,8 @@ title('Diagnostic Re_h and Re_h_\omega')
 xlabel('\tau - Adimensional time')
 axis([0,1,0,11]);
 %legend('Re_h_\omega','Re_h_\omega Limit');
-%figure;
-%plot(Diag(sample,1),Diag(sample,4));
+figure;
+plot(Diag(sample,1),Diag(sample,4));
 end    
 %% 
 if plot_pres == 1
@@ -165,31 +165,33 @@ axis([0,15,0,1]);
 colormap(myColormap);
 c1 = colorbar('eastoutside'); 
 set(c1, 'Position',[0.92    0.4845    0.02    0.07]);
-
+title('Dimensionless Velocity Field');
+%%
 figure;
 omegaQ = omega/(1.5e-4);
 im4 = imagesc(linspace(0,15,SX),linspace(0,1,SY),omegaQ(:,:,k));
 xlabel('x/H');
 ylabel('y/H');
 axis equal; axis xy;
-axis([0,15,0,1]);
-caxis([-20 20])
+axis([4,6,0,1]);
+caxis([-30 300])
 colormap(myColormap);
 c4 = colorbar('eastoutside'); 
 set(c4, 'Position',[0.92    0.4845    0.02    0.07]);
-
-
+title('Dimensionless Vorticity Field');
+%%
 figure;
 psiQ = psi/(1.5e-4);
 im2 = contour(linspace(0,15,SX),linspace(0,1,SY),psiQ(:,:,k),25);
 xlabel('x/H');
 ylabel('y/H');
 axis equal; axis xy;
-axis([0,15,0,1]);
+axis([4,6,0,1]);
 colormap(myColormap);
 c2 = colorbar('eastoutside'); 
 set(c2, 'Position',[0.92    0.4845    0.02    0.07]);
-
+title('Dimensionless Streamline');
+%%
 figure;
 k = 1;
 PHQ = (P-P(SY/2-1,SX+1,k))/((1.5e-4)^2);
@@ -201,6 +203,7 @@ axis([0,15,0,1]);
 colormap(myColormap);
 c3 = colorbar('eastoutside'); 
 set(c3, 'Position',[0.92    0.4845    0.02    0.07]);
+title('Dimensionless Pressure Field');
 
 % figure;
 % UV = sqrt(u(:,:,k).*u(:,:,k) + v(:,:,k).*v(:,:,k))/(1.5e-4);
