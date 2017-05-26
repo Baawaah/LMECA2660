@@ -86,7 +86,7 @@ void integration_omega(struct _problem* Problem){
 }
 
 void snapshot(struct _problem* Problem,int curNtime){
-/*
+
   if( (*Problem).t_snapshot != 0 && (curNtime%((int) ((*Problem).t_snapshot*(*Problem).Ntime)))  == 0){
     print_problem_data(Problem);
     if((*Problem).flag_pres == 1){
@@ -96,7 +96,7 @@ void snapshot(struct _problem* Problem,int curNtime){
       poisson_inner_pres_iterator(Problem);
       print_problem_pressure(Problem);
     }
-  }*/
+  }
   // Precise Snapshot - Need to be refined but well it works at least
 
   //if( (*Problem).t_snapshot != 0 &&( curNtime == ((int) (0.30/(*Problem).dtau)))){
