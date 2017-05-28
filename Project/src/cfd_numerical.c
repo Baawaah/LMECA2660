@@ -180,7 +180,7 @@ void inner_psi_update(struct _problem* Problem){
       for(int j = 1; j < (*Problem).imax_map[i]-1; j++){
       (*Problem).psi[i][j] = scalar_psi_compute(Problem,i,j);
       }
-      }*/
+    }*/ // Starting from another side - May be a potential improvement to switch side to ensure a faster convergence
 }
 void inner_pres_update(struct _problem* Problem){
     boundary_pression_ghost_corner(Problem,0);
@@ -201,7 +201,7 @@ void inner_pres_update(struct _problem* Problem){
      for(int j = 1; j < (*Problem).imax_map[i]-1; j++){
      (*Problem).psi[i][j] = scalar_psi_compute(Problem,i,j);
      }
-     }*/
+   }*/ // Starting from another side - May be a potential improvement to switch side to ensure a faster convergence
 }
 
 double inner_psi_error_compute(struct _problem* Problem){
@@ -228,8 +228,6 @@ double inner_pres_error_compute(struct _problem* Problem){
             square_L = (*Problem).R_res_pres[i][j]*(*Problem).R_res_pres[i][j] + square_L;
         }
     }
-    //e_error_L = fabs((*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square_L));
-    //e_error_L = fabs((*Problem).H*(*Problem).H*(*Problem).H/((*Problem).Q0*(*Problem).Q0)*(*Problem).h*sqrt(square_L));
     e_error_L = fabs((*Problem).H*(*Problem).H/(*Problem).Q0*(*Problem).h*sqrt(1.0/((*Problem).L*(*Problem).H) *square_L));
     boundary_pression_ghost_corner(Problem,1);
     for(int i =  (*Problem).NLs; i < (*Problem).Nx_p-2; i++){

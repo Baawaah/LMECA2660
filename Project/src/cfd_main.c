@@ -32,7 +32,6 @@ void init_problem_physical(struct _problem* Problem, double CFL,double r_f, doub
   (*Problem).tmax  = fabs((*Problem).tau_max*L/(*Problem).Um);
 }
 
-//comment
 
 void init_problem_numerical(struct _problem* Problem, double phi,double t_snapshot,int flag_os,int flag_pres){
   (*Problem).Nx         = (*Problem).L    /(*Problem).h;
@@ -96,24 +95,16 @@ void init_problem_vector_domain(struct _problem* Problem){
 }
 
 void init_problem_poiseuille(struct _problem* Problem){
-  //for(int i = 0; i < 1 ;i++ ){
   for(int i = 0; i < (*Problem).Nx;i++ ){
     for(int j = (*Problem).NHs; j < (*Problem).Ny; j++ ){
-      //double eta =  ( (j)*(*Problem).h - ((*Problem).Hs/2.0) )/((*Problem).Hs/2.0);
-      //(*Problem).u[i][j]     = scalar_u_v_poiseuille(Problem,eta);
       (*Problem).u[i][j]     = scalar_u_v_poiseuille(Problem,(j - (*Problem).NHs+1)*(*Problem).h);
     }
   }
-  //for(int i = 0; i < 1 ;i++ ){
     for(int i = 0; i < (*Problem).Nx;i++ ){
     for(int j = (*Problem).NHs; j < (*Problem).Ny; j++ ){
-      //double eta =   ( (j)*(*Problem).h - ((*Problem).Hs/2.0) )/((*Problem).Hs/2.0);
-      //(*Problem).omega[i][j]     = -scalar_u_v_poiseuille_dy(Problem,eta);
-      //(*Problem).psi[i][j]       =  scalar_u_v_poiseuille_int(Problem,eta);
-      //(*Problem).omega[i][j] = -( (*Problem).u[i][j+1] - (*Problem).u[i][j-1]) /(2.0*(*Problem).h) ;
       (*Problem).omega[i][j]     = scalar_u_v_poiseuille_dy (Problem,(j - (*Problem).NHs+1)*(*Problem).h);
       //(*Problem).psi[i][j]       = scalar_u_v_poiseuille_int(Problem,(j - (*Problem).NHs+1)*(*Problem).h);
-      //(*Problem).psi[i][j] = 5.0;
+      // Maybe starting from a existing psi field can accelerate the convergence, but no time to investigate
     }
   }
 }

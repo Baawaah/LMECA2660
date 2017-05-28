@@ -55,7 +55,7 @@
    double **v;
    double **f_old;
    double **R_res;
-   // Staggered Part
+   // Staggered Part - Or The quite hard and long part
    double **u_stag;
    double **v_stag;
    double *psi_in;

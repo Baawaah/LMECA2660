@@ -18,6 +18,3 @@ cfd_numerical.o:
 
 cfd_integrator.o:
 	gcc -o bin/cfd_integrator.o -c src/cfd_integrator.c -W -Wall -lm -std=gnu99
-
-cfd_test.o:
-	gcc -o bin/cfd_test.o -c src/cfd_test.c -W -Wall -lm -std=gnu99

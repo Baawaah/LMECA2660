@@ -24,7 +24,7 @@ void deadstop_exit(struct _problem* Problem){
   fprintf(stderr, "Saving current data under  _%d_\n",(int) ( (*Problem).tau * 100 ));
   print_problem_data    (Problem);
   print_problem_pressure(Problem);
-  //print_problem_diag    (Problem);
+  //print_problem_diag    (Problem); // Need to be investigated
   free_problem_vector_domain(Problem);
   exit(-1);
 }
@@ -120,7 +120,6 @@ int main(int argc,char* argv[]){
   double Q0    =   Rey*nu;
   double sign  =   1.0;
   // Computation parameter
-  //double Rey_h =
   //
   char option;
   while ((option = getopt(argc, argv, "boph:R:C:r:t:s:")) != EOF) {
@@ -181,10 +180,8 @@ int main(int argc,char* argv[]){
   boundary_psi_update(Problem,functionQ);
   poisson_inner_psi_iterator(Problem);
   boundary_omega_update(Problem);
-  //boundary_omega_dwdx_update(Problem);
   inner_u_v_compute(Problem);
 
-  //
 
   print_problem_data(Problem);
   print_problem_pressure(Problem);
