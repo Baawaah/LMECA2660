@@ -37,7 +37,7 @@ int main(int argc,char* argv[]){
   if(diffFlag == 1){
     nu = c*sigma/Re_sig;
   }else{
-    nu = 0;
+    nu = 0; 
   }
 
 
